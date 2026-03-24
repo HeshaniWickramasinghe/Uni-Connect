@@ -11,10 +11,16 @@ const LostAndFoundDashboard = () => {
     const [items, setItems] = useState([]);
     const [filter, setFilter] = useState('All Items');
     const [searchQuery, setSearchQuery] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const [isLostModalOpen, setIsLostModalOpen] = useState(false);
     const [isFoundModalOpen, setIsFoundModalOpen] = useState(false);
     const [activeChat, setActiveChat] = useState(null);
     const [currentUser, setCurrentUser] = useState(null);
+    const [showDateFilter, setShowDateFilter] = useState(false);
+
+    // Get today's date in YYYY-MM-DD format for max restriction
+    const today = new Date().toISOString().split('T')[0];
 
     // Theme Colors
     const primaryBlue = '#023E8A';
@@ -29,19 +35,17 @@ const LostAndFoundDashboard = () => {
     const categories = ['All Items', 'Lost', 'Found', 'Electronics', 'Essentials', 'Books', 'Keys'];
 
     useEffect(() => {
-        // Create or get local storage temporary user
         let user = JSON.parse(localStorage.getItem('tempUser'));
         if (!user) {
-            user = {
-                id: uuidv4(),
-                name: `User_${Math.floor(Math.random() * 1000)}`,
-                avatar: 'U'
-            };
+            user = { id: uuidv4(), name: `User_${Math.floor(Math.random() * 1000)}`, avatar: 'U' };
             localStorage.setItem('tempUser', JSON.stringify(user));
         }
         setCurrentUser(user);
+    }, []);
+
+    useEffect(() => {
         fetchItems();
-    }, [filter, searchQuery]);
+    }, [filter, searchQuery, startDate, endDate]);
 
     const fetchItems = async () => {
         try {
@@ -50,7 +54,9 @@ const LostAndFoundDashboard = () => {
             else if (filter === 'Found') url += 'type=Found&';
             else if (filter !== 'All Items') url += `category=${filter}&`;
 
-            if (searchQuery) url += `search=${searchQuery}`;
+            if (searchQuery) url += `search=${searchQuery}&`;
+            if (startDate) url += `startDate=${startDate}&`;
+            if (endDate) url += `endDate=${endDate}&`;
 
             const res = await fetch(url);
             const data = await res.json();
@@ -60,8 +66,11 @@ const LostAndFoundDashboard = () => {
         }
     };
 
-    const handleSearch = (e) => {
-        setSearchQuery(e.target.value);
+    const clearFilters = () => {
+        setStartDate('');
+        setEndDate('');
+        setSearchQuery('');
+        setFilter('All Items');
     };
 
     const getStatusColor = (type, status) => {
@@ -91,7 +100,7 @@ const LostAndFoundDashboard = () => {
 
             <main className="max-w-7xl mx-auto p-8 w-full">
                 {/* Search and Action Buttons */}
-                <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
+                <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-6">
                     <div className="relative w-full md:w-1/2">
                         <span className="absolute left-4 top-3 text-gray-400">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
@@ -102,27 +111,69 @@ const LostAndFoundDashboard = () => {
                             className="w-full pl-12 pr-6 py-3 border rounded-2xl focus:outline-none focus:ring-2 shadow-sm font-medium"
                             style={{ borderColor: borderGray, focusRingColor: accentBlue }}
                             value={searchQuery}
-                            onChange={handleSearch}
+                            onChange={(e) => setSearchQuery(e.target.value)}
                         />
                     </div>
                     <div className="flex gap-4 w-full md:w-auto">
                         <button
-                            onClick={() => setIsLostModalOpen(true)}
-                            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-8 py-3 bg-white border border-red-100 text-[#C0392B] font-bold rounded-2xl hover:bg-red-50 transition shadow-sm"
+                            onClick={() => setShowDateFilter(!showDateFilter)}
+                            className="flex items-center gap-2 px-4 py-3 bg-white border rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-sm hover:bg-gray-50 transition-all font-sans"
+                            style={{ borderColor: borderGray, color: primaryBlue }}
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
+                            {showDateFilter ? 'Hide Dates' : 'Date Range'}
+                        </button>
+                        <button
+                            onClick={() => setIsLostModalOpen(true)}
+                            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-white border border-red-100 text-[#C0392B] font-bold rounded-2xl hover:bg-red-50 transition shadow-sm text-[11px] uppercase tracking-widest"
+                        >
                             Report Lost
                         </button>
                         <button
                             onClick={() => setIsFoundModalOpen(true)}
-                            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-8 py-3 text-white font-bold rounded-2xl hover:opacity-90 transition shadow-lg"
+                            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 text-white font-bold rounded-2xl hover:opacity-90 transition shadow-lg text-[11px] uppercase tracking-widest"
                             style={{ backgroundColor: successGreen }}
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
                             I Found Item
                         </button>
                     </div>
                 </div>
+
+                {/* Date Filter Panel */}
+                {showDateFilter && (
+                    <div className="mb-8 p-6 bg-white border-2 rounded-[32px] shadow-sm animate-in fade-in slide-in-from-top-4 duration-300" style={{ borderColor: borderGray }}>
+                        <div className="flex flex-col md:flex-row items-end gap-6 text-slate-700">
+                            <div className="flex-1 space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-widest ml-1" style={{ color: accentBlue }}>From Date</label>
+                                <input
+                                    type="date"
+                                    value={startDate}
+                                    max={today}
+                                    onChange={(e) => setStartDate(e.target.value)}
+                                    className="w-full p-4 border rounded-xl text-sm font-bold bg-slate-50 focus:outline-none focus:ring-2"
+                                    style={{ borderColor: borderGray }}
+                                />
+                            </div>
+                            <div className="flex-1 space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-widest ml-1" style={{ color: accentBlue }}>To Date</label>
+                                <input
+                                    type="date"
+                                    value={endDate}
+                                    max={today}
+                                    onChange={(e) => setEndDate(e.target.value)}
+                                    className="w-full p-4 border rounded-xl text-sm font-bold bg-slate-50 focus:outline-none focus:ring-2"
+                                    style={{ borderColor: borderGray }}
+                                />
+                            </div>
+                            <button
+                                onClick={clearFilters}
+                                className="px-6 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all border border-slate-200"
+                            >
+                                Reset All
+                            </button>
+                        </div>
+                    </div>
+                )}
 
                 {/* Filters */}
                 <div className="flex items-center gap-3 mb-10 overflow-x-auto pb-4 scrollbar-hide">
@@ -152,8 +203,8 @@ const LostAndFoundDashboard = () => {
                                 {item.photo ? (
                                     <img src={item.photo} alt={item.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                 ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-gray-300">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M2 17V7a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z" /><path d="M14 17V7a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2z" /></svg>
+                                    <div className="w-full h-full flex items-center justify-center text-gray-300 bg-slate-100">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="opacity-20"><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7" /><line x1="16" y1="5" x2="22" y2="5" /><line x1="19" y1="2" x2="19" y2="8" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></svg>
                                     </div>
                                 )}
                                 <div className="absolute top-4 left-4 flex gap-2">
@@ -190,7 +241,7 @@ const LostAndFoundDashboard = () => {
                                         </div>
                                         <div className="text-gray-400 text-xs font-bold flex items-center gap-2">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-60"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
-                                            {timeAgo(item.date || item.createdAt)}
+                                            {new Date(item.date).toLocaleDateString()} ({timeAgo(item.date)})
                                         </div>
                                     </div>
                                 </div>
@@ -219,6 +270,15 @@ const LostAndFoundDashboard = () => {
                             </div>
                         </div>
                     ))}
+                    {items.length === 0 && (
+                        <div className="col-span-full py-32 flex flex-col items-center opacity-40">
+                            <div className="w-24 h-24 mb-6 rounded-full bg-slate-200 flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ color: darkGray }}><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+                            </div>
+                            <p className="font-black text-xl uppercase tracking-tighter" style={{ color: darkGray }}>No results found</p>
+                            <button onClick={clearFilters} className="mt-4 text-[11px] font-black uppercase tracking-widest underline underline-offset-4" style={{ color: accentBlue }}>Clear All Filters</button>
+                        </div>
+                    )}
                 </div>
             </main>
 
@@ -239,7 +299,6 @@ const LostAndFoundDashboard = () => {
                 />
             )}
 
-            {/* Chat Overlay */}
             {activeChat && currentUser && (
                 <ChatComponent
                     itemId={activeChat.itemId}

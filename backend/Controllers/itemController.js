@@ -11,17 +11,25 @@ cloudinary.config({
 // Get all items
 const getItems = async (req, res) => {
     try {
-        const { category, type, search } = req.query;
+        const { category, type, search, startDate, endDate } = req.query;
         let query = {};
         if (category) query.category = category;
         if (type) query.type = type;
+
+        // Date range filter
+        if (startDate || endDate) {
+            query.date = {};
+            if (startDate) query.date.$gte = new Date(startDate);
+            if (endDate) query.date.$lte = new Date(endDate);
+        }
+
         if (search) {
             query.$or = [
                 { name: { $regex: search, $options: "i" } },
                 { location: { $regex: search, $options: "i" } },
             ];
         }
-        const items = await Item.find(query).sort({ createdAt: -1 });
+        const items = await Item.find(query).sort({ date: -1 });
         res.status(200).json(items);
     } catch (error) {
         res.status(500).json({ error: error.message });
