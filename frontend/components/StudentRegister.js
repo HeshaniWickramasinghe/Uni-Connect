@@ -3,21 +3,21 @@ import { Link, useNavigate } from 'react-router-dom';
 
 // ── Step metadata ────────────────────────────────────────────────────────────
 const STEPS = [
-  { id: 1, label: 'Email',      icon: '📧' },
-  { id: 2, label: 'Verify',     icon: '🔐' },
-  { id: 3, label: 'Personal',   icon: '👤' },
-  { id: 4, label: 'Address',    icon: '🏠' },
-  { id: 5, label: 'Contact',    icon: '📞' },
+  { id: 1, label: 'Email', icon: '📧' },
+  { id: 2, label: 'Verify', icon: '🔐' },
+  { id: 3, label: 'Personal', icon: '👤' },
+  { id: 4, label: 'Address', icon: '🏠' },
+  { id: 5, label: 'Contact', icon: '📞' },
   { id: 6, label: 'References', icon: '🤝' },
-  { id: 7, label: 'Password',   icon: '🔒' },
+  { id: 7, label: 'Password', icon: '🔒' },
 ];
 
 // ── Reusable field component ─────────────────────────────────────────────────
 function Field({ label, required, children, hint }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-        {label}{required && <span className="text-[#f97316] ml-0.5">*</span>}
+      <label className="text-xs font-bold text-[#8A7650]/50 uppercase tracking-wider">
+        {label}{required && <span className="text-[#8A7650] ml-0.5">*</span>}
       </label>
       {children}
       {hint && <p className="text-[11px] text-gray-400">{hint}</p>}
@@ -26,27 +26,27 @@ function Field({ label, required, children, hint }) {
 }
 
 const inputCls =
-  'h-11 px-4 rounded-xl border-2 border-gray-100 bg-gray-50 text-[14px] text-gray-800 outline-none placeholder:text-gray-300 focus:border-[#f97316] focus:bg-white focus:ring-4 focus:ring-[#f97316]/10 transition-all duration-200';
+  'h-11 px-4 rounded-xl border-2 border-[#DBCEA5]/50 bg-[#ECE7D1]/30 text-[14px] text-[#8A7650] outline-none placeholder:text-[#8A7650]/30 focus:border-[#8A7650] focus:bg-white focus:ring-4 focus:ring-[#8A7650]/10 transition-all duration-200';
 
-const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-const DAYS_OF_WEEK = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const DAYS_OF_WEEK = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
 function daysInMonth(year, month) { return new Date(year, month + 1, 0).getDate(); }
 function startDayOfMonth(year, month) { return new Date(year, month, 1).getDay(); }
 
 // ── Calendar Date Picker ─────────────────────────────────────────────────────
 function DatePicker({ dobDay, dobMonth, dobYear, onChange }) {
-  const today       = new Date();
-  const maxYear     = today.getFullYear() - 15;
-  const minYear     = today.getFullYear() - 80;
+  const today = new Date();
+  const maxYear = today.getFullYear() - 15;
+  const minYear = today.getFullYear() - 80;
 
-  const initYear  = dobYear  ? parseInt(dobYear)       : maxYear;
-  const initMonth = dobMonth ? parseInt(dobMonth) - 1  : today.getMonth();
+  const initYear = dobYear ? parseInt(dobYear) : maxYear;
+  const initMonth = dobMonth ? parseInt(dobMonth) - 1 : today.getMonth();
 
-  const [open,          setOpen]          = useState(false);
-  const [viewYear,      setViewYear]      = useState(initYear);
-  const [viewMonth,     setViewMonth]     = useState(initMonth);
-  const [showYearGrid,  setShowYearGrid]  = useState(false);
+  const [open, setOpen] = useState(false);
+  const [viewYear, setViewYear] = useState(initYear);
+  const [viewMonth, setViewMonth] = useState(initMonth);
+  const [showYearGrid, setShowYearGrid] = useState(false);
   const pickerRef = useRef(null);
 
   // close on outside click
@@ -61,7 +61,7 @@ function DatePicker({ dobDay, dobMonth, dobYear, onChange }) {
     : null;
 
   const displayValue = selectedDate
-    ? `${String(selectedDate.getDate()).padStart(2,'0')} ${MONTHS[selectedDate.getMonth()]} ${selectedDate.getFullYear()}`
+    ? `${String(selectedDate.getDate()).padStart(2, '0')} ${MONTHS[selectedDate.getMonth()]} ${selectedDate.getFullYear()}`
     : '';
 
   const prevMonth = () => {
@@ -73,9 +73,9 @@ function DatePicker({ dobDay, dobMonth, dobYear, onChange }) {
     else setViewMonth(m => m + 1);
   };
 
-  const totalDays  = daysInMonth(viewYear, viewMonth);
-  const startDay   = startDayOfMonth(viewYear, viewMonth);
-  const cells      = Array.from({ length: startDay + totalDays }, (_, i) =>
+  const totalDays = daysInMonth(viewYear, viewMonth);
+  const startDay = startDayOfMonth(viewYear, viewMonth);
+  const cells = Array.from({ length: startDay + totalDays }, (_, i) =>
     i < startDay ? null : i - startDay + 1
   );
   // pad to full rows
@@ -91,15 +91,15 @@ function DatePicker({ dobDay, dobMonth, dobYear, onChange }) {
 
   const isSelected = (day) =>
     day &&
-    parseInt(dobDay)   === day &&
+    parseInt(dobDay) === day &&
     parseInt(dobMonth) === viewMonth + 1 &&
-    parseInt(dobYear)  === viewYear;
+    parseInt(dobYear) === viewYear;
 
   const selectDay = (day) => {
     if (!day || isDisabled(day)) return;
     onChange(
-      String(day).padStart(2,'0'),
-      String(viewMonth + 1).padStart(2,'0'),
+      String(day).padStart(2, '0'),
+      String(viewMonth + 1).padStart(2, '0'),
       String(viewYear)
     );
     setOpen(false);
@@ -113,11 +113,10 @@ function DatePicker({ dobDay, dobMonth, dobYear, onChange }) {
       <button
         type="button"
         onClick={() => { setOpen(o => !o); setShowYearGrid(false); }}
-        className={`w-full h-11 px-4 rounded-xl border-2 text-[14px] text-left flex items-center justify-between transition-all duration-200 cursor-pointer ${
-          open
-            ? 'border-[#f97316] bg-white ring-4 ring-[#f97316]/10'
-            : 'border-gray-100 bg-gray-50 hover:border-[#fdba74]'
-        }`}
+        className={`w-full h-11 px-4 rounded-xl border-2 text-[14px] text-left flex items-center justify-between transition-all duration-200 cursor-pointer ${open
+          ? 'border-[#8A7650] bg-white ring-4 ring-[#8A7650]/10'
+          : 'border-[#DBCEA5]/50 bg-[#ECE7D1]/30 hover:border-[#8A7650]/50'
+          }`}
       >
         <span className={displayValue ? 'text-gray-800 font-semibold' : 'text-gray-300'}>
           {displayValue || 'Select date of birth'}
@@ -130,7 +129,7 @@ function DatePicker({ dobDay, dobMonth, dobYear, onChange }) {
         <div className="absolute z-50 top-[calc(100%+8px)] left-0 right-0 bg-white border border-gray-200 rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.15)] overflow-hidden">
 
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-[#f97316] to-[#fdba74]">
+          <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-[#8A7650] to-[#8E977D]">
             {!showYearGrid && (
               <button type="button" onClick={prevMonth}
                 className="w-8 h-8 rounded-lg bg-white/20 hover:bg-white/35 text-white font-bold flex items-center justify-center border-none cursor-pointer transition-all">
@@ -159,11 +158,10 @@ function DatePicker({ dobDay, dobMonth, dobYear, onChange }) {
               {yearList.map(y => (
                 <button key={y} type="button"
                   onClick={() => { setViewYear(y); setShowYearGrid(false); }}
-                  className={`py-2 rounded-xl text-sm font-bold border-none cursor-pointer transition-all ${
-                    y === viewYear
-                      ? 'bg-[#f97316] text-white shadow-[0_4px_12px_rgba(249,115,22,0.4)]'
-                      : 'bg-gray-50 text-gray-700 hover:bg-[#fff7ed] hover:text-[#f97316]'
-                  }`}
+                  className={`py-2 rounded-xl text-sm font-bold border-none cursor-pointer transition-all ${y === viewYear
+                    ? 'bg-[#8A7650] text-white shadow-[0_4px_12px_rgba(138,118,80,0.4)]'
+                    : 'bg-[#ECE7D1]/50 text-[#8A7650] hover:bg-[#8A7650]/10 hover:text-[#8A7650]'
+                    }`}
                 >
                   {y}
                 </button>
@@ -183,15 +181,14 @@ function DatePicker({ dobDay, dobMonth, dobYear, onChange }) {
                   <button key={idx} type="button"
                     onClick={() => selectDay(day)}
                     disabled={!day || isDisabled(day)}
-                    className={`h-9 w-full rounded-lg text-sm font-semibold border-none transition-all ${
-                      !day
-                        ? 'bg-transparent cursor-default'
-                        : isSelected(day)
-                        ? 'bg-[#f97316] text-white shadow-[0_4px_12px_rgba(249,115,22,0.4)] font-black cursor-pointer'
+                    className={`h-9 w-full rounded-lg text-sm font-semibold border-none transition-all ${!day
+                      ? 'bg-transparent cursor-default'
+                      : isSelected(day)
+                        ? 'bg-[#8A7650] text-white shadow-[0_4px_12px_rgba(138,118,80,0.4)] font-black cursor-pointer'
                         : isDisabled(day)
-                        ? 'text-gray-200 cursor-default bg-transparent'
-                        : 'text-gray-700 hover:bg-[#fff7ed] hover:text-[#f97316] cursor-pointer bg-transparent'
-                    }`}
+                          ? 'text-[#DBCEA5] cursor-default bg-transparent'
+                          : 'text-[#8A7650] hover:bg-[#8A7650]/10 hover:text-[#8A7650] cursor-pointer bg-transparent'
+                      }`}
                   >
                     {day || ''}
                   </button>
@@ -246,7 +243,7 @@ function OtpInput({ value, onChange }) {
           onChange={e => handleKey(e, i)}
           onKeyDown={e => handleBackspace(e, i)}
           onPaste={handlePaste}
-          className="w-12 h-14 text-center text-xl font-black text-gray-900 rounded-xl border-2 border-gray-200 bg-gray-50 outline-none focus:border-[#f97316] focus:bg-white focus:ring-4 focus:ring-[#f97316]/10 transition-all duration-200 caret-transparent"
+          className="w-12 h-14 text-center text-xl font-black text-[#8A7650] rounded-xl border-2 border-[#DBCEA5]/50 bg-[#ECE7D1]/30 outline-none focus:border-[#8A7650] focus:bg-white focus:ring-4 focus:ring-[#8A7650]/10 transition-all duration-200 caret-transparent"
         />
       ))}
     </div>
@@ -256,10 +253,10 @@ function OtpInput({ value, onChange }) {
 // ── Main component ───────────────────────────────────────────────────────────
 export default function StudentRegister() {
   const navigate = useNavigate();
-  const [step, setStep]   = useState(1);
+  const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [countdown, setCountdown] = useState(0);
-  const [showPw, setShowPw]       = useState(false);
+  const [showPw, setShowPw] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [sameAddress, setSameAddress] = useState(false);
   const [errors, setErrors] = useState({});
@@ -317,14 +314,14 @@ export default function StudentRegister() {
     }
     if (step === 3) {
       if (!form.firstName.trim()) e.firstName = 'First name is required.';
-      if (!form.lastName.trim())  e.lastName  = 'Last name is required.';
-      if (!form.faculty.trim())   e.faculty   = 'Faculty is required.';
+      if (!form.lastName.trim()) e.lastName = 'Last name is required.';
+      if (!form.faculty.trim()) e.faculty = 'Faculty is required.';
     }
     if (step === 4) {
       if (!form.currentAddress.trim()) e.currentAddress = 'Current address is required.';
-      if (!form.currentCity.trim())    e.currentCity    = 'City is required.';
+      if (!form.currentCity.trim()) e.currentCity = 'City is required.';
       if (!sameAddress && !form.homeAddress.trim()) e.homeAddress = 'Home address is required.';
-      if (!sameAddress && !form.homeCity.trim())    e.homeCity    = 'City is required.';
+      if (!sameAddress && !form.homeCity.trim()) e.homeCity = 'City is required.';
     }
     if (step === 5) {
       if (!form.mobileNumber.trim()) e.mobileNumber = 'Mobile number is required.';
@@ -332,9 +329,9 @@ export default function StudentRegister() {
         e.mobileNumber = 'Enter a valid phone number.';
     }
     if (step === 6) {
-      if (!form.ref1Name.trim())  e.ref1Name  = 'Reference 1 name is required.';
+      if (!form.ref1Name.trim()) e.ref1Name = 'Reference 1 name is required.';
       if (!form.ref1Phone.trim()) e.ref1Phone = 'Reference 1 phone is required.';
-      if (!form.ref2Name.trim())  e.ref2Name  = 'Reference 2 name is required.';
+      if (!form.ref2Name.trim()) e.ref2Name = 'Reference 2 name is required.';
       if (!form.ref2Phone.trim()) e.ref2Phone = 'Reference 2 phone is required.';
     }
     if (step === 7) {
@@ -431,7 +428,7 @@ export default function StudentRegister() {
           </p>
           <button
             onClick={() => navigate('/login')}
-            className="w-full h-12 bg-gradient-to-r from-[#f97316] to-[#fdba74] text-white font-bold rounded-2xl border-none cursor-pointer shadow-[0_6px_22px_rgba(249,115,22,0.4)] hover:-translate-y-0.5 hover:shadow-[0_10px_28px_rgba(249,115,22,0.5)] transition-all text-[15px]"
+            className="w-full h-12 bg-[#8A7650] text-white font-bold rounded-2xl border-none cursor-pointer shadow-[0_6px_22px_rgba(138,118,80,0.4)] hover:-translate-y-0.5 hover:shadow-[0_10px_28px_rgba(138,118,80,0.5)] transition-all text-[15px]"
           >
             Go to Sign In →
           </button>
@@ -447,16 +444,16 @@ export default function StudentRegister() {
       <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 no-underline">
-            <div className="w-8 h-8 bg-gradient-to-br from-[#f97316] to-[#fdba74] rounded-xl flex items-center justify-center shadow-sm">
+            <div className="w-8 h-8 bg-[#8A7650] rounded-xl flex items-center justify-center shadow-sm">
               <span className="text-base leading-none">🎓</span>
             </div>
-            <span className="text-lg font-black bg-gradient-to-r from-[#f97316] to-[#fdba74] bg-clip-text text-transparent">
+            <span className="text-lg font-black text-[#8A7650]">
               UniConnect
             </span>
           </Link>
-          <span className="text-sm text-gray-400">
+          <span className="text-sm text-[#8A7650]/40">
             Already a student?{' '}
-            <Link to="/login" className="font-bold text-[#f97316] no-underline hover:underline">Sign in</Link>
+            <Link to="/login" className="font-bold text-[#8A7650] no-underline hover:underline">Sign in</Link>
           </span>
         </div>
       </nav>
@@ -466,9 +463,9 @@ export default function StudentRegister() {
 
         {/* Header */}
         <div className="text-center mb-8 max-w-xl">
-          <h1 className="text-3xl font-black text-gray-900 mb-2 tracking-tight">Create your student account</h1>
-          <p className="text-gray-500 text-sm">
-            Step <span className="font-bold text-[#f97316]">{step}</span> of <span className="font-bold">7</span> — {STEPS[step - 1]?.label}
+          <h1 className="text-3xl font-black text-[#8A7650] mb-2 tracking-tight">Create your student account</h1>
+          <p className="text-[#8A7650]/40 text-sm">
+            Step <span className="font-bold text-[#8A7650]">{step}</span> of <span className="font-bold text-[#8A7650]">7</span> — {STEPS[step - 1]?.label}
           </p>
         </div>
 
@@ -479,36 +476,35 @@ export default function StudentRegister() {
             {STEPS.map((s) => (
               <div key={s.id} className="flex flex-col items-center gap-1" style={{ width: `${100 / STEPS.length}%` }}>
                 <div
-                  className={`w-9 h-9 rounded-full flex items-center justify-center text-base font-black transition-all duration-300 border-2 ${
-                    s.id < step
-                      ? 'bg-[#f97316] border-[#f97316] text-white shadow-[0_4px_12px_rgba(249,115,22,0.4)]'
-                      : s.id === step
-                      ? 'bg-white border-[#f97316] text-[#f97316] shadow-[0_4px_14px_rgba(249,115,22,0.2)]'
-                      : 'bg-gray-100 border-gray-200 text-gray-300'
-                  }`}
+                  className={`w-9 h-9 rounded-full flex items-center justify-center text-base font-black transition-all duration-300 border-2 ${s.id < step
+                    ? 'bg-[#8A7650] border-[#8A7650] text-[#ECE7D1] shadow-[0_4px_12px_rgba(138,118,80,0.4)]'
+                    : s.id === step
+                      ? 'bg-white border-[#8A7650] text-[#8A7650] shadow-[0_4px_14px_rgba(138,118,80,0.2)]'
+                      : 'bg-[#ECE7D1]/50 border-[#DBCEA5] text-[#DBCEA5]'
+                    }`}
                 >
                   {s.id < step ? '✓' : s.icon}
                 </div>
-                <span className={`text-[9px] font-bold uppercase tracking-wide hidden sm:block ${s.id <= step ? 'text-[#f97316]' : 'text-gray-300'}`}>
+                <span className={`text-[9px] font-bold uppercase tracking-wide hidden sm:block ${s.id <= step ? 'text-[#8A7650]' : 'text-[#DBCEA5]'}`}>
                   {s.label}
                 </span>
               </div>
             ))}
           </div>
           {/* Bar */}
-          <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+          <div className="h-1.5 bg-[#ECE7D1]/50 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-[#f97316] to-[#fdba74] rounded-full transition-all duration-500"
+              className="h-full bg-gradient-to-r from-[#8A7650] to-[#8E977D] rounded-full transition-all duration-500"
               style={{ width: `${progress}%` }}
             />
           </div>
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-3xl border border-[#f0ece8] shadow-[0_8px_40px_rgba(0,0,0,0.08)] w-full max-w-2xl">
+        <div className="bg-white rounded-3xl border border-[#DBCEA5]/30 shadow-[0_8px_40px_rgba(0,0,0,0.08)] w-full max-w-2xl">
 
           {/* Card header */}
-          <div className="bg-gradient-to-r from-[#f97316] to-[#fdba74] px-8 py-5 flex items-center gap-4 rounded-t-3xl">
+          <div className="bg-gradient-to-r from-[#8A7650] to-[#8E977D] px-8 py-5 flex items-center gap-4 rounded-t-3xl">
             <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-2xl backdrop-blur-sm">
               {STEPS[step - 1]?.icon}
             </div>
@@ -554,11 +550,11 @@ export default function StudentRegister() {
                 <button
                   onClick={sendOtp}
                   disabled={loading}
-                  className="h-12 w-full rounded-xl bg-gradient-to-r from-[#f97316] to-[#fdba74] text-white font-bold text-[15px] border-none cursor-pointer shadow-[0_6px_22px_rgba(249,115,22,0.4)] hover:-translate-y-0.5 hover:shadow-[0_10px_28px_rgba(249,115,22,0.5)] disabled:opacity-60 disabled:cursor-not-allowed transition-all"
+                  className="h-12 w-full rounded-xl bg-[#8A7650] text-[#ECE7D1] font-bold text-[15px] border-none cursor-pointer shadow-[0_6px_22px_rgba(138,118,80,0.4)] hover:-translate-y-0.5 hover:shadow-[0_10px_28px_rgba(138,118,80,0.5)] disabled:opacity-60 disabled:cursor-not-allowed transition-all"
                 >
                   {loading ? (
                     <span className="flex items-center justify-center gap-2">
-                      <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin inline-block" />
+                      <span className="w-4 h-4 border-2 border-[#ECE7D1]/40 border-t-[#ECE7D1] rounded-full animate-spin inline-block" />
                       Sending OTP…
                     </span>
                   ) : 'Send Verification Code →'}
@@ -587,7 +583,7 @@ export default function StudentRegister() {
                   <button
                     onClick={resendOtp}
                     disabled={countdown > 0 || loading}
-                    className="font-bold text-[#f97316] bg-transparent border-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed p-0"
+                    className="font-bold text-[#8A7650] bg-transparent border-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed p-0"
                   >
                     {countdown > 0 ? `Resend in ${countdown}s` : 'Resend OTP'}
                   </button>
@@ -653,7 +649,7 @@ export default function StudentRegister() {
                   <select value={form.faculty} onChange={e => set('faculty', e.target.value)}
                     className={`${inputCls} w-full cursor-pointer ${errors.faculty ? 'border-red-400' : ''}`}>
                     <option value="">Select your faculty…</option>
-                    {['Faculty of Computing','Faculty of Engineering','Faculty of Business Administration','Faculty of Science','Faculty of Arts','Faculty of Medicine','Faculty of Law','Faculty of Education'].map(f => (
+                    {['Faculty of Computing', 'Faculty of Engineering', 'Faculty of Business Administration', 'Faculty of Science', 'Faculty of Arts', 'Faculty of Medicine', 'Faculty of Law', 'Faculty of Education'].map(f => (
                       <option key={f} value={f}>{f}</option>
                     ))}
                   </select>
@@ -668,10 +664,10 @@ export default function StudentRegister() {
                 {/* Current / Living address */}
                 <div>
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="w-8 h-8 bg-[#fff7ed] rounded-xl flex items-center justify-center text-base">🏙️</div>
-                    <span className="font-black text-gray-800 text-sm">Currently Living Address</span>
+                    <div className="w-8 h-8 bg-[#ECE7D1] rounded-xl flex items-center justify-center text-base">🏙️</div>
+                    <span className="font-black text-[#8A7650] text-sm">Currently Living Address</span>
                   </div>
-                  <div className="flex flex-col gap-4 pl-2 border-l-2 border-[#ffedd5]">
+                  <div className="flex flex-col gap-4 pl-2 border-l-2 border-[#DBCEA5]/50">
                     <Field label="Street Address" required>
                       <input type="text" placeholder="No. 45, Galle Road" value={form.currentAddress}
                         onChange={e => set('currentAddress', e.target.value)}
@@ -700,13 +696,12 @@ export default function StudentRegister() {
                 <label className="flex items-center gap-3 cursor-pointer select-none group">
                   <div
                     onClick={() => setSameAddress(v => !v)}
-                    className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200 cursor-pointer ${
-                      sameAddress
-                        ? 'bg-[#f97316] border-[#f97316] shadow-[0_2px_8px_rgba(249,115,22,0.4)]'
-                        : 'bg-white border-gray-300 group-hover:border-[#fdba74]'
-                    }`}
+                    className={`w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200 cursor-pointer ${sameAddress
+                      ? 'bg-[#8A7650] border-[#8A7650] shadow-[0_2px_8px_rgba(138,118,80,0.4)]'
+                      : 'bg-white border-[#DBCEA5] group-hover:border-[#8A7650]/50'
+                      }`}
                   >
-                    {sameAddress && <span className="text-white text-xs font-black leading-none">✓</span>}
+                    {sameAddress && <span className="text-[#ECE7D1] text-xs font-black leading-none">✓</span>}
                   </div>
                   <span className="text-sm font-semibold text-gray-700">
                     My home address is the same as my current address
@@ -717,8 +712,8 @@ export default function StudentRegister() {
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-4">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-[#fff7ed] rounded-xl flex items-center justify-center text-base">🏡</div>
-                      <span className="font-black text-gray-800 text-sm">Permanent / Home Address</span>
+                      <div className="w-8 h-8 bg-[#ECE7D1] rounded-xl flex items-center justify-center text-base">🏡</div>
+                      <span className="font-black text-[#8A7650] text-sm">Permanent / Home Address</span>
                     </div>
                     {sameAddress && (
                       <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
@@ -726,16 +721,15 @@ export default function StudentRegister() {
                       </span>
                     )}
                   </div>
-                  <div className={`flex flex-col gap-4 pl-2 border-l-2 transition-all ${sameAddress ? 'border-emerald-300 opacity-70' : 'border-[#ffedd5]'}`}>
+                  <div className={`flex flex-col gap-4 pl-2 border-l-2 transition-all ${sameAddress ? 'border-emerald-300 opacity-70' : 'border-[#DBCEA5]/50'}`}>
                     <Field label="Street Address" required>
                       <input type="text"
                         placeholder="No. 12, Temple Road"
                         value={sameAddress ? form.currentAddress : form.homeAddress}
                         readOnly={sameAddress}
                         onChange={e => !sameAddress && set('homeAddress', e.target.value)}
-                        className={`${inputCls} w-full ${
-                          sameAddress ? 'bg-emerald-50 border-emerald-200 cursor-default' : errors.homeAddress ? 'border-red-400' : ''
-                        }`}
+                        className={`${inputCls} w-full ${sameAddress ? 'bg-emerald-50 border-emerald-200 cursor-default' : errors.homeAddress ? 'border-red-400' : ''
+                          }`}
                       />
                       {!sameAddress && errors.homeAddress && <p className="text-xs text-red-500">{errors.homeAddress}</p>}
                     </Field>
@@ -746,9 +740,8 @@ export default function StudentRegister() {
                           value={sameAddress ? form.currentCity : form.homeCity}
                           readOnly={sameAddress}
                           onChange={e => !sameAddress && set('homeCity', e.target.value)}
-                          className={`${inputCls} w-full ${
-                            sameAddress ? 'bg-emerald-50 border-emerald-200 cursor-default' : errors.homeCity ? 'border-red-400' : ''
-                          }`}
+                          className={`${inputCls} w-full ${sameAddress ? 'bg-emerald-50 border-emerald-200 cursor-default' : errors.homeCity ? 'border-red-400' : ''
+                            }`}
                         />
                         {!sameAddress && errors.homeCity && <p className="text-xs text-red-500">{errors.homeCity}</p>}
                       </Field>
@@ -758,9 +751,8 @@ export default function StudentRegister() {
                           value={sameAddress ? form.currentPostal : form.homePostal}
                           readOnly={sameAddress}
                           onChange={e => !sameAddress && set('homePostal', e.target.value)}
-                          className={`${inputCls} w-full ${
-                            sameAddress ? 'bg-emerald-50 border-emerald-200 cursor-default' : ''
-                          }`}
+                          className={`${inputCls} w-full ${sameAddress ? 'bg-emerald-50 border-emerald-200 cursor-default' : ''
+                            }`}
                         />
                       </Field>
                     </div>
@@ -812,17 +804,17 @@ export default function StudentRegister() {
             {/* ── STEP 6: References ── */}
             {step === 6 && (
               <div className="flex flex-col gap-6">
-                <p className="text-xs text-gray-500 leading-relaxed bg-[#fffbf7] border border-[#ffedd5] rounded-xl p-3">
+                <p className="text-xs text-[#8A7650]/70 leading-relaxed bg-[#ECE7D1]/50 border border-[#DBCEA5]/30 rounded-xl p-3">
                   Please provide two references who can vouch for you. These can be lecturers, supervisors, or senior students. Both are required.
                 </p>
 
                 {/* Reference 1 */}
                 <div>
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="w-8 h-8 bg-gradient-to-br from-[#f97316] to-[#fdba74] rounded-xl flex items-center justify-center text-white text-sm font-black shadow-sm">1</div>
-                    <span className="font-black text-gray-800 text-sm">First Reference</span>
+                    <div className="w-8 h-8 bg-[#8A7650] rounded-xl flex items-center justify-center text-white text-sm font-black shadow-sm">1</div>
+                    <span className="font-black text-[#8A7650] text-sm">First Reference</span>
                   </div>
-                  <div className="flex flex-col gap-4 pl-2 border-l-2 border-[#ffedd5]">
+                  <div className="flex flex-col gap-4 pl-2 border-l-2 border-[#DBCEA5]/50">
                     <div className="grid grid-cols-2 gap-4">
                       <Field label="Full Name" required>
                         <input type="text" placeholder="e.g. Dr. Nimal Silva" value={form.ref1Name}
@@ -853,10 +845,10 @@ export default function StudentRegister() {
                 {/* Reference 2 */}
                 <div>
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="w-8 h-8 bg-gradient-to-br from-[#f97316] to-[#fdba74] rounded-xl flex items-center justify-center text-white text-sm font-black shadow-sm">2</div>
-                    <span className="font-black text-gray-800 text-sm">Second Reference</span>
+                    <div className="w-8 h-8 bg-[#8A7650] rounded-xl flex items-center justify-center text-white text-sm font-black shadow-sm">2</div>
+                    <span className="font-black text-[#8A7650] text-sm">Second Reference</span>
                   </div>
-                  <div className="flex flex-col gap-4 pl-2 border-l-2 border-[#ffedd5]">
+                  <div className="flex flex-col gap-4 pl-2 border-l-2 border-[#DBCEA5]/50">
                     <div className="grid grid-cols-2 gap-4">
                       <Field label="Full Name" required>
                         <input type="text" placeholder="e.g. Mr. Kasun Perera" value={form.ref2Name}
@@ -906,7 +898,7 @@ export default function StudentRegister() {
                   {form.password.length > 0 && (
                     <div className="mt-2">
                       <div className="flex gap-1 mb-1">
-                        {[1,2,3,4].map(i => (
+                        {[1, 2, 3, 4].map(i => (
                           <div key={i} className="flex-1 h-1.5 rounded-full transition-all duration-300"
                             style={{ background: i <= pwStrength ? strengthColor : '#e5e7eb' }} />
                         ))}
@@ -951,12 +943,12 @@ export default function StudentRegister() {
                 </div>
 
                 <label className="flex items-start gap-3 cursor-pointer">
-                  <input type="checkbox" required className="mt-0.5 accent-[#f97316] flex-shrink-0" />
-                  <span className="text-xs text-gray-500 leading-relaxed">
+                  <input type="checkbox" required className="mt-0.5 accent-[#8A7650] flex-shrink-0" />
+                  <span className="text-xs text-[#8A7650]/60 leading-relaxed">
                     I agree to the{' '}
-                    <a href="#terms" className="text-[#f97316] font-semibold no-underline hover:underline">Terms of Service</a>
+                    <a href="#terms" className="text-[#8A7650] font-semibold no-underline hover:underline">Terms of Service</a>
                     {' '}and{' '}
-                    <a href="#privacy" className="text-[#f97316] font-semibold no-underline hover:underline">Privacy Policy</a>
+                    <a href="#privacy" className="text-[#8A7650] font-semibold no-underline hover:underline">Privacy Policy</a>
                     . I confirm that all information provided is accurate.
                   </span>
                 </label>
@@ -970,7 +962,7 @@ export default function StudentRegister() {
             {step > 1 && (
               <button
                 onClick={back}
-                className="h-12 px-6 rounded-xl border-2 border-gray-200 text-gray-600 font-bold text-[14px] bg-white hover:border-[#f97316] hover:text-[#f97316] hover:bg-[#fffbf7] transition-all cursor-pointer flex-shrink-0"
+                className="h-12 px-6 rounded-xl border-2 border-[#DBCEA5] text-[#8A7650]/70 font-bold text-[14px] bg-white hover:border-[#8A7650] hover:text-[#8A7650] hover:bg-[#ECE7D1]/30 transition-all cursor-pointer flex-shrink-0"
               >
                 ← Back
               </button>
@@ -979,11 +971,11 @@ export default function StudentRegister() {
               <button
                 onClick={next}
                 disabled={loading}
-                className="flex-1 h-12 rounded-xl bg-gradient-to-r from-[#f97316] to-[#fdba74] text-white font-bold text-[15px] border-none cursor-pointer shadow-[0_6px_22px_rgba(249,115,22,0.4)] hover:-translate-y-0.5 hover:shadow-[0_10px_28px_rgba(249,115,22,0.5)] disabled:opacity-60 disabled:cursor-not-allowed transition-all"
+                className="flex-1 h-12 rounded-xl bg-[#8A7650] text-[#ECE7D1] font-bold text-[15px] border-none cursor-pointer shadow-[0_6px_22px_rgba(138,118,80,0.4)] hover:-translate-y-0.5 hover:shadow-[0_10px_28px_rgba(138,118,80,0.5)] disabled:opacity-60 disabled:cursor-not-allowed transition-all"
               >
                 {loading ? (
                   <span className="flex items-center justify-center gap-2">
-                    <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin inline-block" />
+                    <span className="w-4 h-4 border-2 border-[#ECE7D1]/40 border-t-[#ECE7D1] rounded-full animate-spin inline-block" />
                     {step === 7 ? 'Creating account…' : 'Processing…'}
                   </span>
                 ) : step === 7 ? 'Create My Account ✓' : 'Continue →'}
@@ -992,9 +984,9 @@ export default function StudentRegister() {
           </div>
         </div>
 
-        <p className="text-xs text-gray-400 mt-6">
+        <p className="text-xs text-[#8A7650]/30 mt-6">
           Already have an account?{' '}
-          <Link to="/login" className="text-[#f97316] font-semibold no-underline hover:underline">Sign in here</Link>
+          <Link to="/login" className="text-[#8A7650] font-semibold no-underline hover:underline">Sign in here</Link>
         </p>
       </div>
     </div>

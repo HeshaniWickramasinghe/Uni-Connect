@@ -1,4 +1,12 @@
 const Item = require("../Model/itemModel");
+const cloudinary = require('cloudinary').v2;
+
+// Connected your exact credentials
+cloudinary.config({
+    cloud_name: 'dbllen24x',
+    api_key: '298341491832269',
+    api_secret: 'ELZw1rUUtiYlS1x1ZfFOHFb5VEk'
+});
 
 // Get all items
 const getItems = async (req, res) => {
@@ -48,13 +56,23 @@ const createItem = async (req, res) => {
             brandSize,
         } = req.body;
 
+        let photoUrl = photo;
+        // If a new photo is detected, upload to Cloudinary
+        if (photo && photo.startsWith("data:image")) {
+            const uploadRes = await cloudinary.uploader.upload(photo, {
+                folder: "uniconnect_lost_found",// Organizes it in your cloud
+            });
+            photoUrl = uploadRes.secure_url;// Gets the permanent web URL
+        }
+
+        // Saves it to MongoDB database as a standard URL path
         const newItem = await Item.create({
             name,
             category,
             location,
             date,
             description,
-            photo,
+            photo: photoUrl,
             type,
             status: status || "ACTIVE",
             userName: userName || "Anonymous User",
@@ -81,7 +99,16 @@ const deleteItem = async (req, res) => {
 // Update an item
 const updateItem = async (req, res) => {
     try {
-        const item = await Item.findByIdAndUpdate(req.params.id, req.body, {
+        let updateData = { ...req.body };
+
+        if (updateData.photo && updateData.photo.startsWith("data:image")) {
+            const uploadRes = await cloudinary.uploader.upload(updateData.photo, {
+                folder: "uniconnect_lost_found",
+            });
+            updateData.photo = uploadRes.secure_url;
+        }
+
+        const item = await Item.findByIdAndUpdate(req.params.id, updateData, {
             new: true,
             runValidators: true,
         });

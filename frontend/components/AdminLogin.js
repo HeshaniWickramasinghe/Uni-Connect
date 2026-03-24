@@ -3,9 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { setUser } from '../src/auth';
 
 export default function AdminLogin() {
-  const [email,    setEmail]    = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading,  setLoading]  = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
@@ -15,10 +15,10 @@ export default function AdminLogin() {
     setTimeout(() => {
       setLoading(false);
       setUser({
-        name:   'Admin User',
+        name: 'Admin User',
         email,
         avatar: email[0].toUpperCase(),
-        role:   'admin',
+        role: 'admin',
       });
       navigate('/admin-dashboard');
     }, 1000);

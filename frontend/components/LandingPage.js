@@ -2,17 +2,17 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const KUPPI_SESSIONS = [
-  { id: 1, subject: 'Data Structures & Algorithms', host: 'Saman K.',  time: 'Today, 4:00 PM',    seats: 3, icon: '🌳', tag: 'CS',   color: '#f97316' },
-  { id: 2, subject: 'Calculus II',                  host: 'Nimal P.',  time: 'Tomorrow, 2:30 PM', seats: 5, icon: '∫',  tag: 'Math', color: '#ea580c' },
-  { id: 3, subject: 'Business Ethics',              host: 'Dilini S.', time: 'Wed, 6:00 PM',      seats: 8, icon: '⚖️', tag: 'BBA',  color: '#fb923c' },
-  { id: 4, subject: 'Linear Algebra',               host: 'Kasun M.',  time: 'Thu, 3:00 PM',      seats: 2, icon: '📐', tag: 'Math', color: '#f97316' },
+  { id: 1, subject: 'Data Structures & Algorithms', host: 'Saman K.', time: 'Today, 4:00 PM', seats: 3, icon: '🌳', tag: 'CS', color: '#f97316' },
+  { id: 2, subject: 'Calculus II', host: 'Nimal P.', time: 'Tomorrow, 2:30 PM', seats: 5, icon: '∫', tag: 'Math', color: '#ea580c' },
+  { id: 3, subject: 'Business Ethics', host: 'Dilini S.', time: 'Wed, 6:00 PM', seats: 8, icon: '⚖️', tag: 'BBA', color: '#fb923c' },
+  { id: 4, subject: 'Linear Algebra', host: 'Kasun M.', time: 'Thu, 3:00 PM', seats: 2, icon: '📐', tag: 'Math', color: '#f97316' },
 ];
 
 const LOST_CATEGORIES = [
   { icon: '📱', label: 'Smartphones', count: 12 },
-  { icon: '🎒', label: 'Backpacks',   count: 8  },
-  { icon: '📒', label: 'Notebooks',   count: 23 },
-  { icon: '🔑', label: 'Keys',        count: 15 },
+  { icon: '🎒', label: 'Backpacks', count: 8 },
+  { icon: '📒', label: 'Notebooks', count: 23 },
+  { icon: '🔑', label: 'Keys', count: 15 },
 ];
 
 const FEATURES = [
@@ -40,16 +40,16 @@ const FEATURES = [
 ];
 
 const TEAM = [
-  { name: 'Dr. Amara Silva',  role: 'Project Lead',        avatar: 'AS', dept: 'Faculty of Computing' },
-  { name: 'Kasun Perera',     role: 'Lead Developer',      avatar: 'KP', dept: 'Computer Science' },
-  { name: 'Dilini Fernando',  role: 'UI/UX Designer',      avatar: 'DF', dept: 'Information Systems' },
-  { name: 'Nimal Rajapaksa',  role: 'Backend Engineer',    avatar: 'NR', dept: 'Software Engineering' },
+  { name: 'Dr. Amara Silva', role: 'Project Lead', avatar: 'AS', dept: 'Faculty of Computing' },
+  { name: 'Kasun Perera', role: 'Lead Developer', avatar: 'KP', dept: 'Computer Science' },
+  { name: 'Dilini Fernando', role: 'UI/UX Designer', avatar: 'DF', dept: 'Information Systems' },
+  { name: 'Nimal Rajapaksa', role: 'Backend Engineer', avatar: 'NR', dept: 'Software Engineering' },
 ];
 
 const TESTIMONIALS = [
-  { name: 'Saman K.',   faculty: 'CS, Year 3',        text: "I found my lost laptop bag within 3 hours of posting. UniConnect is genuinely life-saving!", avatar: 'S' },
-  { name: 'Priya M.',   faculty: 'BBA, Year 2',       text: "The kuppi sessions helped me pass my finals. I can find a study group for literally any subject.", avatar: 'P' },
-  { name: 'Thilak R.',  faculty: 'Engineering, Year 4', text: "Best student platform our uni has ever had. Clean, fast, and actually useful.", avatar: 'T' },
+  { name: 'Saman K.', faculty: 'CS, Year 3', text: "I found my lost laptop bag within 3 hours of posting. UniConnect is genuinely life-saving!", avatar: 'S' },
+  { name: 'Priya M.', faculty: 'BBA, Year 2', text: "The kuppi sessions helped me pass my finals. I can find a study group for literally any subject.", avatar: 'P' },
+  { name: 'Thilak R.', faculty: 'Engineering, Year 4', text: "Best student platform our uni has ever had. Clean, fast, and actually useful.", avatar: 'T' },
 ];
 
 export default function LandingPage() {
@@ -84,8 +84,8 @@ export default function LandingPage() {
           {/* Nav links */}
           <div className="hidden md:flex items-center gap-7 text-sm font-semibold text-gray-500">
             <button onClick={() => scrollTo('features')} className="hover:text-[#f97316] transition-colors bg-transparent border-none cursor-pointer">Features</button>
-            <button onClick={() => scrollTo('about')}    className="hover:text-[#f97316] transition-colors bg-transparent border-none cursor-pointer">About Us</button>
-            <button onClick={() => scrollTo('contact')}  className="hover:text-[#f97316] transition-colors bg-transparent border-none cursor-pointer">Contact</button>
+            <button onClick={() => scrollTo('about')} className="hover:text-[#f97316] transition-colors bg-transparent border-none cursor-pointer">About Us</button>
+            <button onClick={() => scrollTo('contact')} className="hover:text-[#f97316] transition-colors bg-transparent border-none cursor-pointer">Contact</button>
             <Link to="/admin-login" className="hover:text-[#f97316] transition-colors no-underline text-gray-500">Admin</Link>
           </div>
 
@@ -149,7 +149,7 @@ export default function LandingPage() {
             {/* Social proof */}
             <div className="flex items-center gap-5 flex-wrap">
               <div className="flex -space-x-3">
-                {['S','K','D','N','P'].map((l, i) => (
+                {['S', 'K', 'D', 'N', 'P'].map((l, i) => (
                   <div key={i} className="w-9 h-9 rounded-full bg-gradient-to-br from-[#f97316] to-[#fdba74] border-2 border-white flex items-center justify-center text-white text-xs font-black shadow-sm">{l}</div>
                 ))}
               </div>
@@ -219,9 +219,9 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-center text-white">
           {[
             { val: '2,400+', label: 'Registered Students' },
-            { val: '89%',    label: 'Items Recovered' },
-            { val: '37',     label: 'Active Kuppi Sessions' },
-            { val: '4.9★',   label: 'Student Rating' },
+            { val: '89%', label: 'Items Recovered' },
+            { val: '37', label: 'Active Kuppi Sessions' },
+            { val: '4.9★', label: 'Student Rating' },
           ].map(s => (
             <div key={s.label}>
               <div className="text-3xl font-black mb-1">{s.val}</div>
@@ -348,10 +348,10 @@ export default function LandingPage() {
             {/* Contact info */}
             <div className="lg:col-span-2 flex flex-col gap-5">
               {[
-                { icon: '📍', title: 'Address',    lines: ['Faculty of Computing,', 'University Campus, Colombo 07, Sri Lanka'] },
-                { icon: '📧', title: 'Email',      lines: ['support@uniconnect.lk', 'admin@uniconnect.lk'] },
-                { icon: '📞', title: 'Phone',      lines: ['+94 11 234 5678', 'Mon – Fri, 8 AM – 5 PM'] },
-                { icon: '💬', title: 'Live Chat',  lines: ['Available inside the app', 'Mon – Sat, 9 AM – 9 PM'] },
+                { icon: '📍', title: 'Address', lines: ['Faculty of Computing,', 'University Campus, Colombo 07, Sri Lanka'] },
+                { icon: '📧', title: 'Email', lines: ['support@uniconnect.lk', 'admin@uniconnect.lk'] },
+                { icon: '📞', title: 'Phone', lines: ['+94 11 234 5678', 'Mon – Fri, 8 AM – 5 PM'] },
+                { icon: '💬', title: 'Live Chat', lines: ['Available inside the app', 'Mon – Sat, 9 AM – 9 PM'] },
               ].map(item => (
                 <div key={item.title} className="flex items-start gap-4 p-4 bg-white rounded-2xl border border-[#f0ece8] shadow-sm">
                   <div className="w-11 h-11 bg-gradient-to-br from-[#f97316] to-[#fdba74] rounded-xl flex items-center justify-center text-xl shadow-md flex-shrink-0">
@@ -457,7 +457,7 @@ export default function LandingPage() {
               </div>
               <p className="text-sm leading-relaxed text-gray-500 mb-4">Your campus, connected. Built with ❤️ for students by students.</p>
               <div className="flex gap-3">
-                {['📘','🐦','📸','💼'].map((icon, i) => (
+                {['📘', '🐦', '📸', '💼'].map((icon, i) => (
                   <button key={i} className="w-9 h-9 bg-gray-800 rounded-lg flex items-center justify-center text-base hover:bg-[#f97316] transition-colors border-none cursor-pointer">
                     {icon}
                   </button>
@@ -479,7 +479,7 @@ export default function LandingPage() {
             <div>
               <h4 className="text-white font-black text-sm mb-4 uppercase tracking-widest">Company</h4>
               <ul className="flex flex-col gap-2.5 list-none p-0 m-0">
-                {[['About Us','about'],['Contact','contact'],['Privacy Policy','#'],['Terms of Use','#']].map(([l, t]) => (
+                {[['About Us', 'about'], ['Contact', 'contact'], ['Privacy Policy', '#'], ['Terms of Use', '#']].map(([l, t]) => (
                   <li key={l}>
                     {t.startsWith('#')
                       ? <a href={t} className="text-sm text-gray-500 hover:text-[#fdba74] transition-colors no-underline">{l}</a>

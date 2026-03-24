@@ -5,36 +5,36 @@ import { getUser, clearUser } from '../src/auth';
 
 // ── Toggle role here to switch between views ───────────────────────────────
 const MOCK_USER = {
-  name:   'Alex Johnson',
-  email:  'alex@university.edu',
+  name: 'Alex Johnson',
+  email: 'alex@university.edu',
   avatar: 'A',
-  role:   'admin',   // 'student' | 'admin'
+  role: 'admin',   // 'student' | 'admin'
 };
 // ──────────────────────────────────────────────────────────────────────────────
 
 const NAV_ITEMS = [
-  { id: 'overview',  icon: '📊', label: 'System Overview'          },
-  { id: 'users',     icon: '👥', label: 'User Management'          },
-  { id: 'lostfound', icon: '🔍', label: 'Lost & Found Moderation'  },
-  { id: 'logs',      icon: '📋', label: 'Transaction Logs'         },
+  { id: 'overview', icon: '📊', label: 'System Overview' },
+  { id: 'users', icon: '👥', label: 'User Management' },
+  { id: 'lostfound', icon: '🔍', label: 'Lost & Found Moderation' },
+  { id: 'logs', icon: '📋', label: 'Transaction Logs' },
 ];
 
 // ── Panels ─────────────────────────────────────────────────────────────────
 
 function OverviewPanel() {
   const stats = [
-    { icon: '👥', label: 'Total Users',   value: '2,418', note: '+12 today',    up: true  },
-    { icon: '📦', label: 'Open Reports',  value: '35',    note: '−4 resolved',  up: true  },
-    { icon: '📚', label: 'Active Kuppis', value: '37',    note: '+5 new',       up: true  },
-    { icon: '⚠️', label: 'Flagged Items', value: '6',     note: 'Needs review', up: false },
+    { icon: '👥', label: 'Total Users', value: '2,418', note: '+12 today', up: true },
+    { icon: '📦', label: 'Open Reports', value: '35', note: '−4 resolved', up: true },
+    { icon: '📚', label: 'Active Kuppis', value: '37', note: '+5 new', up: true },
+    { icon: '⚠️', label: 'Flagged Items', value: '6', note: 'Needs review', up: false },
   ];
 
   const activity = [
-    { type: 'user',  action: 'New user registered',      actor: 'saman.k@uni.edu',  time: '2m ago'  },
-    { type: 'lost',  action: 'Lost item reported',        actor: 'dilini.s@uni.edu', time: '15m ago' },
-    { type: 'kuppi', action: 'Kuppi session created',     actor: 'nimal.p@uni.edu',  time: '1h ago'  },
-    { type: 'flag',  action: 'Item flagged for review',   actor: 'kasun.m@uni.edu',  time: '2h ago'  },
-    { type: 'admin', action: 'User account deactivated',  actor: 'admin@uni.edu',    time: '5h ago'  },
+    { type: 'user', action: 'New user registered', actor: 'saman.k@uni.edu', time: '2m ago' },
+    { type: 'lost', action: 'Lost item reported', actor: 'dilini.s@uni.edu', time: '15m ago' },
+    { type: 'kuppi', action: 'Kuppi session created', actor: 'nimal.p@uni.edu', time: '1h ago' },
+    { type: 'flag', action: 'Item flagged for review', actor: 'kasun.m@uni.edu', time: '2h ago' },
+    { type: 'admin', action: 'User account deactivated', actor: 'admin@uni.edu', time: '5h ago' },
   ];
 
   const typeIcon = { user: '👤', lost: '🔍', kuppi: '📚', flag: '⚠️', admin: '🛡️' };
@@ -77,11 +77,11 @@ function OverviewPanel() {
 
 function UsersPanel() {
   const users = [
-    { name: 'Saman Kumara', email: 'saman.k@uni.edu',  role: 'student', status: 'active',   joined: 'Jan 12' },
-    { name: 'Dilini Silva',  email: 'dilini.s@uni.edu', role: 'student', status: 'active',   joined: 'Jan 18' },
-    { name: 'Nimal Perera',  email: 'nimal.p@uni.edu',  role: 'student', status: 'inactive', joined: 'Feb 2'  },
-    { name: 'Kasun Mendis',  email: 'kasun.m@uni.edu',  role: 'student', status: 'active',   joined: 'Feb 10' },
-    { name: 'Admin User',    email: 'admin@uni.edu',    role: 'admin',   status: 'active',   joined: 'Dec 1'  },
+    { name: 'Saman Kumara', email: 'saman.k@uni.edu', role: 'student', status: 'active', joined: 'Jan 12' },
+    { name: 'Dilini Silva', email: 'dilini.s@uni.edu', role: 'student', status: 'active', joined: 'Jan 18' },
+    { name: 'Nimal Perera', email: 'nimal.p@uni.edu', role: 'student', status: 'inactive', joined: 'Feb 2' },
+    { name: 'Kasun Mendis', email: 'kasun.m@uni.edu', role: 'student', status: 'active', joined: 'Feb 10' },
+    { name: 'Admin User', email: 'admin@uni.edu', role: 'admin', status: 'active', joined: 'Dec 1' },
   ];
 
   return (
@@ -136,16 +136,16 @@ function UsersPanel() {
 
 function LostFoundPanel() {
   const items = [
-    { id: 'LF-001', title: 'iPhone 14 Pro (Black)',     reporter: 'saman.k',  date: 'Feb 20', status: 'open',     flagged: false },
-    { id: 'LF-002', title: '5-Star Notebook',            reporter: 'dilini.s', date: 'Feb 21', status: 'matched',  flagged: false },
-    { id: 'LF-003', title: 'Blue JanSport Backpack',     reporter: 'nimal.p',  date: 'Feb 22', status: 'open',     flagged: true  },
-    { id: 'LF-004', title: 'Set of Keys (3 keys)',       reporter: 'kasun.m',  date: 'Feb 23', status: 'resolved', flagged: false },
-    { id: 'LF-005', title: 'Calculator (CASIO fx-991)',  reporter: 'unknown',  date: 'Feb 24', status: 'open',     flagged: true  },
+    { id: 'LF-001', title: 'iPhone 14 Pro (Black)', reporter: 'saman.k', date: 'Feb 20', status: 'open', flagged: false },
+    { id: 'LF-002', title: '5-Star Notebook', reporter: 'dilini.s', date: 'Feb 21', status: 'matched', flagged: false },
+    { id: 'LF-003', title: 'Blue JanSport Backpack', reporter: 'nimal.p', date: 'Feb 22', status: 'open', flagged: true },
+    { id: 'LF-004', title: 'Set of Keys (3 keys)', reporter: 'kasun.m', date: 'Feb 23', status: 'resolved', flagged: false },
+    { id: 'LF-005', title: 'Calculator (CASIO fx-991)', reporter: 'unknown', date: 'Feb 24', status: 'open', flagged: true },
   ];
 
   const statusStyle = {
-    open:     'bg-blue-50 text-blue-600',
-    matched:  'bg-amber-50 text-amber-600',
+    open: 'bg-blue-50 text-blue-600',
+    matched: 'bg-amber-50 text-amber-600',
     resolved: 'bg-emerald-50 text-emerald-600',
   };
 
@@ -206,17 +206,17 @@ function LostFoundPanel() {
 
 function LogsPanel() {
   const logs = [
-    { id: 'TXN-0041', event: 'User Login',            actor: 'saman.k@uni.edu',  ip: '192.168.1.5',  time: '2026-02-24 14:05', severity: 'info'     },
-    { id: 'TXN-0040', event: 'Item Report Created',   actor: 'dilini.s@uni.edu', ip: '192.168.1.22', time: '2026-02-24 13:47', severity: 'info'     },
-    { id: 'TXN-0039', event: 'Failed Login Attempt',  actor: 'unknown',          ip: '10.0.0.44',    time: '2026-02-24 12:30', severity: 'warn'     },
-    { id: 'TXN-0038', event: 'Account Deactivated',   actor: 'admin@uni.edu',    ip: '192.168.1.1',  time: '2026-02-24 10:15', severity: 'critical' },
-    { id: 'TXN-0037', event: 'Kuppi Session Opened',  actor: 'nimal.p@uni.edu',  ip: '192.168.1.8',  time: '2026-02-24 09:00', severity: 'info'     },
-    { id: 'TXN-0036', event: 'Item Flagged',          actor: 'admin@uni.edu',    ip: '192.168.1.1',  time: '2026-02-23 18:40', severity: 'warn'     },
+    { id: 'TXN-0041', event: 'User Login', actor: 'saman.k@uni.edu', ip: '192.168.1.5', time: '2026-02-24 14:05', severity: 'info' },
+    { id: 'TXN-0040', event: 'Item Report Created', actor: 'dilini.s@uni.edu', ip: '192.168.1.22', time: '2026-02-24 13:47', severity: 'info' },
+    { id: 'TXN-0039', event: 'Failed Login Attempt', actor: 'unknown', ip: '10.0.0.44', time: '2026-02-24 12:30', severity: 'warn' },
+    { id: 'TXN-0038', event: 'Account Deactivated', actor: 'admin@uni.edu', ip: '192.168.1.1', time: '2026-02-24 10:15', severity: 'critical' },
+    { id: 'TXN-0037', event: 'Kuppi Session Opened', actor: 'nimal.p@uni.edu', ip: '192.168.1.8', time: '2026-02-24 09:00', severity: 'info' },
+    { id: 'TXN-0036', event: 'Item Flagged', actor: 'admin@uni.edu', ip: '192.168.1.1', time: '2026-02-23 18:40', severity: 'warn' },
   ];
 
   const sevStyle = {
-    info:     'bg-blue-50 text-blue-500',
-    warn:     'bg-amber-50 text-amber-600',
+    info: 'bg-blue-50 text-blue-500',
+    warn: 'bg-amber-50 text-amber-600',
     critical: 'bg-red-50 text-red-500',
   };
 
@@ -262,10 +262,10 @@ function AdminDashboard({ user, onLogout }) {
   const [active, setActive] = useState('overview');
 
   const panelMap = {
-    overview:  <OverviewPanel />,
-    users:     <UsersPanel />,
+    overview: <OverviewPanel />,
+    users: <UsersPanel />,
     lostfound: <LostFoundPanel />,
-    logs:      <LogsPanel />,
+    logs: <LogsPanel />,
   };
 
   return (
@@ -308,11 +308,10 @@ function AdminDashboard({ user, onLogout }) {
               <button
                 key={item.id}
                 onClick={() => setActive(item.id)}
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-left transition-all border-none cursor-pointer w-full ${
-                  active === item.id
-                    ? 'bg-gradient-to-r from-[#f97316] to-[#fdba74] text-white shadow-[0_4px_14px_rgba(249,115,22,0.3)]'
-                    : 'text-gray-500 bg-transparent hover:bg-[#fff7ed] hover:text-[#f97316]'
-                }`}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-left transition-all border-none cursor-pointer w-full ${active === item.id
+                  ? 'bg-gradient-to-r from-[#f97316] to-[#fdba74] text-white shadow-[0_4px_14px_rgba(249,115,22,0.3)]'
+                  : 'text-gray-500 bg-transparent hover:bg-[#fff7ed] hover:text-[#f97316]'
+                  }`}
               >
                 <span className="text-base">{item.icon}</span>
                 {item.label}
@@ -350,7 +349,7 @@ export default function MainDashboard({ role }) {
   const onLogout = () => { clearUser(); navigate('/'); };
 
   // Use the real logged-in user (fallback to MOCK_USER for dev convenience)
-  const authUser  = getUser() ?? MOCK_USER;
+  const authUser = getUser() ?? MOCK_USER;
   const effectiveRole = role ?? authUser.role ?? MOCK_USER.role;
 
   if (effectiveRole === 'student') {
