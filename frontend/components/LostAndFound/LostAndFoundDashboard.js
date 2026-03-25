@@ -18,6 +18,7 @@ const LostAndFoundDashboard = () => {
     const [activeChat, setActiveChat] = useState(null);
     const [currentUser, setCurrentUser] = useState(null);
     const [showDateFilter, setShowDateFilter] = useState(false);
+    const [sortBy, setSortBy] = useState('Latest First');
 
     // Get today's date in YYYY-MM-DD format for max restriction
     const today = new Date().toISOString().split('T')[0];
@@ -45,7 +46,7 @@ const LostAndFoundDashboard = () => {
 
     useEffect(() => {
         fetchItems();
-    }, [filter, searchQuery, startDate, endDate]);
+    }, [filter, searchQuery, startDate, endDate, sortBy]);
 
     const fetchItems = async () => {
         try {
@@ -98,45 +99,120 @@ const LostAndFoundDashboard = () => {
         <div className="min-h-screen font-sans flex flex-col" style={{ backgroundColor: lightBg }}>
             <Header user={{ name: currentUser?.name, avatar: currentUser?.avatar, email: `${currentUser?.id.substring(0, 8)}@temp.cli.lk` }} />
 
-            <main className="max-w-7xl mx-auto p-8 w-full">
-                {/* Search and Action Buttons */}
-                <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-6">
-                    <div className="relative w-full md:w-1/2">
-                        <span className="absolute left-4 top-3 text-gray-400">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
-                        </span>
-                        <input
-                            type="text"
-                            placeholder="Find belongings..."
-                            className="w-full pl-12 pr-6 py-3 border rounded-2xl focus:outline-none focus:ring-2 shadow-sm font-medium"
-                            style={{ borderColor: borderGray, focusRingColor: accentBlue }}
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                    </div>
-                    <div className="flex gap-4 w-full md:w-auto">
-                        <button
-                            onClick={() => setShowDateFilter(!showDateFilter)}
-                            className="flex items-center gap-2 px-4 py-3 bg-white border rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-sm hover:bg-gray-50 transition-all font-sans"
-                            style={{ borderColor: borderGray, color: primaryBlue }}
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
-                            {showDateFilter ? 'Hide Dates' : 'Date Range'}
-                        </button>
-                        <button
+            {/* Hero Section */}
+            <header className="bg-[#023E8A] text-white pt-10 pb-20 px-6 text-center relative overflow-hidden">
+                <div className="max-w-4xl mx-auto relative z-10">
+                    <h1 className="text-3xl md:text-5xl font-bold mb-4 tracking-tight" style={{ fontFamily: 'Georgia, serif' }}>
+                        Find what was lost.
+                    </h1>
+                    <p className="text-blue-100/60 text-base md:text-lg max-w-xl mx-auto mb-10 leading-relaxed">
+                        The most trusted community platform for recovering lost belongings and returning found treasures.
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+                        {/* I Lost Something Card */}
+                        <div
                             onClick={() => setIsLostModalOpen(true)}
-                            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-white border border-red-100 text-[#C0392B] font-bold rounded-2xl hover:bg-red-50 transition shadow-sm text-[11px] uppercase tracking-widest"
+                            className="group cursor-pointer bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-[32px] hover:bg-white/10 transition-all duration-500 text-left relative overflow-hidden shadow-xl"
                         >
-                            Report Lost
-                        </button>
-                        <button
+                            <div className="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+                            </div>
+                            <h3 className="text-xl font-bold mb-2 tracking-tight">I Lost Something</h3>
+                            <p className="text-white/40 text-[11px] leading-relaxed font-medium">Post a detailed report of your missing item to our community grid.</p>
+                        </div>
+
+                        {/* I Found Something Card */}
+                        <div
                             onClick={() => setIsFoundModalOpen(true)}
-                            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 text-white font-bold rounded-2xl hover:opacity-90 transition shadow-lg text-[11px] uppercase tracking-widest"
-                            style={{ backgroundColor: successGreen }}
+                            className="group cursor-pointer bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-[32px] hover:bg-white/10 transition-all duration-500 text-left relative overflow-hidden shadow-xl"
                         >
-                            I Found Item
-                        </button>
+                            <div className="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14" /></svg>
+                            </div>
+                            <h3 className="text-xl font-bold mb-2 tracking-tight">I Found Something</h3>
+                            <p className="text-white/40 text-[11px] leading-relaxed font-medium">Found an item? Report it here to help it find its way back home.</p>
+                        </div>
                     </div>
+                </div>
+
+                {/* Decorative Elements */}
+                <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
+                    <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500/10 rounded-full blur-[120px]"></div>
+                    <div className="absolute bottom-[-10%] right-[-10%] w-[30%] h-[30%] bg-indigo-500/10 rounded-full blur-[100px]"></div>
+                </div>
+            </header>
+
+            <main className="max-w-7xl mx-auto px-8 w-full -mt-8 relative z-20">
+                {/* Combined Search & Filter Bar */}
+                <div className="mb-16">
+                    <div className="relative flex flex-col lg:flex-row items-center gap-4 bg-[#1e293b]/40 backdrop-blur-3xl p-3 rounded-[32px] shadow-2xl border border-white/5">
+                        {/* Search Input */}
+                        <div className="flex-grow relative group w-full">
+                            <div className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-white/50 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+                            </div>
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="Search for items (e.g. Blue Wallet, iPhone 13)..."
+                                className="w-full bg-white/5 border border-white/5 text-white placeholder:text-white/20 pl-16 pr-8 py-4 rounded-[20px] focus:outline-none focus:ring-1 focus:ring-white/10 font-medium transition-all text-xs"
+                            />
+                        </div>
+
+                        {/* Dropdowns Group */}
+                        <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+                            {/* Categories Dropdown */}
+                            <div className="relative min-w-[200px] flex-1">
+                                <select
+                                    value={filter}
+                                    onChange={(e) => setFilter(e.target.value)}
+                                    className="w-full bg-white/5 border border-white/5 text-white cursor-pointer px-6 py-4 rounded-[20px] focus:outline-none focus:ring-1 focus:ring-white/10 font-bold text-xs appearance-none pr-12 transition-all hover:bg-white/10"
+                                >
+                                    {categories.map(cat => (
+                                        <option key={cat} value={cat} className="bg-[#0f172a] text-white">
+                                            {cat === 'All Items' ? 'All Categories' : cat}
+                                        </option>
+                                    ))}
+                                </select>
+                                <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-white/30">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+                                </div>
+                            </div>
+
+                            {/* Sort Dropdown */}
+                            <div className="relative min-w-[200px] flex-1">
+                                <select
+                                    value={sortBy}
+                                    onChange={(e) => setSortBy(e.target.value)}
+                                    className="w-full bg-white/10 border border-white/10 text-blue-400 cursor-pointer px-6 py-4 rounded-[20px] focus:outline-none focus:ring-1 focus:ring-white/20 font-bold text-xs appearance-none pr-12 transition-all hover:bg-white/20"
+                                >
+                                    <option value="Latest First" className="bg-[#0f172a] text-white">Latest First</option>
+                                    <option value="Oldest First" className="bg-[#0f172a] text-white">Oldest First</option>
+                                </select>
+                                <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-blue-400/50">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex justify-end gap-3 mb-10">
+                    <button
+                        onClick={() => setShowDateFilter(!showDateFilter)}
+                        className="flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-sm hover:bg-slate-50 transition-all text-[#023E8A]"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
+                        {showDateFilter ? 'Hide Dates' : 'Date Range Filter'}
+                    </button>
+                    <button
+                        onClick={() => clearFilters()}
+                        className="px-6 py-3 bg-white border border-slate-200 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-sm hover:bg-slate-50 transition-all text-slate-400"
+                    >
+                        Reset All
+                    </button>
                 </div>
 
                 {/* Date Filter Panel */}
@@ -175,29 +251,14 @@ const LostAndFoundDashboard = () => {
                     </div>
                 )}
 
-                {/* Filters */}
-                <div className="flex items-center gap-3 mb-10 overflow-x-auto pb-4 scrollbar-hide">
-                    {categories.map((cat, idx) => (
-                        <button
-                            key={idx}
-                            onClick={() => setFilter(cat)}
-                            className={`px-6 py-2.5 rounded-xl text-sm font-bold border whitespace-nowrap transition-all ${filter === cat
-                                ? 'text-white border-transparent'
-                                : 'bg-white text-gray-400 hover:text-gray-600'
-                                }`}
-                            style={{
-                                backgroundColor: filter === cat ? primaryBlue : 'white',
-                                borderColor: filter === cat ? 'transparent' : borderGray
-                            }}
-                        >
-                            {cat}
-                        </button>
-                    ))}
-                </div>
 
                 {/* Items Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {items.map(item => (
+                    {[...items].sort((a, b) => {
+                        if (sortBy === 'Latest First') return new Date(b.date) - new Date(a.date);
+                        if (sortBy === 'Oldest First') return new Date(a.date) - new Date(b.date);
+                        return 0;
+                    }).map(item => (
                         <div key={item._id} className="bg-white rounded-3xl shadow-sm border overflow-hidden flex flex-col hover:shadow-xl transition-all duration-300 group" style={{ borderColor: borderGray }}>
                             <div className="relative h-56 bg-gray-50 overflow-hidden">
                                 {item.photo ? (

@@ -105,14 +105,9 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser }) => {
                     >
                         ✕
                     </button>
-                    <div className="flex items-center gap-6">
-                        <div className="bg-white/10 p-5 rounded-2xl text-3xl shadow-inner border border-white/20">
-                            {isLost ? '🔍' : '📦'}
-                        </div>
-                        <div>
-                            <h2 className="text-3xl font-black tracking-tighter uppercase whitespace-nowrap">Report {type} Item</h2>
-                            <p className="text-blue-200 mt-1 text-xs font-black uppercase tracking-widest">SLIIT Student Support Hub</p>
-                        </div>
+                    <div className="flex flex-col">
+                        <h2 className="text-3xl font-black tracking-tighter uppercase whitespace-nowrap">Report {type} Item</h2>
+                        <p className="text-blue-200 mt-1 text-xs font-black uppercase tracking-widest">SLIIT Student Support Hub</p>
                     </div>
                 </div>
 
@@ -121,7 +116,7 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser }) => {
                     <div className="w-full lg:w-1/2 p-8 border-r flex flex-col" style={{ borderColor: borderGray }}>
                         <div className="flex items-center justify-between mb-6">
                             <label className="text-[11px] font-black uppercase tracking-widest flex items-center gap-2" style={{ color: accentBlue }}>
-                                🗺️ Select Location on Map
+                                Select Location on Map
                             </label>
                             <span className="text-[10px] font-black bg-blue-50 px-3 py-1.5 rounded-lg tracking-widest border border-blue-100" style={{ color: primaryBlue }}>CAMPUS GPS</span>
                         </div>
@@ -256,11 +251,11 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser }) => {
                                     onChange={handlePhotoChange}
                                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                                 />
-                                <div className="text-5xl mb-3 flex justify-center grayscale opacity-60">
+                                <div className="hidden">
                                     {formData.photo ? '✅' : '📷'}
                                 </div>
-                                <p className="font-black text-sm uppercase tracking-widest mb-1" style={{ color: primaryBlue }}>
-                                    {formData.photo ? 'Photo Loaded' : 'Upload Item Photo'}
+                                <p className="font-black text-xs uppercase tracking-widest mb-1" style={{ color: primaryBlue }}>
+                                    {formData.photo ? '✓ Photo Ready' : 'Upload Item Photo'}
                                 </p>
                                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">JPG, PNG up to 5MB</p>
                             </div>

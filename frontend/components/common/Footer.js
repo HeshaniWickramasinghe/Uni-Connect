@@ -28,16 +28,8 @@ function Footer() {
                     </p>
                 </div>
 
-                <div className="flex flex-wrap justify-center gap-x-12 gap-y-4">
-                    {['Manuals', 'Timetables', 'Support', 'Faculty Notifications'].map((link) => (
-                        <span
-                            key={link}
-                            className="text-[11px] font-black uppercase tracking-widest cursor-pointer transition-colors hover:opacity-75"
-                            style={{ color: primaryBlue }}
-                        >
-                            {link}
-                        </span>
-                    ))}
+                <div className="flex-1 px-8 hidden md:block">
+                    {/* Placeholder or empty space as requested to remove the middle links */}
                 </div>
 
                 <div className="flex flex-col items-center md:items-end gap-2">
