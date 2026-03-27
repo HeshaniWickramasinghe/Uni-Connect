@@ -1,0 +1,104 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@500;700&display=swap");
+
+.dashboard-page {
+  min-height: 100vh;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 20% 25%, #d0f5e8 0%, transparent 28%),
+    radial-gradient(circle at 85% 75%, #ffe0c3 0%, transparent 30%),
+    linear-gradient(135deg, #f5fff9 0%, #f3f0e8 50%, #f0f7ff 100%);
+  font-family: "Space Grotesk", sans-serif;
+  color: #12221c;
+}
+
+.dashboard-container {
+  width: min(800px, 100%);
+  margin: 0 auto;
+  border-radius: 24px;
+  border: 1px solid rgba(15, 118, 110, 0.18);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 18px 54px rgba(12, 22, 18, 0.12);
+  padding: clamp(24px, 3vw, 40px);
+}
+
+.dashboard-badge {
+  margin: 0;
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: linear-gradient(120deg, #d6fef5, #ffe8c6);
+  color: #134d47;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.dashboard-header h1 {
+  margin: 12px 0 6px;
+  font-family: "Outfit", sans-serif;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  color: #0f766e;
+}
+
+.welcome-text {
+  display: none;
+}
+
+.dashboard-content {
+  display: none;
+}
+
+.dashboard-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.btn {
+  height: 50px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.18s ease, filter 0.18s ease;
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #0f766e, #14967f);
+  color: #ffffff;
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #ff6b7a, #ff8a95);
+  color: #ffffff;
+}
+
+@media (max-width: 600px) {
+  .dashboard-page {
+    padding: 14px;
+  }
+
+  .dashboard-container {
+    border-radius: 16px;
+    padding: 18px;
+  }
+
+  .dashboard-actions {
+    grid-template-columns: 1fr;
+  }
+}
