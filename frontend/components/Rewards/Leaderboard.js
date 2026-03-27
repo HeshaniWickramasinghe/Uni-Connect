@@ -44,47 +44,62 @@ const Leaderboard = () => {
     };
 
     const getRankStyle = (index) => {
-        if (index === 0) return { bg: "bg-yellow-50", border: "border-yellow-400", medal: "🥇" };
-        if (index === 1) return { bg: "bg-gray-50", border: "border-gray-400", medal: "🥈" };
-        if (index === 2) return { bg: "bg-amber-50", border: "border-amber-600", medal: "🥉" };
-        return { bg: "bg-white", border: "border-gray-100", medal: null };
+        if (index === 0) return { bg: "bg-gradient-to-r from-yellow-50 to-amber-50", border: "border-yellow-300", medal: "🥇", glow: "shadow-yellow-100" };
+        if (index === 1) return { bg: "bg-gradient-to-r from-slate-50 to-gray-50", border: "border-slate-300", medal: "🥈", glow: "shadow-slate-100" };
+        if (index === 2) return { bg: "bg-gradient-to-r from-orange-50 to-amber-50", border: "border-orange-300", medal: "🥉", glow: "shadow-orange-100" };
+        return { bg: "bg-white", border: "border-gray-50", medal: null, glow: "" };
     };
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
+                <div className="flex flex-col items-center gap-3">
+                    <div className="animate-spin rounded-full h-12 w-12 border-[3px] border-blue-200 border-t-[#023E8A]"></div>
+                    <p className="text-sm text-gray-500 animate-pulse">Loading leaderboard...</p>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
             <Header />
             <div className="max-w-4xl mx-auto px-4 py-8 mt-16">
-                {/* Page Header */}
-                <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900">Rewards & Leaderboard</h1>
-                    <p className="text-gray-500 mt-2">
-                        Celebrating the most helpful students on campus
-                    </p>
+                {/* Hero Header */}
+                <div className="relative text-center mb-10 py-8 px-6 rounded-3xl bg-gradient-to-br from-[#023E8A] via-[#0353A4] to-[#4C6EF5] overflow-hidden">
+                    {/* Decorative circles */}
+                    <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/4"></div>
+                    <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/4"></div>
+                    <div className="absolute top-1/2 left-1/4 w-2 h-2 bg-yellow-300/40 rounded-full"></div>
+                    <div className="absolute top-1/3 right-1/3 w-1.5 h-1.5 bg-blue-300/40 rounded-full"></div>
+
+                    <div className="relative">
+                        <div className="text-5xl mb-3">🏆</div>
+                        <h1 className="text-3xl font-extrabold text-white tracking-tight">
+                            Rewards & Leaderboard
+                        </h1>
+                        <p className="text-blue-200 mt-2 text-sm">
+                            Celebrating the most helpful students on campus
+                        </p>
+                    </div>
                 </div>
 
                 {/* View Toggle */}
-                <div className="flex gap-1 bg-white rounded-xl shadow-sm border border-gray-100 p-1 mb-6 max-w-md mx-auto">
+                <div className="flex gap-1 bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-white/60 p-1.5 mb-8 max-w-sm mx-auto">
                     {[
-                        { key: "leaderboard", label: "Leaderboard" },
-                        { key: "badges", label: "All Badges" },
+                        { key: "leaderboard", label: "Leaderboard", icon: "🏅" },
+                        { key: "badges", label: "All Badges", icon: "🎖️" },
                     ].map((tab) => (
                         <button
                             key={tab.key}
                             onClick={() => setActiveView(tab.key)}
-                            className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition ${
+                            className={`flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${
                                 activeView === tab.key
-                                    ? "bg-[#023E8A] text-white shadow-sm"
-                                    : "text-gray-600 hover:bg-gray-50"
+                                    ? "bg-[#023E8A] text-white shadow-lg shadow-blue-200"
+                                    : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
                             }`}
                         >
+                            <span>{tab.icon}</span>
                             {tab.label}
                         </button>
                     ))}
@@ -95,46 +110,62 @@ const Leaderboard = () => {
                     <>
                         {/* Top 3 Podium */}
                         {leaderboard.length >= 3 && (
-                            <div className="flex items-end justify-center gap-4 mb-8">
+                            <div className="flex items-end justify-center gap-3 sm:gap-6 mb-10 px-4">
                                 {/* 2nd Place */}
-                                <div className="text-center">
-                                    <div className="w-16 h-16 rounded-full bg-gray-100 border-3 border-gray-400 flex items-center justify-center text-xl font-bold text-gray-700 mx-auto mb-2" style={{ borderWidth: "3px" }}>
-                                        {getInitials(leaderboard[1].name)}
+                                <div className="text-center flex-1 max-w-[140px]">
+                                    <div className="relative inline-block mb-3">
+                                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 border-[3px] border-slate-400 flex items-center justify-center text-lg font-bold text-slate-700 mx-auto shadow-lg shadow-slate-200/50">
+                                            {getInitials(leaderboard[1].name)}
+                                        </div>
+                                        <div className="absolute -bottom-1 -right-1 text-2xl drop-shadow-md">🥈</div>
                                     </div>
-                                    <p className="font-medium text-gray-900 text-sm">{leaderboard[1].name}</p>
-                                    <div className="text-2xl mt-1">🥈</div>
-                                    <p className="text-sm text-gray-500">{leaderboard[1].itemsReturned} returned</p>
-                                    <div className="w-20 h-16 bg-gray-200 rounded-t-lg mt-2"></div>
+                                    <p className="font-semibold text-gray-900 text-sm truncate">{leaderboard[1].name}</p>
+                                    <p className="text-xs text-gray-500 mt-0.5">{leaderboard[1].itemsReturned} returned</p>
+                                    <p className="text-xs font-semibold text-amber-600">{leaderboard[1].totalRewardPoints} pts</p>
+                                    <div className="w-full h-20 bg-gradient-to-t from-slate-300 to-slate-200 rounded-t-xl mt-3 flex items-center justify-center">
+                                        <span className="text-2xl font-extrabold text-white/80">2</span>
+                                    </div>
                                 </div>
 
                                 {/* 1st Place */}
-                                <div className="text-center">
-                                    <div className="w-20 h-20 rounded-full bg-yellow-50 border-3 border-yellow-400 flex items-center justify-center text-2xl font-bold text-yellow-700 mx-auto mb-2" style={{ borderWidth: "3px" }}>
-                                        {getInitials(leaderboard[0].name)}
+                                <div className="text-center flex-1 max-w-[160px]">
+                                    <div className="relative inline-block mb-3">
+                                        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-yellow-100 to-amber-200 border-[3px] border-yellow-400 flex items-center justify-center text-xl font-bold text-yellow-800 mx-auto shadow-lg shadow-yellow-200/60 ring-4 ring-yellow-100/50">
+                                            {getInitials(leaderboard[0].name)}
+                                        </div>
+                                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 text-2xl drop-shadow-md">👑</div>
+                                        <div className="absolute -bottom-1 -right-1 text-2xl drop-shadow-md">🥇</div>
                                     </div>
-                                    <p className="font-semibold text-gray-900">{leaderboard[0].name}</p>
-                                    <div className="text-3xl mt-1">🥇</div>
-                                    <p className="text-sm text-gray-500">{leaderboard[0].itemsReturned} returned</p>
-                                    <div className="w-20 h-24 bg-yellow-200 rounded-t-lg mt-2"></div>
+                                    <p className="font-bold text-gray-900 truncate">{leaderboard[0].name}</p>
+                                    <p className="text-xs text-gray-500 mt-0.5">{leaderboard[0].itemsReturned} returned</p>
+                                    <p className="text-xs font-semibold text-amber-600">{leaderboard[0].totalRewardPoints} pts</p>
+                                    <div className="w-full h-28 bg-gradient-to-t from-yellow-400 to-amber-300 rounded-t-xl mt-3 flex items-center justify-center shadow-lg shadow-yellow-200/40">
+                                        <span className="text-3xl font-extrabold text-white/80">1</span>
+                                    </div>
                                 </div>
 
                                 {/* 3rd Place */}
-                                <div className="text-center">
-                                    <div className="w-16 h-16 rounded-full bg-amber-50 border-3 border-amber-600 flex items-center justify-center text-xl font-bold text-amber-700 mx-auto mb-2" style={{ borderWidth: "3px" }}>
-                                        {getInitials(leaderboard[2].name)}
+                                <div className="text-center flex-1 max-w-[140px]">
+                                    <div className="relative inline-block mb-3">
+                                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-100 to-amber-200 border-[3px] border-amber-500 flex items-center justify-center text-lg font-bold text-amber-800 mx-auto shadow-lg shadow-orange-200/50">
+                                            {getInitials(leaderboard[2].name)}
+                                        </div>
+                                        <div className="absolute -bottom-1 -right-1 text-2xl drop-shadow-md">🥉</div>
                                     </div>
-                                    <p className="font-medium text-gray-900 text-sm">{leaderboard[2].name}</p>
-                                    <div className="text-2xl mt-1">🥉</div>
-                                    <p className="text-sm text-gray-500">{leaderboard[2].itemsReturned} returned</p>
-                                    <div className="w-20 h-12 bg-amber-200 rounded-t-lg mt-2"></div>
+                                    <p className="font-semibold text-gray-900 text-sm truncate">{leaderboard[2].name}</p>
+                                    <p className="text-xs text-gray-500 mt-0.5">{leaderboard[2].itemsReturned} returned</p>
+                                    <p className="text-xs font-semibold text-amber-600">{leaderboard[2].totalRewardPoints} pts</p>
+                                    <div className="w-full h-14 bg-gradient-to-t from-amber-500 to-orange-300 rounded-t-xl mt-3 flex items-center justify-center">
+                                        <span className="text-2xl font-extrabold text-white/80">3</span>
+                                    </div>
                                 </div>
                             </div>
                         )}
 
-                        {/* Full List */}
-                        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                        {/* Full Ranking List */}
+                        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-white/60 overflow-hidden">
                             {/* Table Header */}
-                            <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-gray-50 border-b border-gray-100 text-xs font-semibold text-gray-500 uppercase">
+                            <div className="grid grid-cols-12 gap-4 px-6 py-3.5 bg-gradient-to-r from-gray-50 to-slate-50 border-b border-gray-100 text-xs font-bold text-gray-500 uppercase tracking-wider">
                                 <div className="col-span-1">Rank</div>
                                 <div className="col-span-4">Student</div>
                                 <div className="col-span-2 text-center">Returned</div>
@@ -148,46 +179,56 @@ const Leaderboard = () => {
                                     return (
                                         <div
                                             key={user._id}
-                                            className={`grid grid-cols-12 gap-4 px-6 py-4 items-center border-b border-gray-50 ${rankStyle.bg} hover:bg-opacity-80 transition`}
+                                            className={`grid grid-cols-12 gap-4 px-6 py-4 items-center border-b border-gray-50/80 ${rankStyle.bg} hover:shadow-md ${rankStyle.glow} transition-all duration-200 group`}
                                         >
                                             <div className="col-span-1">
                                                 {rankStyle.medal ? (
-                                                    <span className="text-xl">{rankStyle.medal}</span>
+                                                    <span className="text-xl group-hover:scale-110 inline-block transition-transform">{rankStyle.medal}</span>
                                                 ) : (
-                                                    <span className="text-lg font-bold text-gray-400">
-                                                        {index + 1}
+                                                    <span className="text-base font-extrabold text-gray-300 group-hover:text-gray-400 transition-colors">
+                                                        #{index + 1}
                                                     </span>
                                                 )}
                                             </div>
                                             <div className="col-span-4 flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-sm font-bold text-[#023E8A]">
+                                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center text-sm font-bold text-[#023E8A] shadow-sm border border-blue-200/50 group-hover:shadow-md transition-shadow">
                                                     {getInitials(user.name)}
                                                 </div>
                                                 <div>
-                                                    <p className="font-medium text-gray-900">{user.name}</p>
+                                                    <p className="font-semibold text-gray-900 text-sm">{user.name}</p>
                                                     <p className="text-xs text-gray-400">
                                                         {user.studentId || "Student"}
                                                     </p>
                                                 </div>
                                             </div>
                                             <div className="col-span-2 text-center">
-                                                <span className="text-lg font-bold text-[#0E7C5B]">
-                                                    {user.itemsReturned}
-                                                </span>
+                                                <div className="inline-flex items-center gap-1 bg-emerald-50 px-2.5 py-1 rounded-full">
+                                                    <svg className="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                                                    </svg>
+                                                    <span className="text-sm font-bold text-emerald-700">
+                                                        {user.itemsReturned}
+                                                    </span>
+                                                </div>
                                             </div>
                                             <div className="col-span-2 text-center">
-                                                <span className="text-lg font-bold text-[#B45309]">
-                                                    {user.totalRewardPoints}
-                                                </span>
+                                                <div className="inline-flex items-center gap-1 bg-amber-50 px-2.5 py-1 rounded-full">
+                                                    <svg className="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                                    </svg>
+                                                    <span className="text-sm font-bold text-amber-700">
+                                                        {user.totalRewardPoints}
+                                                    </span>
+                                                </div>
                                             </div>
-                                            <div className="col-span-3 flex justify-center gap-1 flex-wrap">
+                                            <div className="col-span-3 flex justify-center gap-1.5 flex-wrap">
                                                 {user.badges && user.badges.length > 0 ? (
                                                     user.badges.slice(0, 4).map((badge, i) => (
                                                         <span
                                                             key={i}
-                                                            className="w-8 h-8 rounded-full flex items-center justify-center text-sm"
+                                                            className="w-8 h-8 rounded-full flex items-center justify-center text-sm shadow-sm border border-white/80 hover:scale-110 transition-transform cursor-default"
                                                             style={{
-                                                                backgroundColor: `${badge.badgeId?.color || "#4C6EF5"}15`,
+                                                                backgroundColor: `${badge.badgeId?.color || "#4C6EF5"}20`,
                                                             }}
                                                             title={badge.badgeId?.name}
                                                         >
@@ -195,10 +236,10 @@ const Leaderboard = () => {
                                                         </span>
                                                     ))
                                                 ) : (
-                                                    <span className="text-xs text-gray-400">No badges</span>
+                                                    <span className="text-xs text-gray-400 italic">No badges yet</span>
                                                 )}
                                                 {user.badges && user.badges.length > 4 && (
-                                                    <span className="text-xs text-gray-400 flex items-center">
+                                                    <span className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-xs font-semibold text-gray-500">
                                                         +{user.badges.length - 4}
                                                     </span>
                                                 )}
@@ -207,11 +248,11 @@ const Leaderboard = () => {
                                     );
                                 })
                             ) : (
-                                <div className="text-center py-12">
-                                    <div className="text-5xl mb-4">🏆</div>
-                                    <p className="text-gray-500">No entries yet</p>
+                                <div className="text-center py-16">
+                                    <div className="text-6xl mb-4">🏆</div>
+                                    <p className="text-gray-600 font-semibold text-lg">No entries yet</p>
                                     <p className="text-gray-400 text-sm mt-1">
-                                        Be the first to return a found item!
+                                        Be the first to return a found item and claim the top spot!
                                     </p>
                                 </div>
                             )}
@@ -221,45 +262,70 @@ const Leaderboard = () => {
 
                 {/* All Badges View */}
                 {activeView === "badges" && (
-                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-                        <h2 className="text-lg font-semibold text-gray-900 mb-2">Available Badges</h2>
-                        <p className="text-sm text-gray-500 mb-6">
-                            Complete the requirements below to earn these badges
-                        </p>
+                    <div>
+                        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-white/60 p-8">
+                            <div className="flex items-center gap-3 mb-2">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-100 to-blue-100 flex items-center justify-center text-xl">
+                                    🎖️
+                                </div>
+                                <div>
+                                    <h2 className="text-lg font-bold text-gray-900">Available Badges</h2>
+                                    <p className="text-sm text-gray-500">
+                                        Complete the requirements below to earn these badges
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
 
                         {allBadges.length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                                 {allBadges.map((badge) => (
                                     <div
                                         key={badge._id}
-                                        className="flex items-center gap-4 p-4 rounded-xl border-2 hover:shadow-md transition"
-                                        style={{ borderColor: badge.color }}
+                                        className="group relative bg-white/80 backdrop-blur-sm rounded-2xl border border-white/60 overflow-hidden hover:shadow-lg transition-all duration-300"
                                     >
+                                        {/* Color accent bar */}
                                         <div
-                                            className="w-14 h-14 rounded-full flex items-center justify-center text-2xl flex-shrink-0"
-                                            style={{ backgroundColor: `${badge.color}15` }}
-                                        >
-                                            {badge.emoji}
-                                        </div>
-                                        <div className="flex-1">
-                                            <h3 className="font-semibold text-gray-900">{badge.name}</h3>
-                                            <p className="text-sm text-gray-500">{badge.description}</p>
-                                            <div className="mt-1">
-                                                <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
-                                                    {badge.triggerField === "itemsReturned" && "Return"}
-                                                    {badge.triggerField === "itemsReported" && "Report"}
-                                                    {badge.triggerField === "rewardsEarned" && "Earn"}{" "}
-                                                    {badge.triggerValue}+ {badge.triggerField === "rewardsEarned" ? "rewards" : "items"}
-                                                </span>
+                                            className="absolute top-0 left-0 right-0 h-1 rounded-t-2xl"
+                                            style={{ backgroundColor: badge.color }}
+                                        ></div>
+
+                                        <div className="p-5 pt-6 flex items-start gap-4">
+                                            <div
+                                                className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0 shadow-sm group-hover:scale-105 transition-transform duration-300"
+                                                style={{
+                                                    backgroundColor: `${badge.color}12`,
+                                                    border: `2px solid ${badge.color}30`,
+                                                }}
+                                            >
+                                                {badge.emoji}
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <h3 className="font-bold text-gray-900 text-base">{badge.name}</h3>
+                                                <p className="text-sm text-gray-500 mt-1 leading-relaxed">{badge.description}</p>
+                                                <div className="mt-3 inline-flex items-center gap-1.5">
+                                                    <span
+                                                        className="text-xs font-semibold px-3 py-1 rounded-full"
+                                                        style={{
+                                                            backgroundColor: `${badge.color}12`,
+                                                            color: badge.color,
+                                                        }}
+                                                    >
+                                                        {badge.triggerField === "itemsReturned" && "Return"}
+                                                        {badge.triggerField === "itemsReported" && "Report"}
+                                                        {badge.triggerField === "rewardsEarned" && "Earn"}{" "}
+                                                        {badge.triggerValue}+ {badge.triggerField === "rewardsEarned" ? "rewards" : "items"}
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         ) : (
-                            <div className="text-center py-12">
-                                <div className="text-5xl mb-4">🏅</div>
-                                <p className="text-gray-500">No badges available yet</p>
+                            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-white/60 p-16 text-center mt-4">
+                                <div className="text-6xl mb-4">🏅</div>
+                                <p className="text-gray-600 font-semibold text-lg">No badges available yet</p>
                                 <p className="text-gray-400 text-sm mt-1">
                                     Badges will be created by the administrator
                                 </p>
