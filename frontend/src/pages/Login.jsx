@@ -29,7 +29,7 @@ function Login() {
         text: response.data?.message || "Login successful",
       });
       setTimeout(() => {
-        navigate("/dashboard", { state: { user: response.data.user } });
+        navigate("/homepage", { state: { user: response.data.user } });
       }, 1000);
     } catch (error) {
       const errorText =

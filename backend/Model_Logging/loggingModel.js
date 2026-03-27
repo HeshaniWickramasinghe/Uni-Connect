@@ -22,6 +22,22 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true
+    },
+    profileImage: {
+        type: String,
+        default: ""
+    },
+    isEmailVerified: {
+        type: Boolean,
+        default: false
+    },
+    emailVerificationCode: {
+        type: String,
+        default: ""
+    },
+    emailVerificationCodeExpiresAt: {
+        type: Date,
+        default: null
     }
 }, {
     timestamps: true

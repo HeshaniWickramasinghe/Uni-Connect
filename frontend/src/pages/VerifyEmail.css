@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@500;700&display=swap");
 
-.login-page {
+.verify-email-page {
   min-height: 100vh;
   margin: 0;
   padding: 24px;
@@ -14,80 +14,107 @@
   color: #0f172a;
 }
 
-.login-shell {
-  width: min(520px, 100%);
+.verify-email-shell {
+  width: min(560px, 100%);
   border-radius: 24px;
   border: 1px solid rgba(13, 59, 102, 0.2);
   background: rgba(255, 255, 255, 0.86);
   backdrop-filter: blur(10px);
-  box-shadow: 0 16px 50px rgba(13, 59, 102, 0.14);
-  padding: clamp(20px, 3vw, 34px);
-  animation: pop-up 420ms ease-out;
+  box-shadow: 0 20px 60px rgba(13, 59, 102, 0.14);
+  padding: clamp(20px, 3vw, 36px);
 }
 
-.login-badge {
+.verify-email-header {
+  margin-bottom: 20px;
+}
+
+.verify-email-badge {
   margin: 0;
   display: inline-block;
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: 999px;
   background: linear-gradient(120deg, #eef8ff, #f4fff9);
   color: #0d3b66;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
-.login-header h1 {
+.verify-email-header h1 {
   margin: 12px 0 6px;
   font-family: "Outfit", sans-serif;
-  font-size: clamp(1.8rem, 3vw, 2.2rem);
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  line-height: 1.1;
 }
 
-.login-subtitle {
-  margin: 0 0 16px;
+.verify-email-subtitle {
+  margin: 0;
   color: rgba(15, 23, 42, 0.72);
 }
 
-.login-form {
+.verify-email-form {
   display: grid;
   gap: 12px;
 }
 
-.login-form label {
+.verify-email-form label {
   font-size: 0.92rem;
   font-weight: 600;
+  margin-top: 8px;
 }
 
-.login-form input {
+.verify-email-form input {
   height: 46px;
   border-radius: 12px;
   border: 1px solid rgba(13, 59, 102, 0.2);
   padding: 0 14px;
+  background: #ffffff;
   font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-.login-form input:focus {
+.verify-email-form input:focus {
   border-color: #0ea5e9;
   box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.16);
+  transform: translateY(-1px);
   outline: none;
 }
 
-.login-form button {
+.verify-email-form button {
   height: 48px;
   border: none;
   border-radius: 12px;
-  margin-top: 8px;
+  margin-top: 10px;
   background: linear-gradient(135deg, #0d3b66, #0ea5e9);
-  color: #fff;
+  color: #ffffff;
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
+  transition: transform 0.18s ease, filter 0.18s ease;
 }
 
-.login-form button:disabled {
+.verify-email-form button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+.verify-email-form button:disabled {
   opacity: 0.75;
   cursor: not-allowed;
+  transform: none;
+}
+
+.verify-email-form .verify-email-back-btn {
+  margin-top: 0;
+  background: #ffffff;
+  color: #0d3b66;
+  border: 1px solid rgba(13, 59, 102, 0.28);
+}
+
+.verify-email-form .verify-email-back-btn:hover {
+  filter: none;
+  background: #f4f9ff;
 }
 
 .status {
@@ -105,11 +132,12 @@
 }
 
 .auth-links {
-  margin-top: 12px;
+  margin-top: 14px;
 }
 
 .auth-links p {
   margin: 6px 0;
+  color: rgba(15, 23, 42, 0.85);
 }
 
 .auth-links a {
@@ -122,14 +150,13 @@
   text-decoration: underline;
 }
 
-@keyframes pop-up {
-  from {
-    opacity: 0;
-    transform: translateY(16px) scale(0.98);
+@media (max-width: 600px) {
+  .verify-email-page {
+    padding: 14px;
   }
 
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
+  .verify-email-shell {
+    border-radius: 18px;
+    padding: 18px;
   }
 }

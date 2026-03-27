@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import "./Registration.css";
@@ -7,6 +7,7 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phoneRegex = /^\d{10}$/;
 const passwordRegex = /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}$/;
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5001";
+const REGISTRATION_DRAFT_KEY = "registrationFormDraft";
 
 const initialForm = {
   name: "",
@@ -19,9 +20,24 @@ const initialForm = {
 
 function Registration() {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState(initialForm);
+  const [formData, setFormData] = useState(() => {
+    try {
+      const draft = sessionStorage.getItem(REGISTRATION_DRAFT_KEY);
+      if (!draft) {
+        return initialForm;
+      }
+
+      return { ...initialForm, ...JSON.parse(draft) };
+    } catch (_error) {
+      return initialForm;
+    }
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
+
+  useEffect(() => {
+    sessionStorage.setItem(REGISTRATION_DRAFT_KEY, JSON.stringify(formData));
+  }, [formData]);
 
   const handleChange = (event) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
@@ -68,13 +84,17 @@ function Registration() {
         studentRegistrationNumber: formData.studentRegistrationNumber,
       });
 
+      const verifyEmail = (response.data?.email || formData.email).trim().toLowerCase();
+      sessionStorage.setItem("pendingVerifyEmail", verifyEmail);
+
       setMessage({
         type: "success",
         text: response.data?.message || "Registration successful",
       });
-      setFormData(initialForm);
       setTimeout(() => {
-        navigate("/login");
+        navigate("/verify-email", {
+          state: { email: verifyEmail },
+        });
       }, 1000);
     } catch (error) {
       const errorText =
