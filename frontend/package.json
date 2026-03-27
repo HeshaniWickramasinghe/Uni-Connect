@@ -4,10 +4,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "start": "vite",
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "start": "webpack serve --config webpack.config.cjs",
+    "dev": "webpack serve --config webpack.config.cjs",
+    "build": "webpack --mode production --config webpack.config.cjs",
+    "preview": "webpack serve --mode production"
   },
   "dependencies": {
     "leaflet": "^1.9.4",
@@ -20,10 +20,19 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.4",
+    "@babel/core": "^7.29.0",
+    "@babel/preset-env": "^7.29.2",
+    "@babel/preset-react": "^7.28.5",
     "autoprefixer": "^10.4.21",
+    "babel-loader": "^10.1.1",
+    "css-loader": "^7.1.4",
+    "html-webpack-plugin": "^5.6.6",
     "postcss": "^8.5.3",
+    "postcss-loader": "^8.2.1",
+    "style-loader": "^4.0.0",
     "tailwindcss": "^3.4.17",
-    "vite": "^7.3.1"
+    "webpack": "^5.105.4",
+    "webpack-cli": "^7.0.2",
+    "webpack-dev-server": "^5.2.3"
   }
 }
