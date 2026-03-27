@@ -33,6 +33,8 @@ const BadgeManagement = () => {
     const [showModal, setShowModal] = useState(false);
     const [editingBadge, setEditingBadge] = useState(null);
     const [deleteConfirm, setDeleteConfirm] = useState(null);
+    const [toggleConfirm, setToggleConfirm] = useState(null);
+    const [statusFilter, setStatusFilter] = useState("all");
     const [message, setMessage] = useState({ text: "", type: "" });
 
     const emptyForm = {
@@ -157,17 +159,24 @@ const BadgeManagement = () => {
         setTimeout(() => setMessage({ text: "", type: "" }), 3000);
     };
 
-    const handleToggleActive = async (badge) => {
+    const handleToggleActive = async () => {
+        if (!toggleConfirm) return;
         try {
-            await fetch(`${API_BASE}/badges/${badge._id}`, {
+            await fetch(`${API_BASE}/badges/${toggleConfirm._id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ...badge, isActive: !badge.isActive }),
+                body: JSON.stringify({ ...toggleConfirm, isActive: !toggleConfirm.isActive }),
             });
+            setMessage({
+                text: toggleConfirm.isActive ? "Badge deactivated successfully!" : "Badge activated successfully!",
+                type: "success",
+            });
+            setToggleConfirm(null);
             fetchBadges();
         } catch (error) {
-            console.error("Error toggling badge:", error);
+            setMessage({ text: "Error updating badge status", type: "error" });
         }
+        setTimeout(() => setMessage({ text: "", type: "" }), 3000);
     };
 
     const openCreateModal = () => {
@@ -258,24 +267,44 @@ const BadgeManagement = () => {
                     </div>
                 </div>
 
-                {/* Message */}
-                {message.text && (
-                    <div
-                        className={`mb-6 px-5 py-3.5 rounded-xl flex items-center gap-3 shadow-sm transition-all ${
-                            message.type === "success"
-                                ? "bg-emerald-50 border border-emerald-200 text-emerald-700"
-                                : "bg-red-50 border border-red-200 text-red-700"
-                        }`}
-                    >
-                        <span className="text-lg">{message.type === "success" ? "✅" : "❌"}</span>
-                        <span className="font-medium text-sm">{message.text}</span>
-                    </div>
-                )}
+                {/* Status Filter */}
+                <div className="flex gap-1 bg-white/80 backdrop-blur-sm rounded-2xl border border-white/60 p-1.5 mb-6 max-w-md">
+                    {[
+                        { key: "all", label: "All Badges", count: badges.length },
+                        { key: "active", label: "Active", count: activeBadges.length },
+                        { key: "inactive", label: "Inactive", count: inactiveBadges.length },
+                    ].map((tab) => (
+                        <button
+                            key={tab.key}
+                            onClick={() => setStatusFilter(tab.key)}
+                            className={`flex-1 py-2 px-4 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${
+                                statusFilter === tab.key
+                                    ? "bg-[#023E8A] text-white shadow-lg shadow-blue-200"
+                                    : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+                            }`}
+                        >
+                            {tab.label}
+                            <span
+                                className={`text-xs px-1.5 py-0.5 rounded-full font-bold ${
+                                    statusFilter === tab.key
+                                        ? "bg-white/20 text-white"
+                                        : "bg-gray-100 text-gray-500"
+                                }`}
+                            >
+                                {tab.count}
+                            </span>
+                        </button>
+                    ))}
+                </div>
+
+                {/* (Toast is rendered as a fixed overlay below) */}
 
                 {/* Badges Grid */}
-                {badges.length > 0 ? (
+                {(() => {
+                    const filteredBadges = statusFilter === "active" ? activeBadges : statusFilter === "inactive" ? inactiveBadges : badges;
+                    return filteredBadges.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {badges.map((badge) => (
+                        {filteredBadges.map((badge) => (
                             <div
                                 key={badge._id}
                                 className={`group relative bg-white/80 backdrop-blur-sm rounded-2xl border border-white/60 overflow-hidden transition-all duration-300 hover:shadow-lg ${
@@ -334,7 +363,7 @@ const BadgeManagement = () => {
                                     {/* Actions */}
                                     <div className="flex items-center gap-2">
                                         <button
-                                            onClick={() => handleToggleActive(badge)}
+                                            onClick={() => setToggleConfirm(badge)}
                                             className={`flex-1 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
                                                 badge.isActive
                                                     ? "bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200/60"
@@ -370,18 +399,29 @@ const BadgeManagement = () => {
                 ) : (
                     <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-white/60 p-16 text-center">
                         <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center text-4xl mx-auto mb-5 shadow-sm">
-                            🏅
+                            {statusFilter === "all" ? "🏅" : statusFilter === "active" ? "✅" : "⏸️"}
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900">No Badges Created Yet</h3>
-                        <p className="text-gray-500 mt-2 max-w-sm mx-auto">Create your first badge to start rewarding students for their contributions</p>
-                        <button
-                            onClick={openCreateModal}
-                            className="mt-6 px-6 py-2.5 bg-[#023E8A] text-white rounded-xl font-semibold hover:bg-[#022e6a] transition-all duration-200 shadow-lg shadow-blue-200/50"
-                        >
-                            Create First Badge
-                        </button>
+                        <h3 className="text-xl font-bold text-gray-900">
+                            {statusFilter === "all" ? "No Badges Created Yet" : `No ${statusFilter === "active" ? "Active" : "Inactive"} Badges`}
+                        </h3>
+                        <p className="text-gray-500 mt-2 max-w-sm mx-auto">
+                            {statusFilter === "all"
+                                ? "Create your first badge to start rewarding students for their contributions"
+                                : statusFilter === "active"
+                                ? "Activate a badge to make it available for students to earn"
+                                : "All badges are currently active"}
+                        </p>
+                        {statusFilter === "all" && (
+                            <button
+                                onClick={openCreateModal}
+                                className="mt-6 px-6 py-2.5 bg-[#023E8A] text-white rounded-xl font-semibold hover:bg-[#022e6a] transition-all duration-200 shadow-lg shadow-blue-200/50"
+                            >
+                                Create First Badge
+                            </button>
+                        )}
                     </div>
-                )}
+                );
+                })()}
             </div>
 
             {/* Create/Edit Modal */}
@@ -626,6 +666,100 @@ const BadgeManagement = () => {
                                 Delete
                             </button>
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Activate/Deactivate Confirmation Modal */}
+            {toggleConfirm && (
+                <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8 text-center border border-gray-100">
+                        <div
+                            className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-sm"
+                            style={{
+                                backgroundColor: toggleConfirm.isActive ? "#FEF3C7" : "#D1FAE5",
+                            }}
+                        >
+                            <span className="text-3xl">{toggleConfirm.isActive ? "⏸️" : "✅"}</span>
+                        </div>
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">
+                            {toggleConfirm.isActive ? "Deactivate" : "Activate"} Badge?
+                        </h3>
+                        <div className="flex items-center justify-center gap-2 mb-3">
+                            <span
+                                className="w-8 h-8 rounded-lg flex items-center justify-center text-lg"
+                                style={{ backgroundColor: `${toggleConfirm.color}15` }}
+                            >
+                                {toggleConfirm.emoji}
+                            </span>
+                            <span className="font-semibold text-gray-700">{toggleConfirm.name}</span>
+                        </div>
+                        <p className="text-sm text-gray-500 mb-8 max-w-xs mx-auto leading-relaxed">
+                            {toggleConfirm.isActive
+                                ? "This badge will no longer be available for students to earn. Students who already have it will keep it."
+                                : "This badge will become available for students to earn based on its trigger rules."}
+                        </p>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setToggleConfirm(null)}
+                                className="flex-1 py-2.5 border-2 border-gray-200 rounded-xl font-semibold text-gray-700 hover:bg-gray-50 transition-all"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleToggleActive}
+                                className={`flex-1 py-2.5 rounded-xl font-semibold transition-all shadow-lg ${
+                                    toggleConfirm.isActive
+                                        ? "bg-amber-500 text-white hover:bg-amber-600 shadow-amber-200/50"
+                                        : "bg-emerald-600 text-white hover:bg-emerald-700 shadow-emerald-200/50"
+                                }`}
+                            >
+                                {toggleConfirm.isActive ? "Deactivate" : "Activate"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Toast Notification */}
+            {message.text && (
+                <div className="fixed top-6 right-6 z-[60] animate-slide-in-right">
+                    <div
+                        className={`flex items-center gap-3 px-5 py-4 rounded-2xl shadow-2xl border backdrop-blur-sm min-w-[320px] max-w-md ${
+                            message.type === "success"
+                                ? "bg-emerald-50/95 border-emerald-200 text-emerald-800"
+                                : "bg-red-50/95 border-red-200 text-red-800"
+                        }`}
+                    >
+                        <div
+                            className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                                message.type === "success"
+                                    ? "bg-emerald-100"
+                                    : "bg-red-100"
+                            }`}
+                        >
+                            <span className="text-xl">{message.type === "success" ? "✅" : "❌"}</span>
+                        </div>
+                        <div className="flex-1">
+                            <p className="font-semibold text-sm">{message.type === "success" ? "Success" : "Error"}</p>
+                            <p className="text-xs opacity-80 mt-0.5">{message.text}</p>
+                        </div>
+                        <button
+                            onClick={() => setMessage({ text: "", type: "" })}
+                            className="p-1 hover:bg-black/5 rounded-lg transition-colors flex-shrink-0"
+                        >
+                            <svg className="w-4 h-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    {/* Progress bar */}
+                    <div className="mt-1 mx-4">
+                        <div
+                            className={`h-0.5 rounded-full animate-shrink-width ${
+                                message.type === "success" ? "bg-emerald-400" : "bg-red-400"
+                            }`}
+                        ></div>
                     </div>
                 </div>
             )}
