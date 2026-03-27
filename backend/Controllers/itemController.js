@@ -60,8 +60,6 @@ const createItem = async (req, res) => {
             type,
             status,
             userName,
-            color,
-            brandSize,
         } = req.body;
 
         let photoUrl = photo;
@@ -84,8 +82,6 @@ const createItem = async (req, res) => {
             type,
             status: status || "ACTIVE",
             userName: userName || "Anonymous User",
-            color,
-            brandSize,
         });
         res.status(201).json(newItem);
     } catch (error) {

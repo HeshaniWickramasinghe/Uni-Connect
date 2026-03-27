@@ -41,12 +41,6 @@ const itemSchema = new Schema(
             type: String, // Mock user name since no auth system
             required: true,
             default: "Anonymous User",
-        },
-        color: {
-            type: String,
-        },
-        brandSize: {
-            type: String,
         }
     },
     { timestamps: true }

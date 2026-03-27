@@ -130,20 +130,6 @@ const ItemDetails = () => {
                                     {new Date(item.date || item.createdAt).toLocaleString()}
                                 </p>
                             </div>
-                            <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1 flex items-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" /><path d="M2 12h20" /></svg>
-                                    Color
-                                </p>
-                                <p className="font-bold text-gray-800">{item.color || "Not specified"}</p>
-                            </div>
-                            <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1 flex items-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="12" x2="2" y2="12" /><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /><line x1="6" y1="16" x2="6.01" y2="16" /><line x1="10" y1="16" x2="10.01" y2="16" /></svg>
-                                    Brand / Size
-                                </p>
-                                <p className="font-bold text-gray-800">{item.brandSize || "Not specified"}</p>
-                            </div>
                         </div>
 
                         <div>
