@@ -7,6 +7,9 @@ require("dotenv").config();
 
 const itemRoutes = require("./Routes/itemRoutes");
 const messageRoutes = require("./Routes/messageRoutes");
+const badgeRoutes = require("./Routes/badgeRoutes");
+const userProfileRoutes = require("./Routes/userProfileRoutes");
+const rewardRoutes = require("./Routes/rewardRoutes");
 const Message = require("./Model/messageModel");
 
 const app = express();
@@ -23,6 +26,9 @@ app.use(express.json({ limit: "50mb" }));
 
 app.use("/api/items", itemRoutes);
 app.use("/api/messages", messageRoutes);
+app.use("/api/badges", badgeRoutes);
+app.use("/api/profiles", userProfileRoutes);
+app.use("/api/rewards", rewardRoutes);
 
 app.get("/", (req, res) => {
     res.send("Success");

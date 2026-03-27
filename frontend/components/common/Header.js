@@ -33,6 +33,31 @@ function Header({ user, onLogout }) {
                     </span>
                 </div>
 
+                {/* Navigation Links */}
+                <nav className="hidden md:flex items-center gap-1">
+                    <button
+                        onClick={() => navigate('/')}
+                        className="px-4 py-2 rounded-lg text-sm font-semibold transition-colors hover:bg-gray-100"
+                        style={{ color: darkGray }}
+                    >
+                        Lost & Found
+                    </button>
+                    <button
+                        onClick={() => navigate('/leaderboard')}
+                        className="px-4 py-2 rounded-lg text-sm font-semibold transition-colors hover:bg-gray-100"
+                        style={{ color: darkGray }}
+                    >
+                        Leaderboard
+                    </button>
+                    <button
+                        onClick={() => navigate('/admin/badges')}
+                        className="px-4 py-2 rounded-lg text-sm font-semibold transition-colors hover:bg-gray-100"
+                        style={{ color: darkGray }}
+                    >
+                        Manage Badges
+                    </button>
+                </nav>
+
                 {user ? (
                     <div className="flex items-center gap-4">
 
@@ -71,6 +96,10 @@ function Header({ user, onLogout }) {
                                         <p className="font-bold truncate" style={{ color: primaryBlue }}>{user.email}</p>
                                     </div>
                                     <button
+                                        onClick={() => {
+                                            setProfileOpen(false);
+                                            navigate('/profile');
+                                        }}
                                         className="w-full text-left px-4 py-3 rounded-xl text-sm font-bold transition-colors hover:bg-gray-50 mb-1"
                                         style={{ color: darkGray }}
                                     >
