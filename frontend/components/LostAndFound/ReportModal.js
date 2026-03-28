@@ -41,6 +41,21 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser }) => {
     const [pp, setPp] = useState('PM');
     const [dd, setDd] = useState('');
 
+    const handleSetNow = () => {
+        const now = new Date();
+        const offset = now.getTimezoneOffset() * 60000;
+        const localISOTime = new Date(now.getTime() - offset).toISOString().slice(0, 16);
+        const [d, t] = localISOTime.split('T');
+        if (t) {
+            const [h, m] = t.split(':');
+            const hhInt = parseInt(h);
+            setDd(d);
+            setPp(hhInt >= 12 ? 'PM' : 'AM');
+            setHh((hhInt % 12 || 12).toString().padStart(2, '0'));
+            setMm(m);
+        }
+    };
+
     // Pre-populate time states if formData.date exists (e.g. for initial null state or later edits)
     useEffect(() => {
         if (formData.date) {
@@ -54,10 +69,7 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser }) => {
                 setMm(m.padStart(2, '0'));
             }
         } else {
-            // Default to current date if empty
-            const now = new Date();
-            const dateStr = now.toISOString().split('T')[0];
-            setDd(dateStr);
+            handleSetNow();
         }
     }, []);
 
@@ -74,12 +86,6 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser }) => {
             const combined = `${dd}T${militaryH.toString().padStart(2, '0')}:${mm.padStart(2, '0')}`;
             const selectedDate = new Date(combined);
             const now = new Date();
-
-            if (selectedDate > now) {
-                alert("You cannot select a future date or time. Resetting to current time.");
-                handleSetNow();
-                return;
-            }
 
             setFormData(prev => ({ ...prev, date: combined }));
         }
@@ -100,30 +106,11 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser }) => {
         return selected ? selected > new Date() : false;
     })();
 
-    const handleSetNow = () => {
-        const now = new Date();
-        const offset = now.getTimezoneOffset() * 60000;
-        const localISOTime = new Date(now.getTime() - offset).toISOString().slice(0, 16);
-        const [d, t] = localISOTime.split('T');
-        if (t) {
-            const [h, m] = t.split(':');
-            const hhInt = parseInt(h);
-            setDd(d);
-            setPp(hhInt >= 12 ? 'PM' : 'AM');
-            setHh((hhInt % 12 || 12).toString().padStart(2, '0'));
-            setMm(m);
-        }
-    };
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         if (name === 'date') {
-            const selectedDate = new Date(value);
-            const now = new Date();
-            if (selectedDate > now) {
-                alert("You cannot select a future date.");
-                return;
-            }
             setDd(value);
         } else {
             setFormData({ ...formData, [name]: value });
@@ -322,6 +309,16 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser }) => {
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400 group-hover:text-slate-600 transition-colors"><path d="m7 15 5 5 5-5" /><path d="m7 9 5-5 5 5" /></svg>
                                             </button>
                                         </div>
+
+                                        {/* Future Time Error Message */}
+                                        {isFutureTime && (
+                                            <div className="flex items-center gap-2 px-4 py-3 bg-red-50 border border-red-100 rounded-2xl animate-pulse">
+                                                <div className="bg-red-500 text-white rounded-full p-1 shadow-sm">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
+                                                </div>
+                                                <span className="text-[10px] font-black text-red-600 uppercase tracking-[0.05em]">Invalid Entry: Future time selected</span>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
