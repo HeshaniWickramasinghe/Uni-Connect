@@ -35,12 +35,13 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser }) => {
 
     const [loading, setLoading] = useState(false);
 
-    // Precise Time State Management
+    // Precise Time State Management,custom time picker
     const [hh, setHh] = useState('12');
     const [mm, setMm] = useState('00');
     const [pp, setPp] = useState('PM');
     const [dd, setDd] = useState('');
 
+    //Set Current Time Button 
     const handleSetNow = () => {
         const now = new Date();
         const offset = now.getTimezoneOffset() * 60000;
@@ -56,7 +57,7 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser }) => {
         }
     };
 
-    // Pre-populate time states if formData.date exists (e.g. for initial null state or later edits)
+    // Pre-populate time states if formData.date exists 
     useEffect(() => {
         if (formData.date) {
             const [d, t] = formData.date.split('T');
@@ -73,7 +74,7 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser }) => {
         }
     }, []);
 
-    // Sync individual parts to the ISO date string the backend expects with future check
+    // combined date+time and convert to YYYY-MM-DDTHH:mm
     useEffect(() => {
         if (dd && hh && mm) {
             let hInt = parseInt(hh) || 12;
@@ -91,6 +92,7 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser }) => {
         }
     }, [dd, hh, mm, pp]);
 
+    //Convert user input → real JavaScript Date(used for validation)
     const getSelectedDateTime = () => {
         if (!dd || !hh || !mm) return null;
         let hInt = parseInt(hh) || 12;
@@ -101,6 +103,7 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser }) => {
         return new Date(`${dd}T${milH.toString().padStart(2, '0')}:${mm.padStart(2, '0')}`);
     };
 
+    //Future Time Validation
     const isFutureTime = (() => {
         const selected = getSelectedDateTime();
         return selected ? selected > new Date() : false;
@@ -120,7 +123,8 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser }) => {
     const handleLocationSelect = (locName) => {
         setFormData({ ...formData, location: locName });
     };
-
+   
+    //Image Upload
     const handlePhotoChange = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -132,10 +136,11 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser }) => {
         }
     };
 
+    //Form Submit 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // FOOLPROOF FINAL VALIDATION - No items from the future
+        //  No items from the future
         if (!formData.date) {
             alert("Please select a valid date and time.");
             return;
@@ -173,6 +178,7 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser }) => {
         }
     };
 
+    //Max Date Calculation
     const maxDateTime = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .slice(0, 16);
