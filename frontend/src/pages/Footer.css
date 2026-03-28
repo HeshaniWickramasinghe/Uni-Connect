@@ -4,10 +4,7 @@
   position: relative;
   overflow: hidden;
   border-top: 1px solid rgba(13, 59, 102, 0.18);
-  background:
-    radial-gradient(circle at 0% 100%, rgba(52, 211, 153, 0.22), transparent 34%),
-    radial-gradient(circle at 100% 0%, rgba(14, 165, 233, 0.22), transparent 35%),
-    linear-gradient(160deg, #f8fffd 0%, #f2f8ff 50%, #fff7e5 100%);
+  background: rgb(45, 66, 134);
 }
 
 .uc-footer::before {
@@ -67,13 +64,13 @@
   margin: 0;
   font-family: "Bricolage Grotesque", sans-serif;
   font-size: 1.2rem;
-  color: #0d3b66;
+  color: #ffffff;
 }
 
 .uc-footer-tagline {
   margin: 0.14rem 0 0;
   font-family: "Space Grotesk", sans-serif;
-  color: #204865;
+  color: #feffffae;
   font-size: 0.77rem;
   text-transform: uppercase;
   letter-spacing: 0.09em;
