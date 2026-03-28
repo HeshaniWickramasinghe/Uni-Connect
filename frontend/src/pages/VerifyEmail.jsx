@@ -3,16 +3,17 @@ import axios from "axios";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./VerifyEmail.css";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5001";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
 
 function VerifyEmail() {
   const navigate = useNavigate();
   const location = useLocation();
   const emailFromState = (location.state?.email || "").trim().toLowerCase();
   const emailFromSession = (sessionStorage.getItem("pendingVerifyEmail") || "").trim().toLowerCase();
+  const initialCode = (sessionStorage.getItem("pendingVerifyCode") || "").trim();
   const email = emailFromState || emailFromSession;
 
-  const [code, setCode] = useState("");
+  const [code, setCode] = useState(initialCode);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
 
@@ -39,6 +40,7 @@ function VerifyEmail() {
 
       setMessage({ type: "success", text: response.data?.message || "Email verified successfully." });
       sessionStorage.removeItem("pendingVerifyEmail");
+      sessionStorage.removeItem("pendingVerifyCode");
       sessionStorage.removeItem("registrationFormDraft");
       setTimeout(() => {
         navigate("/login");
@@ -84,7 +86,10 @@ function VerifyEmail() {
           <button
             type="button"
             className="verify-email-back-btn"
-            onClick={() => navigate("/register")}
+            onClick={() => {
+              sessionStorage.removeItem("pendingVerifyCode");
+              navigate("/register");
+            }}
             disabled={loading}
           >
             Change Email

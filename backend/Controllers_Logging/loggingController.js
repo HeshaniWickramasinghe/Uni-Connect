@@ -11,6 +11,11 @@ const pendingRegistrations = new Map();
 
 const generateVerificationCode = () => crypto.randomInt(100000, 1000000).toString();
 
+const isEmailServiceConfigured = () => {
+	const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
+	return Boolean(SMTP_HOST && SMTP_PORT && SMTP_USER && SMTP_PASS);
+};
+
 const getMailerTransport = () => {
 	const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_SECURE } = process.env;
 	const missingVars = [];
@@ -39,6 +44,10 @@ const getMailerTransport = () => {
 };
 
 const sendVerificationEmail = async (email, verificationCode) => {
+	if (!isEmailServiceConfigured()) {
+		return { delivered: false };
+	}
+
 	const transporter = getMailerTransport();
 	const from = process.env.MAIL_FROM || process.env.SMTP_USER;
 
@@ -49,6 +58,8 @@ const sendVerificationEmail = async (email, verificationCode) => {
 		text: `Your verification code is ${verificationCode}. It expires in 10 minutes.`,
 		html: `<p>Your verification code is <strong>${verificationCode}</strong>.</p><p>It expires in 10 minutes.</p>`
 	});
+
+	return { delivered: true };
 };
 
 const getPendingRegistration = (email) => {
@@ -112,17 +123,26 @@ exports.createUser = async (req, res) => {
 			expiresAt
 		});
 
+		let emailDelivery = { delivered: false };
 		try {
-			await sendVerificationEmail(normalizedEmail, verificationCode);
+			emailDelivery = await sendVerificationEmail(normalizedEmail, verificationCode);
 		} catch (emailError) {
 			pendingRegistrations.delete(normalizedEmail);
 			return res.status(500).json({ message: emailError.message });
 		}
 
-		res.status(201).json({
-			message: "Verification code sent to your email. Please verify to complete registration.",
+		const responsePayload = {
+			message: emailDelivery.delivered
+				? "Verification code sent to your email. Please verify to complete registration."
+				: "Email service is not configured. Use the verification code provided to complete registration.",
 			email: normalizedEmail
-		});
+		};
+
+		if (!emailDelivery.delivered && process.env.NODE_ENV !== "production") {
+			responsePayload.verificationCode = verificationCode;
+		}
+
+		res.status(201).json(responsePayload);
 	} catch (error) {
 		res.status(500).json({ message: error.message });
 	}

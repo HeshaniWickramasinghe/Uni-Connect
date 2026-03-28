@@ -6,7 +6,7 @@ import "./Registration.css";
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phoneRegex = /^\d{10}$/;
 const passwordRegex = /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}$/;
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5001";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
 const REGISTRATION_DRAFT_KEY = "registrationFormDraft";
 
 const initialForm = {
@@ -86,6 +86,11 @@ function Registration() {
 
       const verifyEmail = (response.data?.email || formData.email).trim().toLowerCase();
       sessionStorage.setItem("pendingVerifyEmail", verifyEmail);
+      if (response.data?.verificationCode) {
+        sessionStorage.setItem("pendingVerifyCode", String(response.data.verificationCode));
+      } else {
+        sessionStorage.removeItem("pendingVerifyCode");
+      }
 
       setMessage({
         type: "success",
