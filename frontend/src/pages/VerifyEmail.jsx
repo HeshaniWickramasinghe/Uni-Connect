@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./VerifyEmail.css";
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
@@ -10,12 +10,34 @@ function VerifyEmail() {
   const location = useLocation();
   const emailFromState = (location.state?.email || "").trim().toLowerCase();
   const emailFromSession = (sessionStorage.getItem("pendingVerifyEmail") || "").trim().toLowerCase();
-  const initialCode = (sessionStorage.getItem("pendingVerifyCode") || "").trim();
   const email = emailFromState || emailFromSession;
 
-  const [code, setCode] = useState(initialCode);
+  const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
+
+  const handleResend = async () => {
+    setMessage({ type: "", text: "" });
+
+    if (!email) {
+      setMessage({ type: "error", text: "Registration email not found. Please register again." });
+      return;
+    }
+
+    setResending(true);
+    try {
+      const response = await axios.post(`${API_BASE_URL}/api/users/resend-verification`, { email });
+      setMessage({ type: "success", text: response.data?.message || "A new verification code was sent to your email." });
+    } catch (error) {
+      const errorText =
+        error.response?.data?.message ||
+        "Cannot connect to server. Check backend URL/port and make sure backend is running.";
+      setMessage({ type: "error", text: errorText });
+    } finally {
+      setResending(false);
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -40,7 +62,6 @@ function VerifyEmail() {
 
       setMessage({ type: "success", text: response.data?.message || "Email verified successfully." });
       sessionStorage.removeItem("pendingVerifyEmail");
-      sessionStorage.removeItem("pendingVerifyCode");
       sessionStorage.removeItem("registrationFormDraft");
       setTimeout(() => {
         navigate("/login");
@@ -86,8 +107,16 @@ function VerifyEmail() {
           <button
             type="button"
             className="verify-email-back-btn"
+            onClick={handleResend}
+            disabled={loading || resending}
+          >
+            {resending ? "Sending..." : "Resend Code"}
+          </button>
+
+          <button
+            type="button"
+            className="verify-email-back-btn"
             onClick={() => {
-              sessionStorage.removeItem("pendingVerifyCode");
               navigate("/register");
             }}
             disabled={loading}

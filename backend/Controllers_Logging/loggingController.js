@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const emailRegex = /^[^\s@]+@(my\.sliit\.lk|sliit\.lk)$/i;
 const phoneRegex = /^\d{10}$/;
 const passwordRegex = /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}$/;
 const VERIFICATION_CODE_TTL_MS = 10 * 60 * 1000;
@@ -11,55 +11,35 @@ const pendingRegistrations = new Map();
 
 const generateVerificationCode = () => crypto.randomInt(100000, 1000000).toString();
 
-const isEmailServiceConfigured = () => {
-	const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
-	return Boolean(SMTP_HOST && SMTP_PORT && SMTP_USER && SMTP_PASS);
-};
+const toBool = (value) => String(value).toLowerCase() === "true";
 
 const getMailerTransport = () => {
-	const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_SECURE } = process.env;
-	const missingVars = [];
-
-	if (!SMTP_HOST) missingVars.push("SMTP_HOST");
-	if (!SMTP_PORT) missingVars.push("SMTP_PORT");
-	if (!SMTP_USER) missingVars.push("SMTP_USER");
-	if (!SMTP_PASS) missingVars.push("SMTP_PASS");
-
-	if (missingVars.length > 0) {
-		throw new Error(`Email service is not configured. Missing env values: ${missingVars.join(", ")}`);
-	}
-
-	const port = Number(SMTP_PORT);
-	const secure = SMTP_SECURE === "true" || port === 465;
-
 	return nodemailer.createTransport({
-		host: SMTP_HOST,
-		port,
-		secure,
+		host: process.env.SMTP_HOST,
+		port: Number(process.env.SMTP_PORT),
+		secure: toBool(process.env.SMTP_SECURE) || Number(process.env.SMTP_PORT) === 465,
 		auth: {
-			user: SMTP_USER,
-			pass: SMTP_PASS
+			user: process.env.SMTP_USER,
+			pass: process.env.SMTP_PASS
 		}
 	});
 };
 
 const sendVerificationEmail = async (email, verificationCode) => {
-	if (!isEmailServiceConfigured()) {
-		return { delivered: false };
+	if (!process.env.SMTP_HOST || !process.env.SMTP_PORT || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
+		throw new Error(
+			"Email service is not configured. Set SMTP_HOST/SMTP_PORT/SMTP_USER/SMTP_PASS in backend/.env"
+		);
 	}
 
 	const transporter = getMailerTransport();
-	const from = process.env.MAIL_FROM || process.env.SMTP_USER;
-
 	await transporter.sendMail({
-		from,
+		from: process.env.MAIL_FROM || process.env.SMTP_USER,
 		to: email,
 		subject: "Uni-Connect verification code",
-		text: `Your verification code is ${verificationCode}. It expires in 10 minutes.`,
-		html: `<p>Your verification code is <strong>${verificationCode}</strong>.</p><p>It expires in 10 minutes.</p>`
+		text: `Your Uni-Connect verification code is ${verificationCode}. It expires in 10 minutes. If you did not request this, ignore this email.`,
+		html: `<p>Your Uni-Connect verification code is <strong>${verificationCode}</strong>.</p><p>It expires in 10 minutes.</p><p>If you did not request this, ignore this email.</p>`
 	});
-
-	return { delivered: true };
 };
 
 const getPendingRegistration = (email) => {
@@ -86,7 +66,7 @@ exports.createUser = async (req, res) => {
 		}
 
 		if (!emailRegex.test(normalizedEmail)) {
-			return res.status(400).json({ message: "Invalid email format" });
+			return res.status(400).json({ message: "Please use your SLIIT email (@my.sliit.lk or @sliit.lk)" });
 		}
 
 		if (!phoneRegex.test(phoneNumber)) {
@@ -123,28 +103,49 @@ exports.createUser = async (req, res) => {
 			expiresAt
 		});
 
-		let emailDelivery = { delivered: false };
 		try {
-			emailDelivery = await sendVerificationEmail(normalizedEmail, verificationCode);
+			await sendVerificationEmail(normalizedEmail, verificationCode);
 		} catch (emailError) {
 			pendingRegistrations.delete(normalizedEmail);
 			return res.status(500).json({ message: emailError.message });
 		}
 
-		const responsePayload = {
-			message: emailDelivery.delivered
-				? "Verification code sent to your email. Please verify to complete registration."
-				: "Email service is not configured. Use the verification code provided to complete registration.",
+		res.status(201).json({
+			message: "Verification code sent to your email. Please verify to complete registration.",
 			email: normalizedEmail
-		};
-
-		if (!emailDelivery.delivered && process.env.NODE_ENV !== "production") {
-			responsePayload.verificationCode = verificationCode;
-		}
-
-		res.status(201).json(responsePayload);
+		});
 	} catch (error) {
 		res.status(500).json({ message: error.message });
+	}
+};
+
+exports.resendVerificationCode = async (req, res) => {
+	try {
+		const normalizedEmail = (req.body?.email || "").trim().toLowerCase();
+
+		if (!normalizedEmail) {
+			return res.status(400).json({ message: "Email is required" });
+		}
+
+		if (!emailRegex.test(normalizedEmail)) {
+			return res.status(400).json({ message: "Please use your SLIIT email (@my.sliit.lk or @sliit.lk)" });
+		}
+
+		const pending = getPendingRegistration(normalizedEmail);
+		if (!pending) {
+			return res.status(400).json({ message: "No pending registration found or code expired" });
+		}
+
+		const verificationCode = generateVerificationCode();
+		pending.verificationCode = verificationCode;
+		pending.expiresAt = Date.now() + VERIFICATION_CODE_TTL_MS;
+		pendingRegistrations.set(normalizedEmail, pending);
+
+		await sendVerificationEmail(normalizedEmail, verificationCode);
+
+		return res.status(200).json({ message: "A new verification code was sent to your email." });
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
 	}
 };
 
@@ -226,9 +227,7 @@ exports.verifyEmail = async (req, res) => {
 			password: pending.password,
 			phoneNumber: pending.phoneNumber,
 			studentRegistrationNumber: pending.studentRegistrationNumber,
-			isEmailVerified: true,
-			emailVerificationCode: "",
-			emailVerificationCodeExpiresAt: null
+			isEmailVerified: true
 		});
 
 		pendingRegistrations.delete(normalizedEmail);
@@ -302,18 +301,19 @@ exports.getUserById = async (req, res) => {
 exports.updateUser = async (req, res) => {
 	try {
 		const { name, email, password, phoneNumber, studentRegistrationNumber } = req.body;
+		const normalizedEmail = (email || "").trim().toLowerCase();
 
 		const user = await User.findById(req.params.id);
 		if (!user) {
 			return res.status(404).json({ message: "User not found" });
 		}
 
-		if (email && email !== user.email) {
-			if (!emailRegex.test(email)) {
-				return res.status(400).json({ message: "Invalid email format" });
+		if (email && normalizedEmail !== user.email) {
+			if (!emailRegex.test(normalizedEmail)) {
+				return res.status(400).json({ message: "Please use your SLIIT email (@my.sliit.lk or @sliit.lk)" });
 			}
 
-			const existingEmail = await User.findOne({ email });
+			const existingEmail = await User.findOne({ email: normalizedEmail });
 			if (existingEmail) {
 				return res.status(400).json({ message: "Email already exists" });
 			}
@@ -334,7 +334,7 @@ exports.updateUser = async (req, res) => {
 		}
 
 		if (name !== undefined) user.name = name;
-		if (email !== undefined) user.email = email;
+		if (email !== undefined) user.email = normalizedEmail;
 		if (phoneNumber !== undefined) user.phoneNumber = phoneNumber;
 		if (studentRegistrationNumber !== undefined) {
 			user.studentRegistrationNumber = studentRegistrationNumber;

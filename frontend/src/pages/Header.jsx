@@ -4,8 +4,28 @@ import './Header.css';
 
 function Header({ user }) {
     const [profileOpen, setProfileOpen] = useState(false);
+    const [cartOpen, setCartOpen] = useState(false);
+    const [notificationOpen, setNotificationOpen] = useState(false);
     const navigate = useNavigate();
     const isLoggedIn = Boolean(user?.id);
+
+    const toggleCart = () => {
+        setCartOpen((prev) => !prev);
+        setProfileOpen(false);
+        setNotificationOpen(false);
+    };
+
+    const toggleProfile = () => {
+        setProfileOpen((prev) => !prev);
+        setCartOpen(false);
+        setNotificationOpen(false);
+    };
+
+    const toggleNotification = () => {
+        setNotificationOpen((prev) => !prev);
+        setCartOpen(false);
+        setProfileOpen(false);
+    };
 
     const navigateWithUser = (path) => {
         if (isLoggedIn) {
@@ -48,30 +68,79 @@ function Header({ user }) {
                         >
                             Lost and Found
                         </button>
-                        <button
-                            onClick={() => navigateWithUser('/homepage')}
-                            className="uc-icon-pill"
-                            aria-label="Notifications"
-                            title="Notifications"
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="18"
-                                height="18"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
+                        <div className="uc-notification">
+                            <button
+                                onClick={toggleNotification}
+                                className="uc-icon-pill"
+                                aria-label="Notifications"
+                                title="Notifications"
                             >
-                                <path d="M15 17h5l-1.4-1.4a2 2 0 0 1-.6-1.4V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5" />
-                                <path d="M9 17a3 3 0 0 0 6 0" />
-                            </svg>
-                        </button>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <path d="M15 17h5l-1.4-1.4a2 2 0 0 1-.6-1.4V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5" />
+                                    <path d="M9 17a3 3 0 0 0 6 0" />
+                                </svg>
+                            </button>
+
+                            {notificationOpen && (
+                                <div className="uc-notification-menu">
+                                    <p className="uc-notification-title">Notifications</p>
+                                    <p className="uc-notification-empty">You are all caught up.</p>
+                                </div>
+                            )}
+                        </div>
+                        <div className="uc-cart">
+                            <button
+                                onClick={toggleCart}
+                                className="uc-icon-pill"
+                                aria-label="Cart"
+                                title="Cart"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <circle cx="9" cy="20" r="1" />
+                                    <circle cx="18" cy="20" r="1" />
+                                    <path d="M3 4h2l2.2 10.4a2 2 0 0 0 2 1.6h7.5a2 2 0 0 0 2-1.5L21 7H7.1" />
+                                </svg>
+                            </button>
+
+                            {cartOpen && (
+                                <div className="uc-cart-menu">
+                                    <p className="uc-cart-title">Your Cart</p>
+                                    <p className="uc-cart-empty">No items added yet.</p>
+                                    <button
+                                        className="uc-cart-btn"
+                                        onClick={() => {
+                                            setCartOpen(false);
+                                            navigateWithUser('/homepage');
+                                        }}
+                                    >
+                                        Browse Items
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                         <div className="uc-profile">
                             <button
-                                onClick={() => setProfileOpen(!profileOpen)}
+                                onClick={toggleProfile}
                                 className="uc-profile-trigger"
                             >
                                 <div className="uc-avatar">
@@ -131,6 +200,46 @@ function Header({ user }) {
                                 {item.label}
                             </button>
                         ))}
+                        <div className="uc-cart">
+                            <button
+                                onClick={toggleCart}
+                                className="uc-icon-pill"
+                                aria-label="Cart"
+                                title="Cart"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="18"
+                                    height="18"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                >
+                                    <circle cx="9" cy="20" r="1" />
+                                    <circle cx="18" cy="20" r="1" />
+                                    <path d="M3 4h2l2.2 10.4a2 2 0 0 0 2 1.6h7.5a2 2 0 0 0 2-1.5L21 7H7.1" />
+                                </svg>
+                            </button>
+
+                            {cartOpen && (
+                                <div className="uc-cart-menu">
+                                    <p className="uc-cart-title">Your Cart</p>
+                                    <p className="uc-cart-empty">No items added yet.</p>
+                                    <button
+                                        className="uc-cart-btn"
+                                        onClick={() => {
+                                            setCartOpen(false);
+                                            navigate('/login');
+                                        }}
+                                    >
+                                        Log in to add items
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                         <button
                             onClick={() => navigate('/login')}
                             className="uc-pill uc-pill-strong"
@@ -141,8 +250,15 @@ function Header({ user }) {
                 )}
             </div>
 
-            {profileOpen && (
-                <div className="uc-header-scrim" onClick={() => setProfileOpen(false)} />
+            {(profileOpen || cartOpen || notificationOpen) && (
+                <div
+                    className="uc-header-scrim"
+                    onClick={() => {
+                        setProfileOpen(false);
+                        setCartOpen(false);
+                        setNotificationOpen(false);
+                    }}
+                />
             )}
         </header>
     );

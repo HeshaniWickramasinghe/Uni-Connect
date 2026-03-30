@@ -5,6 +5,7 @@ const {
 	createUser,
 	loginUser,
 	verifyEmail,
+	resendVerificationCode,
 	getAllUsers,
 	getUserById,
 	updateUser,
@@ -15,6 +16,7 @@ const {
 router.post("/", createUser);
 router.post("/login", loginUser);
 router.post("/verify-email", verifyEmail);
+router.post("/resend-verification", resendVerificationCode);
 router.put("/:id/profile-picture", updateProfilePicture);
 router.get("/", getAllUsers);
 router.get("/:id", getUserById);

@@ -3,7 +3,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import "./Registration.css";
 
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const emailRegex = /^[^\s@]+@(my\.sliit\.lk|sliit\.lk)$/i;
 const phoneRegex = /^\d{10}$/;
 const passwordRegex = /^(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{8,}$/;
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
@@ -44,8 +44,8 @@ function Registration() {
   };
 
   const validateForm = () => {
-    if (!emailRegex.test(formData.email)) {
-      return "Please enter a valid email address.";
+    if (!emailRegex.test(formData.email.trim())) {
+      return "Please use your SLIIT email (@my.sliit.lk or @sliit.lk).";
     }
 
     if (!phoneRegex.test(formData.phoneNumber)) {
@@ -86,11 +86,6 @@ function Registration() {
 
       const verifyEmail = (response.data?.email || formData.email).trim().toLowerCase();
       sessionStorage.setItem("pendingVerifyEmail", verifyEmail);
-      if (response.data?.verificationCode) {
-        sessionStorage.setItem("pendingVerifyCode", String(response.data.verificationCode));
-      } else {
-        sessionStorage.removeItem("pendingVerifyCode");
-      }
 
       setMessage({
         type: "success",
@@ -142,8 +137,8 @@ function Registration() {
             value={formData.email}
             onChange={handleChange}
             placeholder="name@university.edu"
-            pattern="[^\s@]+@[^\s@]+\.[^\s@]+"
-            title="Enter a valid email address"
+            pattern="[^@\s]+@(my\.sliit\.lk|sliit\.lk)"
+            title="Use a SLIIT email: @my.sliit.lk or @sliit.lk"
             required
           />
 

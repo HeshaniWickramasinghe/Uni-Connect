@@ -30,14 +30,6 @@ const userSchema = new mongoose.Schema({
     isEmailVerified: {
         type: Boolean,
         default: false
-    },
-    emailVerificationCode: {
-        type: String,
-        default: ""
-    },
-    emailVerificationCodeExpiresAt: {
-        type: Date,
-        default: null
     }
 }, {
     timestamps: true
