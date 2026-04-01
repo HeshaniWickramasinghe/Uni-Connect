@@ -39,8 +39,8 @@ function Header({ user }) {
     };
 
     const socialLinks = [
-        { label: 'Ghost-Lec', path: '/' },
-        { label: 'Lost and Found', path: '/' },
+        { label: 'Ghost-Lec', path: '/ghost-lec' },
+        { label: 'Lost and Found', path: '/lost-and-found' },
     ];
 
     return (
@@ -58,18 +58,15 @@ function Header({ user }) {
 
                 {isLoggedIn ? (
                     <div className="uc-nav">
-                        <button
-                            onClick={() => navigateWithUser('/homepage')}
-                            className="uc-pill uc-pill-light"
-                        >
-                            Gost-Lec
-                        </button>
-                        <button
-                            onClick={() => navigateWithUser('/homepage')}
-                            className="uc-pill uc-pill-light"
-                        >
-                            Lost and Found
-                        </button>
+                        {socialLinks.map((item) => (
+                            <button
+                                key={item.label}
+                                onClick={() => navigateWithUser(item.path)}
+                                className="uc-pill uc-pill-light"
+                            >
+                                {item.label}
+                            </button>
+                        ))}
                         {isAdmin && (
                             <button
                                 onClick={() => navigateWithUser('/admin')}

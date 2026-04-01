@@ -1,15 +1,32 @@
 import { useRef, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import "./BankTransfer.css";
 
 function BankTransfer() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState("");
   const fileInputRef = useRef(null);
+  const [loading, setLoading] = useState(false);
   const [popup, setPopup] = useState({
     isOpen: false,
     type: "success",
     message: "",
   });
+
+  const stateUser = location.state?.user;
+  const storedUser = (() => {
+    try {
+      const rawUser = sessionStorage.getItem("loggedInUser");
+      return rawUser ? JSON.parse(rawUser) : null;
+    } catch (_error) {
+      return null;
+    }
+  })();
+  const currentUser = stateUser || storedUser;
 
   const allowedFileTypes = ["application/pdf", "image/jpeg", "image/png", "image/gif"];
   const maxFileSize = 5 * 1024 * 1024;
@@ -25,6 +42,11 @@ function BankTransfer() {
       fileInputRef.current.value = "";
     }
     setPopup({ isOpen: false, type: "success", message: "" });
+  };
+
+  const handleDone = () => {
+    closePopup();
+    navigate("/homepage");
   };
 
   const handleFileChange = (e) => {
@@ -51,18 +73,48 @@ function BankTransfer() {
     setFileName(selectedFile.name);
   };
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (!file) {
       openPopup("error", "Please select a valid proof of receipt file before submitting.");
       return;
     }
 
-    console.log("Uploading file:", fileName);
-    // Handle file upload logic here
-    openPopup(
-      "success",
-      `Receipt \"${fileName}\" uploaded successfully. Your payment will be verified within 24 hours.`
-    );
+    if (!currentUser?.email || !currentUser?.studentRegistrationNumber) {
+      openPopup("error", "Please log in before submitting payment proof.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const proofFileData = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      await axios.post("http://localhost:5000/api/payments/bank-transfer", {
+        userEmail: currentUser.email,
+        userName: currentUser.name || "",
+        studentRegistrationNumber: currentUser.studentRegistrationNumber,
+        proofFileName: file.name,
+        proofFileType: file.type,
+        proofFileData
+      });
+
+      openPopup(
+        "success",
+        `Receipt \"${fileName}\" uploaded successfully. Your payment will be verified within 24 hours.`
+      );
+    } catch (error) {
+      const message =
+        error.response?.data?.message ||
+        "Failed to submit bank transfer proof. Please try again.";
+      openPopup("error", message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -123,8 +175,8 @@ function BankTransfer() {
               Accepted formats: PDF, JPG, PNG (Max size: 5MB)
             </div>
 
-            <button className="upload-button" onClick={handleUpload}>
-              Submit Payment Proof
+            <button className="upload-button" onClick={handleUpload} disabled={loading}>
+              {loading ? "Submitting..." : "Submit Payment Proof"}
             </button>
           </div>
         </div>
@@ -158,8 +210,8 @@ function BankTransfer() {
             <p className="popup-message">{popup.message}</p>
 
             <div className="popup-actions">
-              <button className="popup-button" onClick={closePopup}>
-                Close
+              <button className="popup-button" onClick={popup.type === "success" ? handleDone : closePopup}>
+                {popup.type === "success" ? "Done" : "Close"}
               </button>
             </div>
           </div>

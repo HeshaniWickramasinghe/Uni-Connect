@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import Header from '../Header';
@@ -14,18 +14,6 @@ function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
   const [usersError, setUsersError] = useState('');
-
-  const usersTableRows = useMemo(
-    () =>
-      users.map((item) => ({
-        id: item._id,
-        name: item.name,
-        email: item.email,
-        phoneNumber: item.phoneNumber,
-        studentRegistrationNumber: item.studentRegistrationNumber,
-      })),
-    [users]
-  );
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -80,12 +68,12 @@ function AdminUsers() {
                   </tr>
                 </thead>
                 <tbody>
-                  {usersTableRows.map((record) => (
-                    <tr key={record.id}>
-                      <td>{record.name || '-'}</td>
-                      <td>{record.email || '-'}</td>
-                      <td>{record.phoneNumber || '-'}</td>
-                      <td>{record.studentRegistrationNumber || '-'}</td>
+                  {users.map((item) => (
+                    <tr key={item._id}>
+                      <td>{item.name || '-'}</td>
+                      <td>{item.email || '-'}</td>
+                      <td>{item.phoneNumber || '-'}</td>
+                      <td>{item.studentRegistrationNumber || '-'}</td>
                     </tr>
                   ))}
                 </tbody>

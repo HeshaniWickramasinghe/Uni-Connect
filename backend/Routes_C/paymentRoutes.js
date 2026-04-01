@@ -3,11 +3,14 @@ const router = express.Router();
 
 const {
     createPayment,
-    getPayments
+    createBankTransferPayment,
+    getPayments,
+    updatePaymentStatus
 } = require("../Controllers_C/paymentController");
 
-// Routes
-router.post("/", createPayment);     // Create payment
-router.get("/", getPayments);        // Get all payments
+router.post("/", createPayment);
+router.post("/bank-transfer", createBankTransferPayment);
+router.get("/", getPayments);
+router.put("/:paymentId", updatePaymentStatus);
 
 module.exports = router;

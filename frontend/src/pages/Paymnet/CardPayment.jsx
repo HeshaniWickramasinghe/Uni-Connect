@@ -1,9 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
 import { jsPDF } from "jspdf";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./CardPayment.css";
 
 function CardPayment() {
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [form, setForm] = useState({
     cardName: "",
@@ -20,6 +23,17 @@ function CardPayment() {
   });
 
   const [paymentSummary, setPaymentSummary] = useState(null);
+
+  const stateUser = location.state?.user;
+  const storedUser = (() => {
+    try {
+      const rawUser = sessionStorage.getItem("loggedInUser");
+      return rawUser ? JSON.parse(rawUser) : null;
+    } catch (_error) {
+      return null;
+    }
+  })();
+  const currentUser = stateUser || storedUser;
 
   const showPopup = (message, type) => {
     setPopup({
@@ -49,88 +63,111 @@ function CardPayment() {
     setPaymentSummary(null);
   };
 
+  const handleDone = () => {
+    closePopup();
+    navigate("/homepage");
+  };
+
   const handlePrintSummary = () => {
     if (!paymentSummary) return;
 
     const doc = new jsPDF({ unit: "pt", format: "a4" });
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
-    const marginX = 42;
-    const cardWidth = pageWidth - marginX * 2;
+    const marginX = 34;
+    const contentWidth = pageWidth - marginX * 2;
 
-    doc.setFillColor(245, 249, 255);
+    doc.setFillColor(250, 252, 255);
     doc.rect(0, 0, pageWidth, pageHeight, "F");
 
-    doc.setFillColor(25, 87, 178);
-    doc.roundedRect(marginX, 38, cardWidth, 88, 12, 12, "F");
+    doc.setFillColor(11, 61, 122);
+    doc.roundedRect(marginX, 32, contentWidth, 112, 16, 16, "F");
+
+    doc.setDrawColor(147, 197, 253);
+    doc.setLineWidth(1.2);
+    doc.line(marginX + 18, 104, marginX + contentWidth - 18, 104);
 
     doc.setTextColor(255, 255, 255);
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(23);
-    doc.text("Payment Receipt", marginX + 18, 78);
+    doc.setFontSize(25);
+    doc.text("UNI-CONNECT RECEIPT", marginX + 18, 72);
 
     doc.setFont("helvetica", "normal");
     doc.setFontSize(11);
-    doc.text("Uni-Connect Secure Payments", marginX + 18, 99);
+    doc.text("Secure Student Payment Confirmation", marginX + 18, 94);
 
-    doc.setFillColor(225, 249, 235);
-    doc.roundedRect(marginX + cardWidth - 124, 62, 106, 34, 8, 8, "F");
-    doc.setTextColor(30, 130, 76);
+    doc.setFillColor(220, 252, 231);
+    doc.roundedRect(marginX + contentWidth - 120, 50, 102, 30, 8, 8, "F");
+    doc.setTextColor(22, 101, 52);
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(12);
-    doc.text("PAID", marginX + cardWidth - 87, 84);
+    doc.setFontSize(11);
+    doc.text("PAID", marginX + contentWidth - 82, 69);
 
-    doc.setTextColor(45, 62, 92);
+    doc.setTextColor(51, 65, 85);
     doc.setFont("helvetica", "normal");
-    doc.setFontSize(12);
-    doc.text("Your payment has been processed successfully.", marginX, 150);
+    doc.setFontSize(11);
+    doc.text("Thank you. Your payment is completed and recorded.", marginX, 164);
 
     doc.setFillColor(255, 255, 255);
-    doc.setDrawColor(209, 222, 241);
-    doc.roundedRect(marginX, 174, cardWidth, 232, 10, 10, "FD");
+    doc.setDrawColor(203, 213, 225);
+    doc.roundedRect(marginX, 184, contentWidth, 322, 12, 12, "FD");
 
-    doc.setTextColor(26, 43, 74);
+    doc.setFillColor(241, 245, 249);
+    doc.roundedRect(marginX + 10, 194, contentWidth - 20, 30, 8, 8, "F");
+    doc.setTextColor(30, 41, 59);
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(14);
-    doc.text("Payment Summary", marginX + 16, 202);
+    doc.setFontSize(13);
+    doc.text("Payment Summary", marginX + 18, 214);
 
     const rows = [
-      ["Amount", String(paymentSummary.amount)],
+      ["Transaction ID", paymentSummary.transactionId],
+      ["User Email", paymentSummary.userEmail],
+      ["Student ID", paymentSummary.studentRegistrationNumber],
       ["Card Number", paymentSummary.cardNumber],
       ["Card Name", paymentSummary.cardName],
       ["Date", paymentSummary.date],
-      ["Time", paymentSummary.time]
+      ["Time", paymentSummary.time],
+      ["Amount", String(paymentSummary.amount)],
     ];
 
-    let y = 234;
+    let y = 246;
     rows.forEach(([label, value], index) => {
+      const isAmountRow = label === "Amount";
+
       if (index % 2 === 0) {
-        doc.setFillColor(248, 251, 255);
-        doc.rect(marginX + 10, y - 16, cardWidth - 20, 30, "F");
+        doc.setFillColor(248, 250, 252);
+        doc.rect(marginX + 10, y - 16, contentWidth - 20, 30, "F");
       }
 
-      doc.setTextColor(69, 84, 112);
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(12);
+      if (isAmountRow) {
+        doc.setFillColor(219, 234, 254);
+        doc.rect(marginX + 10, y - 16, contentWidth - 20, 30, "F");
+      }
+
+      doc.setTextColor(71, 85, 105);
+      doc.setFont("helvetica", isAmountRow ? "bold" : "normal");
+      doc.setFontSize(isAmountRow ? 13 : 11);
       doc.text(label, marginX + 18, y);
 
-      doc.setTextColor(27, 43, 70);
+      doc.setTextColor(15, 23, 42);
       doc.setFont("helvetica", "bold");
-      doc.text(String(value), marginX + cardWidth - 18, y, { align: "right" });
+      doc.setFontSize(isAmountRow ? 14 : 12);
+      doc.text(String(value), marginX + contentWidth - 18, y, { align: "right" });
 
-      doc.setDrawColor(227, 235, 247);
-      doc.line(marginX + 12, y + 10, marginX + cardWidth - 12, y + 10);
+      doc.setDrawColor(226, 232, 240);
+      doc.line(marginX + 12, y + 10, marginX + contentWidth - 12, y + 10);
       y += 36;
     });
 
-    doc.setTextColor(93, 108, 136);
+    doc.setTextColor(100, 116, 139);
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
-    doc.text("This is a system-generated receipt.", marginX, pageHeight - 34);
+    doc.text("This is a system-generated receipt.", marginX, pageHeight - 38);
+    doc.text("Need help? Contact Uni-Connect support.", marginX, pageHeight - 22);
 
-    const safeDate = paymentSummary.date.replace(/\//g, "-");
-    const safeTime = paymentSummary.time.replace(/[:\s]/g, "-");
-    doc.save(`payment-summary-${safeDate}-${safeTime}.pdf`);
+    const pdfBlob = doc.output('blob');
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+    window.open(pdfUrl, '_blank');
   };
 
   const handleChange = (e) => {
@@ -209,10 +246,18 @@ function CardPayment() {
       return;
     }
 
+    if (!currentUser?.email || !currentUser?.studentRegistrationNumber) {
+      setPaymentSummary(null);
+      showPopup("Please log in before making a payment.", "error");
+      return;
+    }
+
     try {
       const payload = {
         ...form,
-        cardNumber: form.cardNumber.replace(/\s/g, "")
+        cardNumber: form.cardNumber.replace(/\s/g, ""),
+        userEmail: currentUser.email,
+        studentRegistrationNumber: currentUser.studentRegistrationNumber
       };
 
       const res = await axios.post(
@@ -223,7 +268,10 @@ function CardPayment() {
       const summaryCardNumber = `**** **** **** ${payload.cardNumber.slice(-4)}`;
       const paidAt = new Date();
       setPaymentSummary({
+        transactionId: res.data?.data?.transactionId || "-",
         amount: form.amount,
+        userEmail: currentUser.email,
+        studentRegistrationNumber: currentUser.studentRegistrationNumber,
         cardNumber: summaryCardNumber,
         cardName: form.cardName,
         date: paidAt.toLocaleDateString("en-GB"),
@@ -285,11 +333,14 @@ return (
 
           {popup.type === "success" && paymentSummary && (
             <div className="payment-summary">
-              <div className="summary-row"><span>Amount</span><strong>{paymentSummary.amount}</strong></div>
+              <div className="summary-row"><span>Transaction ID</span><strong>{paymentSummary.transactionId}</strong></div>
+              <div className="summary-row"><span>User Email</span><strong>{paymentSummary.userEmail}</strong></div>
+              <div className="summary-row"><span>Student ID</span><strong>{paymentSummary.studentRegistrationNumber}</strong></div>
               <div className="summary-row"><span>Card Number</span><strong>{paymentSummary.cardNumber}</strong></div>
               <div className="summary-row"><span>Card Name</span><strong>{paymentSummary.cardName}</strong></div>
               <div className="summary-row"><span>Date</span><strong>{paymentSummary.date}</strong></div>
               <div className="summary-row"><span>Time</span><strong>{paymentSummary.time}</strong></div>
+              <div className="summary-row amount-row"><span>Amount</span><strong>{paymentSummary.amount}</strong></div>
             </div>
           )}
 
@@ -298,7 +349,7 @@ return (
               <button type="button" className="popup-button popup-print" onClick={handlePrintSummary}>
                 Print
               </button>
-              <button type="button" className="popup-button" onClick={closePopup}>
+              <button type="button" className="popup-button" onClick={handleDone}>
                 Done
               </button>
             </div>

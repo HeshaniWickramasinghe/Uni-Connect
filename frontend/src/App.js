@@ -1,20 +1,20 @@
 import './App.css';
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import Homepg from './pages/Homepg';
-import ForgotPassword from './pages/ForgotPassword';
-import Login from './pages/Login';
-import Registration from './pages/Registration';
-import VerifyEmail from './pages/VerifyEmail';
-import UserProfile from './pages/UserProfile';
-import EditProfile from './pages/EditProfile';
+import ForgotPassword from './pages/Login/ForgotPassword';
+import Login from './pages/Login/Login';
+import Registration from './pages/Login/Registration';
+import VerifyEmail from './pages/Login/VerifyEmail';
+import UserProfile from './pages/Login/UserProfile';
+import EditProfile from './pages/Login/EditProfile';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import AdminUsers from './pages/Admin/AdminUsers';
-import AdminGhostLec from './pages/Admin/AdminGhostLec';
-import AdminLostFound from './pages/Admin/AdminLostFound';
-import AdminPayments from './pages/Admin/AdminPayments';
-import TestPay from './pages/testpay';
-import CardPayment from './pages/CardPayment';
-import BankTransfer from './pages/BankTransfer';
+import GostLec from './pages/GostLec/GostLec';
+import LostAndFound from './pages/LostAndFound/LostAndFound';
+import AdminPayments from './pages/Paymnet/AdminPayments';
+import TestPay from './pages/Paymnet/testpay';
+import CardPayment from './pages/Paymnet/CardPayment';
+import BankTransfer from './pages/Paymnet/BankTransfer';
 
 const ADMIN_EMAIL = 'it23722040@my.sliit.lk';
 
@@ -67,9 +67,11 @@ function App() {
           <Route path="/admin" element={<AdminRoute component={AdminUsers} />} />
           <Route path="/admin/dashboard" element={<AdminRoute component={AdminDashboard} />} />
           <Route path="/admin/users" element={<AdminRoute component={AdminUsers} />} />
-          <Route path="/admin/ghost-lec" element={<AdminRoute component={AdminGhostLec} />} />
-          <Route path="/admin/lost-found" element={<AdminRoute component={AdminLostFound} />} />
+          <Route path="/admin/ghost-lec" element={<AdminRoute component={GostLec} />} />
+          <Route path="/admin/lost-found" element={<AdminRoute component={LostAndFound} />} />
           <Route path="/admin/payments" element={<AdminRoute component={AdminPayments} />} />
+          <Route path="/ghost-lec" element={<GostLec />} />
+          <Route path="/lost-and-found" element={<LostAndFound />} />
           <Route path="/payments" element={<TestPay />} />
           <Route path="/card-payment" element={<CardPayment />} />
           <Route path="/bank-transfer" element={<BankTransfer />} />

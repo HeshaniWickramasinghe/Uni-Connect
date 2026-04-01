@@ -230,6 +230,21 @@
   word-break: break-word;
 }
 
+.summary-row.amount-row {
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: #142a4d;
+  background: rgba(31, 122, 224, 0.08);
+  border-radius: 6px;
+  padding: 8px 8px;
+}
+
+.summary-row.amount-row strong {
+  font-size: 1.08rem;
+  font-weight: 800;
+  color: #0f274a;
+}
+
 .popup-actions {
   display: flex;
   justify-content: center;

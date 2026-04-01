@@ -3,12 +3,21 @@ const Payment = require("../Model_C/paymentModel");
 // Create Payment
 const createPayment = async (req, res) => {
     try {
-        const { cardName, cardNumber, expiry, cvv, amount } = req.body;
+        const { cardName, cardNumber, expiry, cvv, amount, userEmail, userName, studentRegistrationNumber } = req.body;
+
+        if (!userEmail || !studentRegistrationNumber) {
+            return res.status(400).json({
+                message: "User email and student registration number are required"
+            });
+        }
 
         // Mask card number
         const maskedCard = "**** **** **** " + cardNumber.slice(-4);
 
         const newPayment = new Payment({
+            userEmail,
+            userName: userName || "",
+            studentRegistrationNumber,
             method: "card",
             cardName,
             cardNumber: maskedCard,
@@ -33,6 +42,48 @@ const createPayment = async (req, res) => {
     }
 };
 
+const createBankTransferPayment = async (req, res) => {
+    try {
+        const {
+            userEmail,
+            userName,
+            studentRegistrationNumber,
+            proofFileName,
+            proofFileType,
+            proofFileData
+        } = req.body;
+
+        if (!userEmail || !studentRegistrationNumber || !proofFileName || !proofFileData) {
+            return res.status(400).json({
+                message: "User email, student registration number, and proof file are required"
+            });
+        }
+
+        const newPayment = new Payment({
+            userEmail,
+            userName: userName || "",
+            studentRegistrationNumber,
+            method: "bank",
+            proofFileName,
+            proofFileType: proofFileType || "",
+            proofFileData,
+            status: "pending"
+        });
+
+        await newPayment.save();
+
+        return res.status(201).json({
+            message: "Bank transfer proof submitted successfully",
+            data: newPayment
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Bank transfer submission failed",
+            error: error.message
+        });
+    }
+};
+
 // Get All Payments (optional for demo)
 const getPayments = async (req, res) => {
     try {
@@ -43,7 +94,52 @@ const getPayments = async (req, res) => {
     }
 };
 
+// Update Payment Status (Approve/Reject)
+const updatePaymentStatus = async (req, res) => {
+    try {
+        const { paymentId } = req.params;
+        const { status } = req.body;
+
+        if (!paymentId || !status) {
+            return res.status(400).json({
+                message: "Payment ID and status are required"
+            });
+        }
+
+        const validStatuses = ["approved", "rejected", "pending", "success"];
+        if (!validStatuses.includes(status)) {
+            return res.status(400).json({
+                message: "Invalid status. Must be one of: approved, rejected, pending, success"
+            });
+        }
+
+        const updatedPayment = await Payment.findByIdAndUpdate(
+            paymentId,
+            { status },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedPayment) {
+            return res.status(404).json({
+                message: "Payment not found"
+            });
+        }
+
+        res.status(200).json({
+            message: "Payment status updated successfully",
+            data: updatedPayment
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Failed to update payment status",
+            error: error.message
+        });
+    }
+};
+
 module.exports = {
     createPayment,
-    getPayments
+    createBankTransferPayment,
+    getPayments,
+    updatePaymentStatus
 };
