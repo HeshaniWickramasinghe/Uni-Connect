@@ -1,0 +1,140 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Bricolage+Grotesque:wght@600;700;800&display=swap");
+
+.uc-footer {
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid rgba(13, 59, 102, 0.18);
+  background: rgb(45, 66, 134);
+}
+
+.uc-footer::before {
+  content: "";
+  position: absolute;
+  left: -20%;
+  top: -80px;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: rgba(14, 165, 233, 0.08);
+}
+
+.uc-footer::after {
+  content: "";
+  position: absolute;
+  right: -18%;
+  bottom: -110px;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: rgba(245, 158, 11, 0.11);
+}
+
+.uc-footer-inner {
+  width: min(1400px, 100% - 0.35rem);
+  margin: 0 auto;
+  padding: 1.9rem 0;
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  align-items: center;
+}
+
+.uc-footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.uc-footer-mark {
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 800;
+  background: linear-gradient(135deg, #0d3b66, #0ea5e9);
+  box-shadow: 0 10px 24px rgba(14, 165, 233, 0.28);
+}
+
+.uc-footer-title {
+  margin: 0;
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 1.2rem;
+  color: #ffffff;
+}
+
+.uc-footer-tagline {
+  margin: 0.14rem 0 0;
+  font-family: "Space Grotesk", sans-serif;
+  color: #feffffae;
+  font-size: 0.77rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-weight: 700;
+}
+
+.uc-footer-right {
+  text-align: right;
+}
+
+.uc-footer-copy {
+  margin: 0;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 0.78rem;
+  color: #2e4a62;
+  font-weight: 700;
+}
+
+.uc-socials {
+  margin-top: 0.5rem;
+  display: inline-flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.uc-social {
+  border: 1px solid rgba(13, 59, 102, 0.2);
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 999px;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family: "Space Grotesk", sans-serif;
+  color: #0d3b66;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.uc-social:hover {
+  transform: translateY(-1px);
+  background: #ffffff;
+}
+
+@media (max-width: 720px) {
+  .uc-footer-inner {
+    width: min(1400px, 100% - 0.25rem);
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 0.9rem;
+  }
+
+  .uc-footer-brand {
+    justify-content: center;
+  }
+
+  .uc-footer-right {
+    text-align: center;
+  }
+
+  .uc-socials {
+    justify-content: center;
+  }
+}
