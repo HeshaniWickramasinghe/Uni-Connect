@@ -8,6 +8,8 @@ function Header({ user }) {
     const [notificationOpen, setNotificationOpen] = useState(false);
     const navigate = useNavigate();
     const isLoggedIn = Boolean(user?.id);
+    const userEmail = user?.email?.trim().toLowerCase();
+    const isAdmin = userEmail === 'it23722040@my.sliit.lk';
 
     const toggleCart = () => {
         setCartOpen((prev) => !prev);
@@ -68,6 +70,14 @@ function Header({ user }) {
                         >
                             Lost and Found
                         </button>
+                        {isAdmin && (
+                            <button
+                                onClick={() => navigateWithUser('/admin')}
+                                className="uc-pill uc-pill-light"
+                            >
+                                Admin
+                            </button>
+                        )}
                         <div className="uc-notification">
                             <button
                                 onClick={toggleNotification}
@@ -180,7 +190,10 @@ function Header({ user }) {
                                         Settings
                                     </button>
                                     <button
-                                        onClick={() => navigate('/homepage')}
+                                        onClick={() => {
+                                            sessionStorage.removeItem('loggedInUser');
+                                            navigate('/homepage');
+                                        }}
                                         className="uc-menu-btn logout"
                                     >
                                         Sign Out

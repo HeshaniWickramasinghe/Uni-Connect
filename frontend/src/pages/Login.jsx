@@ -5,6 +5,7 @@ import "./Login.css";
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
 const INITIAL_FORM = { email: "", password: "" };
+const ADMIN_EMAIL = "it23722040@my.sliit.lk";
 
 function Login() {
   const navigate = useNavigate();
@@ -24,12 +25,20 @@ function Login() {
 
     try {
       const response = await axios.post(`${API_BASE_URL}/api/users/login`, form);
+      const loggedInUser = response.data?.user;
+      const loggedInEmail = loggedInUser?.email?.trim().toLowerCase();
+      const destination = loggedInEmail === ADMIN_EMAIL ? "/admin" : "/homepage";
+
+      if (loggedInUser) {
+        sessionStorage.setItem("loggedInUser", JSON.stringify(loggedInUser));
+      }
+
       setMessage({
         type: "success",
         text: response.data?.message || "Login successful",
       });
       setTimeout(() => {
-        navigate("/homepage", { state: { user: response.data.user } });
+        navigate(destination, { state: { user: loggedInUser } });
       }, 1000);
     } catch (error) {
       const errorText =

@@ -5,7 +5,16 @@ import Footer from "./Footer";
 
 function Homepg() {
   const location = useLocation();
-  const user = location.state?.user;
+  const stateUser = location.state?.user;
+  const storedUser = (() => {
+    try {
+      const rawUser = sessionStorage.getItem("loggedInUser");
+      return rawUser ? JSON.parse(rawUser) : null;
+    } catch (_error) {
+      return null;
+    }
+  })();
+  const user = stateUser || storedUser;
 
   return (
     <div className="homepage-layout">
