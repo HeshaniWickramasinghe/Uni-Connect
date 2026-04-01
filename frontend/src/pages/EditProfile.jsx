@@ -18,7 +18,6 @@ function EditProfile() {
 
   const [formData, setFormData] = useState({
     name: user?.name || "",
-    email: user?.email || "",
     phoneNumber: user?.phoneNumber || "",
   });
   const [loading, setLoading] = useState(false);
@@ -67,7 +66,6 @@ function EditProfile() {
     try {
       const response = await axios.put(`${API_BASE_URL}/api/users/${user.id}`, {
         name: formData.name,
-        email: formData.email,
         phoneNumber: formData.phoneNumber,
       });
 
@@ -176,16 +174,6 @@ function EditProfile() {
               type="tel"
               name="phoneNumber"
               value={formData.phoneNumber}
-              onChange={handleChange}
-              required
-            />
-
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              name="email"
-              value={formData.email}
               onChange={handleChange}
               required
             />

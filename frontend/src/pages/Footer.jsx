@@ -1,7 +1,11 @@
 import './Footer.css';
 
 function Footer() {
-    const socials = ['Facebook', 'LinkedIn', 'Instagram'];
+    const socials = [
+        { name: 'Facebook', url: 'https://www.facebook.com/' },
+        { name: 'LinkedIn', url: 'https://www.linkedin.com/' },
+        { name: 'Instagram', url: 'https://www.instagram.com/' },
+    ];
 
     return (
         <footer className="uc-footer">
@@ -22,8 +26,8 @@ function Footer() {
                     <p className="uc-footer-copy">© {new Date().getFullYear()} UniConnect Portal</p>
                     <div className="uc-socials">
                         {socials.map((social) => (
-                            <a key={social} className="uc-social" href="#" onClick={(e) => e.preventDefault()}>
-                                {social}
+                            <a key={social.name} className="uc-social" href={social.url} target="_blank" rel="noopener noreferrer">
+                                {social.name}
                             </a>
                         ))}
                     </div>
