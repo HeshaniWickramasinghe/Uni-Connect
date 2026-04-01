@@ -7,11 +7,11 @@ import Registration from './pages/Registration';
 import VerifyEmail from './pages/VerifyEmail';
 import UserProfile from './pages/UserProfile';
 import EditProfile from './pages/EditProfile';
-import AdminDashboard from './pages/AdminDashboard';
-import AdminUsers from './pages/AdminUsers';
-import AdminGhostLec from './pages/AdminGhostLec';
-import AdminLostFound from './pages/AdminLostFound';
-import AdminPayments from './pages/AdminPayments';
+import AdminDashboard from './pages/Admin/AdminDashboard';
+import AdminUsers from './pages/Admin/AdminUsers';
+import AdminGhostLec from './pages/Admin/AdminGhostLec';
+import AdminLostFound from './pages/Admin/AdminLostFound';
+import AdminPayments from './pages/Admin/AdminPayments';
 
 const ADMIN_EMAIL = 'it23722040@my.sliit.lk';
 
