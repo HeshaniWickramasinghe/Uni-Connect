@@ -1,0 +1,143 @@
+:root {
+  --bg-dark: #0f172a;
+  --bg-mid: #1d3557;
+  --surface: #ffffff;
+  --text-main: #1b263b;
+  --text-muted: #6b7280;
+  --line: #d9e1ec;
+  --brand: #1f7ae0;
+  --brand-strong: #155db0;
+  --success: #1f8b4c;
+  --error: #c92a2a;
+}
+
+.testpay-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 14% 18%, rgba(74, 222, 255, 0.18), transparent 42%),
+    radial-gradient(circle at 84% 10%, rgba(102, 126, 234, 0.28), transparent 40%),
+    linear-gradient(135deg, var(--bg-dark), var(--bg-mid));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  box-sizing: border-box;
+  font-family: "Segoe UI", "Trebuchet MS", sans-serif;
+}
+
+.testpay-card {
+  width: min(500px, 100%);
+  padding: 32px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #ffffff, #f9fbff);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow:
+    0 18px 35px rgba(7, 20, 43, 0.26),
+    0 2px 8px rgba(7, 20, 43, 0.18);
+}
+
+.testpay-title {
+  margin: 0 0 8px;
+  text-align: center;
+  color: var(--text-main);
+  letter-spacing: 0.3px;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.testpay-subtitle {
+  margin: 0 0 28px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.payment-methods {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.payment-button {
+  height: 100px;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 16px 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: all 0.22s ease;
+  box-sizing: border-box;
+}
+
+.payment-button:hover {
+  border-color: var(--brand);
+  background: linear-gradient(135deg, #f5f9ff, #fafbff);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(31, 122, 224, 0.18);
+}
+
+.payment-button:active {
+  transform: translateY(0);
+}
+
+.payment-button.bank-transfer:hover {
+  border-color: #2563eb;
+}
+
+.payment-button.online-pay:hover {
+  border-color: var(--brand);
+}
+
+.button-icon {
+  font-size: 32px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.button-label {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.button-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+@media (max-width: 480px) {
+  .testpay-page {
+    padding: 16px;
+  }
+
+  .testpay-card {
+    padding: 24px;
+    border-radius: 14px;
+  }
+
+  .testpay-title {
+    font-size: 1.3rem;
+  }
+
+  .payment-methods {
+    gap: 12px;
+  }
+
+  .payment-button {
+    height: 88px;
+    padding: 12px 16px;
+  }
+
+  .button-icon {
+    font-size: 28px;
+  }
+
+  .button-label {
+    font-size: 1rem;
+  }
+}

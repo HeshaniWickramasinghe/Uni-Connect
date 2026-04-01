@@ -7,24 +7,24 @@ require("dotenv").config();
 
 const app = express();
 
-// ✅ Middleware
+// Middleware
 app.use(cors());
 app.use(express.json({ limit: "5mb" }));
 
-// ✅ Import Routes
+// Import Routes
 const loggingRoutes = require("./Routes_Logging/loggingRoutes");
+const paymentRoutes = require("./Routes_C/paymentRoutes");
 
-
-// ✅ Route Middleware
+// Use Routes
 app.use("/api/users", loggingRoutes);
+app.use("/api/payments", paymentRoutes);
 
-
-// ✅ Test Route (optional)
+// Test Route
 app.get("/", (req, res) => {
     res.send("API is working...");
 });
 
-// ✅ MongoDB Connection
+// MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI)
 .then(() => {
     console.log("Connected to MongoDB");

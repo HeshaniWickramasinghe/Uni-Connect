@@ -1,0 +1,346 @@
+:root {
+  --bg-dark: #0f172a;
+  --bg-mid: #1d3557;
+  --surface: #ffffff;
+  --text-main: #1b263b;
+  --text-muted: #6b7280;
+  --line: #d9e1ec;
+  --brand: #1f7ae0;
+  --brand-strong: #155db0;
+  --success: #1f8b4c;
+  --error: #c92a2a;
+}
+
+.bank-transfer-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 14% 18%, rgba(74, 222, 255, 0.18), transparent 42%),
+    radial-gradient(circle at 84% 10%, rgba(102, 126, 234, 0.28), transparent 40%),
+    linear-gradient(135deg, var(--bg-dark), var(--bg-mid));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  box-sizing: border-box;
+  font-family: "Segoe UI", "Trebuchet MS", sans-serif;
+}
+
+.bank-transfer-card {
+  width: min(560px, 100%);
+  padding: 32px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #ffffff, #f9fbff);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow:
+    0 18px 35px rgba(7, 20, 43, 0.26),
+    0 2px 8px rgba(7, 20, 43, 0.18);
+}
+
+.bank-title {
+  margin: 0 0 8px;
+  text-align: center;
+  color: var(--text-main);
+  letter-spacing: 0.3px;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.bank-subtitle {
+  margin: 0 0 28px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.bank-details-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.details-section,
+.file-upload-section {
+  border-radius: 12px;
+  padding: 20px;
+  background: #f8fbff;
+  border: 1px solid var(--line);
+}
+
+.section-title {
+  margin: 0 0 16px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px dashed #d7e1f0;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.detail-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+  text-align: right;
+  word-break: break-word;
+}
+
+.upload-description {
+  margin: 0 0 16px;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.file-input-wrapper {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 2px dashed var(--brand);
+  border-radius: 10px;
+  background: rgba(31, 122, 224, 0.06);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.file-label:hover {
+  border-color: var(--brand-strong);
+  background: rgba(31, 122, 224, 0.12);
+}
+
+.file-icon {
+  font-size: 20px;
+}
+
+.file-text {
+  color: var(--text-main);
+  font-size: 0.94rem;
+  font-weight: 500;
+}
+
+.file-info {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.upload-button {
+  width: 100%;
+  height: 46px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #2f93ff, var(--brand));
+  color: #ffffff;
+  font-size: 0.98rem;
+  font-weight: 700;
+  letter-spacing: 0.25px;
+  cursor: pointer;
+  box-shadow: 0 8px 16px rgba(21, 93, 176, 0.35);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.upload-button:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(180deg, #2587f2, var(--brand-strong));
+  box-shadow: 0 10px 18px rgba(21, 93, 176, 0.42);
+}
+
+.upload-button:active {
+  transform: translateY(0);
+}
+
+.card-blur {
+  filter: blur(3px);
+}
+
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 20, 38, 0.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.popup-box {
+  width: min(390px, 100%);
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid #e6edf7;
+  padding: 22px 20px 18px;
+  text-align: center;
+  box-shadow: 0 18px 34px rgba(6, 18, 36, 0.33);
+}
+
+.popup-icon {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  margin: 2px auto 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup-icon-inner {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.popup-icon-success {
+  background: rgba(31, 139, 76, 0.14);
+}
+
+.popup-icon-success .popup-icon-inner {
+  color: var(--success);
+  border: 2px solid rgba(31, 139, 76, 0.95);
+}
+
+.popup-icon-error {
+  background: rgba(201, 42, 42, 0.14);
+}
+
+.popup-icon-error .popup-icon-inner {
+  color: var(--error);
+  border: 2px solid rgba(201, 42, 42, 0.95);
+}
+
+.popup-title {
+  margin: 0 0 8px;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.popup-success {
+  color: var(--success);
+}
+
+.popup-error {
+  color: var(--error);
+}
+
+.popup-message {
+  margin: 0 0 16px;
+  color: #32435f;
+  line-height: 1.45;
+  font-size: 0.96rem;
+}
+
+.popup-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.popup-button {
+  min-width: 98px;
+  border: none;
+  border-radius: 9px;
+  padding: 10px 18px;
+  background: linear-gradient(180deg, #2f93ff, var(--brand));
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.94rem;
+  cursor: pointer;
+  transition: transform 0.18s ease, filter 0.18s ease;
+}
+
+.popup-button:hover {
+  transform: translateY(-1px);
+  filter: brightness(0.96);
+}
+
+.instructions-box {
+  border-radius: 12px;
+  padding: 16px;
+  background: rgba(31, 139, 76, 0.1);
+  border-left: 4px solid var(--success);
+}
+
+.instructions-box h4 {
+  margin: 0 0 10px;
+  font-size: 0.95rem;
+  color: var(--text-main);
+}
+
+.instructions-box ul {
+  margin: 0;
+  padding-left: 20px;
+  list-style: none;
+}
+
+.instructions-box li {
+  margin: 6px 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.instructions-box li:before {
+  content: "✓ ";
+  color: var(--success);
+  font-weight: 700;
+  margin-right: 6px;
+}
+
+@media (max-width: 480px) {
+  .bank-transfer-page {
+    padding: 16px;
+  }
+
+  .bank-transfer-card {
+    padding: 24px;
+    border-radius: 14px;
+  }
+
+  .bank-title {
+    font-size: 1.3rem;
+  }
+
+  .detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .detail-value {
+    text-align: left;
+  }
+}

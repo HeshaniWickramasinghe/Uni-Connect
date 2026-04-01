@@ -12,6 +12,9 @@ import AdminUsers from './pages/Admin/AdminUsers';
 import AdminGhostLec from './pages/Admin/AdminGhostLec';
 import AdminLostFound from './pages/Admin/AdminLostFound';
 import AdminPayments from './pages/Admin/AdminPayments';
+import TestPay from './pages/testpay';
+import CardPayment from './pages/CardPayment';
+import BankTransfer from './pages/BankTransfer';
 
 const ADMIN_EMAIL = 'it23722040@my.sliit.lk';
 
@@ -67,6 +70,9 @@ function App() {
           <Route path="/admin/ghost-lec" element={<AdminRoute component={AdminGhostLec} />} />
           <Route path="/admin/lost-found" element={<AdminRoute component={AdminLostFound} />} />
           <Route path="/admin/payments" element={<AdminRoute component={AdminPayments} />} />
+          <Route path="/payments" element={<TestPay />} />
+          <Route path="/card-payment" element={<CardPayment />} />
+          <Route path="/bank-transfer" element={<BankTransfer />} />
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/profile/edit" element={<EditProfile />} />
         </Routes>
