@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import Header from '../common/Header';
-import Footer from '../common/Footer';
+import Header from '../Header';
+import Footer from '../Footer';
 
 const ItemDetails = () => {
     const { id } = useParams();

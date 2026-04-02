@@ -10,7 +10,7 @@ import EditProfile from './pages/Login/EditProfile';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import AdminUsers from './pages/Admin/AdminUsers';
 import GostLec from './pages/GostLec/GostLec';
-import LostAndFound from './pages/LostAndFound/LostAndFound';
+import LostAndFound from './pages/LostAndFound/LostAndFoundDashboard';
 import AdminPayments from './pages/Paymnet/AdminPayments';
 import TestPay from './pages/Paymnet/testpay';
 import CardPayment from './pages/Paymnet/CardPayment';

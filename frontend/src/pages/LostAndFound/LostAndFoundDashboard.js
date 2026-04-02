@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReportModal from './ReportModal';
-import Header from '../common/Header';
-import Footer from '../common/Footer';
+import Header from '../Header';
+import Footer from '../Footer';
 import ChatComponent from './ChatComponent';
 import { v4 as uuidv4 } from 'uuid';
 

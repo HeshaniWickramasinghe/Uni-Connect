@@ -43,6 +43,20 @@ module.exports = {
     ],
     resolve: {
         extensions: ['.js', '.jsx'],
+        alias: {
+            axios: path.resolve(__dirname, 'node_modules/axios/dist/browser/axios.cjs'),
+        },
+        fallback: {
+            http: false,
+            https: false,
+            url: false,
+            stream: false,
+            assert: false,
+            util: false,
+            zlib: false,
+            crypto: false,
+            http2: false,
+        },
     },
     devServer: {
         static: {
