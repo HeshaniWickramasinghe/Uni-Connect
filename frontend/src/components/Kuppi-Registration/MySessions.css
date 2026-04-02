@@ -1,0 +1,320 @@
+/* MySessions.css - Premium Modern Dark Aesthetic */
+
+:root {
+  --ms-bg-base: #0f172a;
+  --ms-card-bg: rgba(30, 41, 59, 0.7);
+  --ms-border: rgba(255, 255, 255, 0.08);
+  --ms-text: #f8fafc;
+  --ms-text-muted: #94a3b8;
+  
+  --status-pending: #fbbf24;
+  --status-pending-bg: rgba(251, 191, 36, 0.15);
+  
+  --status-approved: #10b981;
+  --status-approved-bg: rgba(16, 185, 129, 0.15);
+  
+  --status-rejected: #ef4444;
+  --status-rejected-bg: rgba(239, 68, 68, 0.15);
+}
+
+.my-sessions-container {
+  min-height: 100vh;
+  background-color: var(--ms-bg-base);
+  background-image: 
+    radial-gradient(circle at top left, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.1) 0%, transparent 40%);
+  color: var(--ms-text);
+  padding: 4rem 2rem;
+  font-family: 'Inter', system-ui, sans-serif;
+  box-sizing: border-box;
+}
+
+.my-sessions-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.my-sessions-header h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem 0;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+
+.my-sessions-header p {
+  color: var(--ms-text-muted);
+  font-size: 1.1rem;
+}
+
+.email-lookup-form {
+  display: flex;
+  gap: 1rem;
+  max-width: 600px;
+  margin: 0 auto 4rem auto;
+  align-items: center;
+}
+
+.email-input {
+  flex: 1;
+  background: var(--ms-card-bg);
+  border: 1px solid var(--ms-border);
+  padding: 1.15rem 1.5rem;
+  border-radius: 12px;
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.email-input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+}
+
+.search-btn {
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  color: white;
+  padding: 1.15rem 2rem;
+  border-radius: 12px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.search-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+}
+
+.search-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.my-sessions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.my-session-card {
+  background: var(--ms-card-bg);
+  border: 1px solid var(--ms-border);
+  border-radius: 20px;
+  padding: 2rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+}
+
+.my-session-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+  border-color: rgba(255,255,255,0.15);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.status-badge {
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid transparent;
+}
+
+.status-pending { background: var(--status-pending-bg); color: var(--status-pending); border-color: rgba(251, 191, 36, 0.3); }
+.status-approved { background: var(--status-approved-bg); color: var(--status-approved); border-color: rgba(16, 185, 129, 0.3); }
+.status-rejected { background: var(--status-rejected-bg); color: var(--status-rejected); border-color: rgba(239, 68, 68, 0.3); }
+
+.module-code {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.35rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+.module-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0 0 1.5rem 0;
+  color: #fff;
+}
+
+.session-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  border-top: 1px solid var(--ms-border);
+  border-bottom: 1px solid var(--ms-border);
+  padding: 1rem 0;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: #cbd5e1;
+}
+
+.info-item a {
+  color: #6366f1;
+  text-decoration: none;
+}
+
+.status-message {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-top: auto;
+}
+
+.success-text { color: #10b981; font-weight: 600; }
+.error-text { color: #f87171; font-weight: 600; }
+.pending-text { color: #fbbf24; font-weight: 600; }
+
+.no-sessions {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem;
+  background: var(--ms-card-bg);
+  border-radius: 20px;
+  border: 1px dashed rgba(255,255,255,0.2);
+  color: var(--ms-text-muted);
+}
+
+.loading-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem;
+}
+
+/* Base Loader */
+.loader {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+}
+
+.loader-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.small-loader {
+  width: 20px;
+  height: 20px;
+  border-width: 2px;
+}
+
+/* Students Section */
+.students-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--ms-border);
+}
+
+.view-students-btn {
+  background: rgba(99, 102, 241, 0.1);
+  color: #818cf8;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  padding: 0.85rem;
+  border-radius: 12px;
+  font-weight: 600;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.view-students-btn:hover {
+  background: rgba(99, 102, 241, 0.2);
+  color: #a5b4fc;
+  border-color: rgba(99, 102, 241, 0.5);
+}
+
+.students-list-container {
+  margin-top: 1.5rem;
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 12px;
+  padding: 1rem;
+  animation: slideDown 0.3s ease-out;
+}
+
+.no-students {
+  text-align: center;
+  color: var(--ms-text-muted);
+  font-size: 0.95rem;
+  margin: 1rem 0;
+}
+
+.students-table-wrapper {
+  overflow-x: auto;
+}
+
+.students-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.students-table th {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  color: #cbd5e1;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.students-table td {
+  padding: 0.75rem 1rem;
+  color: var(--ms-text);
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+}
+
+.students-table tr:last-child td {
+  border-bottom: none;
+}
+
+.students-table a {
+  color: #60a5fa;
+  text-decoration: none;
+}
+
+.students-table a:hover {
+  text-decoration: underline;
+}
+
+@keyframes slideDown { 
+  from { opacity: 0; transform: translateY(-5px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 768px) {
+  .email-lookup-form { flex-direction: column; align-items: stretch; }
+  .my-sessions-grid { grid-template-columns: 1fr; }
+}
