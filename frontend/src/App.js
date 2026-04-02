@@ -10,7 +10,8 @@ import EditProfile from './pages/Login/EditProfile';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import AdminUsers from './pages/Admin/AdminUsers';
 import GostLec from './pages/GostLec/GostLec';
-import LostAndFound from './pages/LostAndFound/LostAndFound';
+import LostAndFoundDashboard from './pages/LostAndFound/LostAndFoundDashboard';
+import ItemDetails from './pages/LostAndFound/ItemDetails';
 import AdminPayments from './pages/Paymnet/AdminPayments';
 import TestPay from './pages/Paymnet/testpay';
 import CardPayment from './pages/Paymnet/CardPayment';
@@ -68,10 +69,11 @@ function App() {
           <Route path="/admin/dashboard" element={<AdminRoute component={AdminDashboard} />} />
           <Route path="/admin/users" element={<AdminRoute component={AdminUsers} />} />
           <Route path="/admin/ghost-lec" element={<AdminRoute component={GostLec} />} />
-          <Route path="/admin/lost-found" element={<AdminRoute component={LostAndFound} />} />
+          <Route path="/admin/lost-found" element={<AdminRoute component={LostAndFoundDashboard} />} />
           <Route path="/admin/payments" element={<AdminRoute component={AdminPayments} />} />
           <Route path="/ghost-lec" element={<GostLec />} />
-          <Route path="/lost-and-found" element={<LostAndFound />} />
+          <Route path="/lost-and-found" element={<LostAndFoundDashboard />} />
+          <Route path="/item/:id" element={<ItemDetails />} />
           <Route path="/payments" element={<TestPay />} />
           <Route path="/card-payment" element={<CardPayment />} />
           <Route path="/bank-transfer" element={<BankTransfer />} />

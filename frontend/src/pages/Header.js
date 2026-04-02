@@ -137,7 +137,7 @@ function Header({ user }) {
                                         className="uc-cart-btn"
                                         onClick={() => {
                                             setCartOpen(false);
-                                            navigateWithUser('/homepage');
+                                            navigateWithUser('/ghost-lec');
                                         }}
                                     >
                                         Browse Items
