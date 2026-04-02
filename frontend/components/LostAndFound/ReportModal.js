@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, CircleMarker, Tooltip } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
+
 const sliitLocations = [
     { name: 'Faculty of Computing', position: [6.9149, 79.9731] },
     { name: 'Faculty of Engineering', position: [6.9145, 79.9715] },
