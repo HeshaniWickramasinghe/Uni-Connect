@@ -19,19 +19,20 @@ const sliitLocations = [
     { name: 'Greenhouse', position: [6.9160, 79.9725] }
 ];
 
-const ReportModal = ({ type, onClose, onSuccess, currentUser }) => {
+const ReportModal = ({ type, onClose, onSuccess, currentUser, itemData }) => {
     const isLost = type === 'Lost';
+    const isEditing = !!itemData;
     const primaryBlue = '#023E8A';
     const accentBlue = '#4C6EF5';
     const borderGray = '#DDE3ED';
 
     const [formData, setFormData] = useState({
-        name: '',
-        category: 'Electronics',
-        location: '',
-        date: '',
-        description: '',
-        photo: ''
+        name: itemData?.name || '',
+        category: itemData?.category || 'Electronics',
+        location: itemData?.location || '',
+        date: itemData?.date || '',
+        description: itemData?.description || '',
+        photo: itemData?.photo || ''
     });
 
     const [loading, setLoading] = useState(false);
@@ -58,10 +59,11 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser }) => {
         }
     };
 
-    // Pre-populate time states if formData.date exists 
+    // Pre-populate time states
     useEffect(() => {
-        if (formData.date) {
-            const [d, t] = formData.date.split('T');
+        const dateToParse = itemData?.date || formData.date;
+        if (dateToParse) {
+            const [d, t] = dateToParse.split('T');
             setDd(d || '');
             if (t) {
                 let [h, m] = t.split(':');
@@ -73,7 +75,7 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser }) => {
         } else {
             handleSetNow();
         }
-    }, []);
+    }, [itemData]);
 
     // combined date+time and convert to YYYY-MM-DDTHH:mm
     useEffect(() => {
@@ -86,9 +88,6 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser }) => {
             if (pp === 'AM' && hInt === 12) militaryH = 0;
 
             const combined = `${dd}T${militaryH.toString().padStart(2, '0')}:${mm.padStart(2, '0')}`;
-            const selectedDate = new Date(combined);
-            const now = new Date();
-
             setFormData(prev => ({ ...prev, date: combined }));
         }
     }, [dd, hh, mm, pp]);
@@ -158,10 +157,18 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser }) => {
         setLoading(true);
         try {
             const payload = { ...formData, type };
-            payload.userName = currentUser?.name || "Anonymous User";
+            if (!isEditing) {
+                payload.userName = currentUser?.name || "Anonymous User";
+            }
 
-            const res = await fetch('http://localhost:5000/api/items', {
-                method: 'POST',
+            const url = isEditing 
+                ? `http://localhost:5000/api/items/${itemData._id}` 
+                : 'http://localhost:5000/api/items';
+            
+            const method = isEditing ? 'PUT' : 'POST';
+
+            const res = await fetch(url, {
+                method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
@@ -192,7 +199,7 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser }) => {
                 <div className="text-white px-8 py-8 rounded-t-2xl relative shrink-0" style={{ backgroundColor: primaryBlue }}>
                     <button onClick={onClose} className="absolute top-6 right-6 bg-white/10 hover:bg-white/20 text-white rounded-xl p-2 h-10 w-10 flex items-center justify-center transition-all font-black z-10">✕</button>
                     <div className="flex flex-col">
-                        <h2 className="text-3xl font-black tracking-tighter uppercase">Report {type} Item</h2>
+                        <h2 className="text-3xl font-black tracking-tighter uppercase">{isEditing ? 'Edit' : 'Report'} {type} Item</h2>
                         <p className="text-blue-200 mt-1 text-xs font-black uppercase tracking-widest">SLIIT Student Support Hub</p>
                     </div>
                 </div>

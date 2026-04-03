@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./Login.css";
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
@@ -9,6 +9,7 @@ const ADMIN_EMAIL = "it23722040@my.sliit.lk";
 
 function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [form, setForm] = useState(INITIAL_FORM);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
@@ -27,7 +28,8 @@ function Login() {
       const response = await axios.post(`${API_BASE_URL}/api/users/login`, form);
       const loggedInUser = response.data?.user;
       const loggedInEmail = loggedInUser?.email?.trim().toLowerCase();
-      const destination = loggedInEmail === ADMIN_EMAIL ? "/admin" : "/homepage";
+      
+      const destination = location.state?.from || (loggedInEmail === ADMIN_EMAIL ? "/admin" : "/homepage");
 
       if (loggedInUser) {
         sessionStorage.setItem("loggedInUser", JSON.stringify(loggedInUser));

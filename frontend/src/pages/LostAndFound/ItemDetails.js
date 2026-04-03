@@ -30,23 +30,20 @@ const ItemDetails = () => {
     const currentUser = location.state?.user || getStoredUser();
     const currentUserName = currentUser?.name || 'Guest User';
 
+    useEffect(() => {
+        if (!currentUser) {
+            navigate('/Login', { state: { from: location.pathname } });
+        }
+    }, [currentUser, navigate, location.pathname]);
+
     const getRoomId = (itemId, user1, user2) => {
         const users = [user1, user2].sort();
         return `${itemId}-${users[0]}-${users[1]}`;
     };
 
     useEffect(() => {
-        if (!currentUser) {
-            alert('Access Denied: Please log in to view the Lost and Found details.');
-            navigate('/homepage');
-        }
-    }, [currentUser, navigate]);
-
-    useEffect(() => {
-        if (currentUser) {
-            fetchItemDetails();
-        }
-    }, [id, currentUser]);
+        fetchItemDetails();
+    }, [id]);
 
     useEffect(() => {
         if (!item) return;

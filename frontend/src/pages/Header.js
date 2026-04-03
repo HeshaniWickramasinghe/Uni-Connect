@@ -30,12 +30,6 @@ function Header({ user }) {
     };
 
     const navigateWithUser = (path) => {
-        // Only allow logged in users to access Lost and Found
-        if (path === '/lost-and-found' && !isLoggedIn) {
-            alert('Access Denied: Please log in to your account to view the Lost and Found dashboard.');
-            return;
-        }
-
         if (isLoggedIn) {
             navigate(path, { state: { user } });
             return;
@@ -207,7 +201,7 @@ function Header({ user }) {
                     </div>
                 ) : (
                     <div className="uc-nav">
-                        {socialLinks.filter(item => item.path !== '/lost-and-found').map((item) => (
+                        {socialLinks.map((item) => (
                             <button
                                 key={item.label}
                                 onClick={() => navigateWithUser(item.path)}

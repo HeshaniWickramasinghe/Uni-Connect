@@ -9,6 +9,7 @@ import UserProfile from './pages/Login/UserProfile';
 import EditProfile from './pages/Login/EditProfile';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import AdminUsers from './pages/Admin/AdminUsers';
+import AdminLostFound from './pages/Admin/AdminLostFound';
 import GostLec from './pages/GostLec/GostLec';
 import LostAndFoundDashboard from './pages/LostAndFound/LostAndFoundDashboard';
 import ItemDetails from './pages/LostAndFound/ItemDetails';
@@ -81,7 +82,7 @@ function App() {
           <Route path="/admin/dashboard" element={<AdminRoute component={AdminDashboard} />} />
           <Route path="/admin/users" element={<AdminRoute component={AdminUsers} />} />
           <Route path="/admin/ghost-lec" element={<AdminRoute component={GostLec} />} />
-          <Route path="/admin/lost-found" element={<AdminRoute component={LostAndFoundDashboard} />} />
+          <Route path="/admin/lost-found" element={<AdminRoute component={AdminLostFound} />} />
           <Route path="/admin/payments" element={<AdminRoute component={AdminPayments} />} />
           <Route path="/ghost-lec" element={<GostLec />} />
           <Route path="/lost-and-found" element={<LostAndFoundDashboard />} />

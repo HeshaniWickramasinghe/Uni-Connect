@@ -35,6 +35,7 @@ const LostAndFoundDashboard = () => {
     const dangerRed = '#C0392B';
 
     const categories = ['All Items', 'My Posts', 'Lost', 'Found', 'Electronics', 'Essentials', 'Books', 'Keys'];
+    const [editingItem, setEditingItem] = useState(null);
 
     const getStoredUser = () => {
         try {
@@ -52,11 +53,10 @@ const LostAndFoundDashboard = () => {
         if (userFromState || storedUser) {
             setCurrentUser(userFromState || storedUser);
         } else {
-            // Strictly enforce login for this feature
-            alert('Access Denied: You must be logged in to view the Lost and Found dashboard.');
-            navigate('/homepage');
+            // Force redirect to login if no genuine user is found
+            navigate('/Login', { state: { from: location.pathname } });
         }
-    }, [location.state]);
+    }, [location.state, navigate, location.pathname]);
 
     useEffect(() => {
         fetchItems();
@@ -87,6 +87,16 @@ const LostAndFoundDashboard = () => {
         setEndDate('');
         setSearchQuery('');
         setFilter('All Items');
+    };
+
+    const handleDelete = async (itemId) => {
+        if (!window.confirm("Are you sure you want to permanently delete this posting? This action cannot be undone.")) return;
+        try {
+            const res = await fetch(`http://localhost:5000/api/items/${itemId}`, { method: 'DELETE' });
+            if (res.ok) fetchItems();
+        } catch (error) {
+            console.error('Error deleting item:', error);
+        }
     };
 
     const getStatusColor = (type, status) => {
@@ -340,7 +350,26 @@ const LostAndFoundDashboard = () => {
                                     >
                                         Details
                                     </button>
-                                    {item.userName !== currentUser?.name && (
+                                    {item.userName === currentUser?.name ? (
+                                        <>
+                                            <button
+                                                onClick={() => setEditingItem(item)}
+                                                className="w-10 h-10 rounded-2xl text-white font-black uppercase tracking-widest text-[10px] transition-all flex items-center justify-center shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
+                                                style={{ backgroundColor: successGreen }}
+                                                title="Edit Posting"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(item._id)}
+                                                className="w-10 h-10 rounded-2xl text-white font-black uppercase tracking-widest text-[10px] transition-all flex items-center justify-center shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
+                                                style={{ backgroundColor: dangerRed }}
+                                                title="Delete Posting"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                                            </button>
+                                        </>
+                                    ) : (
                                         <button
                                             onClick={() => setActiveChat({
                                                 itemId: item._id,
@@ -398,6 +427,18 @@ const LostAndFoundDashboard = () => {
             )}
 
             <Footer />
+            {editingItem && (
+                <ReportModal
+                    type={editingItem.type}
+                    itemData={editingItem}
+                    onClose={() => setEditingItem(null)}
+                    onSuccess={() => {
+                        setEditingItem(null);
+                        fetchItems();
+                    }}
+                    currentUser={currentUser}
+                />
+            )}
         </div>
     );
 };
