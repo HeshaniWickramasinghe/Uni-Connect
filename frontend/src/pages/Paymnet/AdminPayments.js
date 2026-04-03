@@ -388,8 +388,6 @@ function AdminPayments() {
                   <thead>
                     <tr>
                       <th>Transaction ID</th>
-                      <th>User Name</th>
-                      <th>User Email</th>
                       <th>Student ID</th>
                       <th>Method</th>
                       <th>Amount</th>
@@ -413,8 +411,6 @@ function AdminPayments() {
                       return (
                         <tr key={item._id}>
                           <td>{item.transactionId || '-'}</td>
-                          <td>{item.userName || '-'}</td>
-                          <td>{item.userEmail || '-'}</td>
                           <td>{item.studentRegistrationNumber || '-'}</td>
                           <td>{item.method || '-'}</td>
                           <td>{item.amount ?? '-'}</td>
@@ -469,7 +465,6 @@ function AdminPayments() {
                 <thead>
                   <tr>
                     <th>Transaction ID</th>
-                    <th>User Email</th>
                     <th>Student ID</th>
                     <th>Method</th>
                     <th>Card Name</th>
@@ -495,7 +490,6 @@ function AdminPayments() {
                       return (
                         <tr key={item._id}>
                           <td>{item.transactionId || '-'}</td>
-                          <td>{item.userEmail || '-'}</td>
                           <td>{item.studentRegistrationNumber || '-'}</td>
                           <td>{item.method || '-'}</td>
                           <td>{item.cardName || '-'}</td>
@@ -531,7 +525,7 @@ function AdminPayments() {
                     })
                   ) : (
                     <tr>
-                      <td colSpan="10">No payment data found.</td>
+                      <td colSpan="9">No payment data found.</td>
                     </tr>
                   )}
                 </tbody>

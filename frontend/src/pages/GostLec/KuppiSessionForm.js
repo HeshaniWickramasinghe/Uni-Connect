@@ -1,11 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import KuppiLayout from './KuppiLayout';
 import './KuppiSessionForm.css';
 
+const REGISTRATION_FEE = 1000;
+
+function getStoredUser() {
+    try {
+        const rawUser = sessionStorage.getItem('loggedInUser');
+        return rawUser ? JSON.parse(rawUser) : null;
+    } catch (_error) {
+        return null;
+    }
+}
+
 const KuppiSessionForm = () => {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const user = location.state?.user || getStoredUser();
     const [formData, setFormData] = useState({
-        name: '',
-        email: '',
+        name: user?.name || '',
+        email: user?.email || '',
         faculty: '',
         skills: '',
         moduleName: '',
@@ -22,13 +38,73 @@ const KuppiSessionForm = () => {
     });
 
     const [files, setFiles] = useState({
+        coverImage: null,
         qualificationFile: null,
         shortNoteFile: null
     });
 
     const [loading, setLoading] = useState(false);
-    const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [message, setMessage] = useState({ type: '', text: '' });
+    const paymentHandledRef = useRef(false);
+
+    const resetFormState = () => {
+        setFormData({
+            name: user?.name || '', email: user?.email || '', faculty: '', skills: '', moduleName: '',
+            moduleCode: '', date: '', time: '', duration: '', price: '', meetingLink: '',
+            bankName: '', accountNumber: '', accountHolderName: '', branchName: ''
+        });
+        setFiles({ coverImage: null, qualificationFile: null, shortNoteFile: null });
+        const formElement = document.getElementById('file-form');
+        if (formElement) {
+            formElement.reset();
+        }
+    };
+
+    const submitSessionRequest = async (draftData, paymentResult) => {
+        setLoading(true);
+
+        const submitData = new FormData();
+        Object.keys(draftData.formData).forEach(key => {
+            if (key === 'skills') {
+                submitData.append(key, JSON.stringify(draftData.formData[key].split(',').map(s => s.trim())));
+            } else {
+                submitData.append(key, draftData.formData[key]);
+            }
+        });
+
+        submitData.append('coverImage', draftData.files.coverImage);
+        submitData.append('qualificationFile', draftData.files.qualificationFile);
+        submitData.append('shortNoteFile', draftData.files.shortNoteFile);
+        submitData.append('registrationPaymentStatus', paymentResult?.status || 'unknown');
+        submitData.append('registrationTransactionId', paymentResult?.transactionId || '');
+        submitData.append('registrationPaymentMethod', paymentResult?.method || '');
+
+        try {
+            const response = await axios.post('http://localhost:5000/api/kuppi-sessions', submitData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            setMessage({ type: 'success', text: response.data.message || 'Session request submitted successfully!' });
+            resetFormState();
+        } catch (error) {
+            const errorMsg = error.response?.data?.message || 'Failed to submit session request after payment.';
+            setMessage({ type: 'error', text: errorMsg });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        const paymentResult = location.state?.paymentResult;
+        const sessionDraft = location.state?.sessionDraft;
+
+        if (!paymentResult || !sessionDraft || paymentHandledRef.current) {
+            return;
+        }
+
+        paymentHandledRef.current = true;
+        submitSessionRequest(sessionDraft, paymentResult);
+        navigate(location.pathname, { replace: true, state: { user } });
+    }, [location.pathname, location.state, navigate, user]);
 
     // Handle standard inputs
     const handleChange = (e) => {
@@ -41,16 +117,11 @@ const KuppiSessionForm = () => {
     };
 
     // Form submission and validation
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         setMessage({ type: '', text: '' });
 
         // Frontend Validations
-        const nameRegex = /^[A-Za-z\s]{3,}$/;
-        if (!nameRegex.test(formData.name)) {
-            return setMessage({ type: 'error', text: 'Name must be at least 3 letters long and contain only letters.' });
-        }
-
         const emailRegex = /^\S+@\S+\.\S+$/;
         if (!emailRegex.test(formData.email)) {
             return setMessage({ type: 'error', text: 'Please provide a valid email.' });
@@ -85,95 +156,72 @@ const KuppiSessionForm = () => {
             return setMessage({ type: 'error', text: 'Meeting Link must be a valid URL starting with http/https.' });
         }
 
-        if (!files.qualificationFile || !files.shortNoteFile) {
-            return setMessage({ type: 'error', text: 'Both Qualification (JPG) and Short Note (PDF) are required.' });
+        if (!files.coverImage || !files.qualificationFile || !files.shortNoteFile) {
+            return setMessage({ type: 'error', text: 'Cover Image (JPG/PNG), Qualification Proof (PDF/JPG/PNG), and Short Notes (PDF/JPG/PNG) are required.' });
         }
 
-        // Prepare FormData
-        const submitData = new FormData();
-        Object.keys(formData).forEach(key => {
-            // Split skills input by comma to create an array format for the backend if needed
-            if (key === 'skills') {
-                submitData.append(key, JSON.stringify(formData[key].split(',').map(s => s.trim())));
-            } else {
-                submitData.append(key, formData[key]);
+        // Route directly to payment selection and pass the fixed registration fee.
+        paymentHandledRef.current = false;
+        navigate('/payments', {
+            state: {
+                user,
+                returnTo: location.pathname,
+                paymentAmount: REGISTRATION_FEE,
+                sessionDraft: {
+                    formData,
+                    files
+                }
             }
         });
-
-        submitData.append('qualificationFile', files.qualificationFile);
-        submitData.append('shortNoteFile', files.shortNoteFile);
-
-        // Instead of immediate submit, show the payment modal
-        setShowPaymentModal(true);
     };
 
-    const handleConfirmPayment = async () => {
-        setShowPaymentModal(false);
-        setLoading(true);
-
-        const submitData = new FormData();
-        Object.keys(formData).forEach(key => {
-            if (key === 'skills') {
-                submitData.append(key, JSON.stringify(formData[key].split(',').map(s => s.trim())));
-            } else {
-                submitData.append(key, formData[key]);
-            }
-        });
-        submitData.append('qualificationFile', files.qualificationFile);
-        submitData.append('shortNoteFile', files.shortNoteFile);
-
-        try {
-            const response = await axios.post('http://localhost:5000/api/kuppi-sessions', submitData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            });
-
-            setMessage({ type: 'success', text: response.data.message || 'Session registered successfully!' });
-
-            // Clear form
-            setFormData({
-                name: '', email: '', faculty: '', skills: '', moduleName: '',
-                moduleCode: '', date: '', time: '', duration: '', price: '', meetingLink: '',
-                bankName: '', accountNumber: '', accountHolderName: '', branchName: ''
-            });
-            setFiles({ qualificationFile: null, shortNoteFile: null });
-
-            // Reset file inputs visually by clearing value
-            document.getElementById('file-form').reset();
-
-        } catch (error) {
-            const errorMsg = error.response?.data?.message || 'Failed to connect to the server. Please try again later.';
-            setMessage({ type: 'error', text: errorMsg });
-        } finally {
-            setLoading(false);
-        }
-    };
+    if (!user) {
+        return (
+            <KuppiLayout title="Host A LEC">
+                <div className="ks-form-container">
+                    <div className="ks-form-wrapper" style={{ textAlign: 'center' }}>
+                        <div className="ks-form-header">
+                            <h2>Login Required</h2>
+                            <p>Please log in first to Uni-Connect.</p>
+                        </div>
+                        <div className="ks-submit-row" style={{ marginTop: '1rem' }}>
+                            <button type="button" className="ks-submit-btn" onClick={() => navigate('/login', { state: { from: '/host-session' } })}>
+                                Log in to Uni-Connect
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </KuppiLayout>
+        );
+    }
 
     return (
-        <div className="ks-form-container">
-            <div className="ks-form-wrapper">
-                <div className="ks-form-header">
-                    <h2>Host A Kuppi Session</h2>
-                    <p>Share your knowledge and help your peers succeed by registering a new module session.</p>
-                </div>
-
-                {message.text && (
-                    <div className={`ks-message ks-${message.type}`}>
-                        {message.text}
+        <KuppiLayout title="Host A LEC">
+            <div className="ks-form-container">
+                <div className="ks-form-wrapper">
+                    <div className="ks-form-header">
+                        <h2>Host A Kuppi Session</h2>
+                        <p>Share your knowledge and help your peers succeed by registering a new module session.</p>
                     </div>
-                )}
 
-                <form id="file-form" className="ks-form" onSubmit={handleSubmit}>
+                    {message.text && (
+                        <div className={`ks-message ks-${message.type}`}>
+                            {message.text}
+                        </div>
+                    )}
+
+                    <form id="file-form" className="ks-form" onSubmit={handleSubmit}>
 
                     {/* Tutor Details Section */}
                     <h3 className="ks-section-title">1. Your Details</h3>
                     <div className="ks-grid">
                         <div className="ks-input-group">
                             <label>Full Name</label>
-                            <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="e.g. John Doe" required />
+                            <input type="text" name="name" value={formData.name} readOnly required />
                         </div>
                         <div className="ks-input-group">
                             <label>Email Address</label>
-                            <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="johndoe@example.com" required />
+                            <input type="email" name="email" value={formData.email} readOnly required />
                         </div>
                     </div>
 
@@ -238,19 +286,28 @@ const KuppiSessionForm = () => {
                     <h3 className="ks-section-title">3. Upload Documentation</h3>
                     <div className="ks-grid">
                         <div className="ks-file-group">
-                            <label>Qualification Proof (JPG)</label>
+                            <label>Cover Image (JPG/PNG)</label>
                             <div className="file-input-wrapper">
-                                <input type="file" name="qualificationFile" accept=".jpg,.jpeg" onChange={handleFileChange} required />
+                                <input type="file" name="coverImage" accept=".jpg,.jpeg,.png" onChange={handleFileChange} required />
                                 <span className="file-custom-btn">Choose Image</span>
+                                <span className="file-name">{files.coverImage ? files.coverImage.name : 'No file chosen...'}</span>
+                            </div>
+                        </div>
+
+                        <div className="ks-file-group">
+                            <label>Qualification Proof (PDF/JPG/PNG)</label>
+                            <div className="file-input-wrapper">
+                                <input type="file" name="qualificationFile" accept=".pdf,.jpg,.jpeg,.png" onChange={handleFileChange} required />
+                                <span className="file-custom-btn">Choose File</span>
                                 <span className="file-name">{files.qualificationFile ? files.qualificationFile.name : 'No file chosen...'}</span>
                             </div>
                         </div>
 
                         <div className="ks-file-group">
-                            <label>Short Notes (PDF)</label>
+                            <label>Short Notes (PDF/JPG/PNG)</label>
                             <div className="file-input-wrapper">
-                                <input type="file" name="shortNoteFile" accept=".pdf" onChange={handleFileChange} required />
-                                <span className="file-custom-btn">Choose PDF</span>
+                                <input type="file" name="shortNoteFile" accept=".pdf,.jpg,.jpeg,.png" onChange={handleFileChange} required />
+                                <span className="file-custom-btn">Choose File</span>
                                 <span className="file-name">{files.shortNoteFile ? files.shortNoteFile.name : 'No file chosen...'}</span>
                             </div>
                         </div>
@@ -280,37 +337,27 @@ const KuppiSessionForm = () => {
                         </div>
                     </div>
 
+                    <div className="ks-terms-box">
+                        <h4>Terms:</h4>
+                        <p><strong>Website Registration Fee</strong></p>
+                        <p>To register and host a Kuppi session, you must pay to website as registration fee.</p>
+                    </div>
+
+                    <div className="ks-input-group fill-width ks-fee-input-wrap">
+                        <label>Registration Fee: (Rs.)</label>
+                        <input type="text" name="registrationFee" value={String(REGISTRATION_FEE)} readOnly />
+                    </div>
+
                     <div className="ks-submit-row">
                         <button type="submit" className="ks-submit-btn" disabled={loading}>
                             {loading ? <span className="loader"></span> : 'Register Session'}
                         </button>
                     </div>
 
-                </form>
-            </div>
-
-            {/* Payment Confirmation Modal */}
-            {showPaymentModal && (
-                <div className="ks-modal-overlay">
-                    <div className="ks-modal-content">
-                        <div className="ks-modal-header">
-                            <h3>Website Registration Fee</h3>
-                        </div>
-                        <div className="ks-modal-body">
-                            <p>To register and host a Kuppi session, you must pay Rs. 1000 as a website registration fee.</p>
-                        </div>
-                        <div className="ks-modal-footer">
-                            <button className="ks-modal-btn ks-confirm-btn" onClick={handleConfirmPayment}>
-                                Pay Rs. 1000
-                            </button>
-                            <button className="ks-modal-btn ks-cancel-btn" onClick={() => setShowPaymentModal(false)}>
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
-            )}
-        </div>
+            </div>
+        </KuppiLayout>
     );
 };
 

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { registerStudent, getRegistrationsBySession, getRegistrationsByStudentEmail } = require('../Controllers/studentRegistrationController');
+const { registerStudent, getRegistrationsBySession, getRegistrationsByStudentEmail, getAllRegistrations, updateRegistrationPaymentStatus } = require('../Controllers/studentRegistrationController');
 
 // POST route for student enrollment in a Kuppi session
 router.post('/', registerStudent);
@@ -10,5 +10,11 @@ router.get('/session/:sessionId', getRegistrationsBySession);
 
 // GET route for fetching all registrations of a student by email
 router.get('/student/:email', getRegistrationsByStudentEmail);
+
+// GET route for fetching all registrations (Admin)
+router.get('/', getAllRegistrations);
+
+// PUT route for host/admin payment approval for an enrollment
+router.put('/:registrationId/payment-status', updateRegistrationPaymentStatus);
 
 module.exports = router;

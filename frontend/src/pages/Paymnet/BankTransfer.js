@@ -27,6 +27,21 @@ function BankTransfer() {
     }
   })();
   const currentUser = stateUser || storedUser;
+  const returnTo = location.state?.returnTo || "/homepage";
+  const sessionDraft = location.state?.sessionDraft;
+  const registrationDraft = location.state?.registrationDraft;
+  const cartItems = Array.isArray(location.state?.cartItems) ? location.state.cartItems : [];
+  const effectiveCartItems = (() => {
+    if (cartItems.length > 0) return cartItems;
+    try {
+      const raw = sessionStorage.getItem("cartItems");
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (_error) {
+      return [];
+    }
+  })();
+  const [paymentResult, setPaymentResult] = useState(null);
 
   const allowedFileTypes = ["application/pdf", "image/jpeg", "image/png", "image/gif"];
   const maxFileSize = 5 * 1024 * 1024;
@@ -46,7 +61,15 @@ function BankTransfer() {
 
   const handleDone = () => {
     closePopup();
-    navigate("/homepage");
+    const targetPath = effectiveCartItems.length > 0 ? "/my-enrollments" : returnTo;
+    navigate(targetPath, {
+      state: {
+        user: currentUser,
+        paymentResult,
+        sessionDraft,
+        registrationDraft
+      }
+    });
   };
 
   const handleFileChange = (e) => {
@@ -94,7 +117,7 @@ function BankTransfer() {
         reader.readAsDataURL(file);
       });
 
-      await axios.post("http://localhost:5000/api/payments/bank-transfer", {
+      const response = await axios.post("http://localhost:5000/api/payments/bank-transfer", {
         userEmail: currentUser.email,
         userName: currentUser.name || "",
         studentRegistrationNumber: currentUser.studentRegistrationNumber,
@@ -103,11 +126,68 @@ function BankTransfer() {
         proofFileData
       });
 
-      openPopup(
-        "success",
-        `Receipt \"${fileName}\" uploaded successfully. Your payment will be verified within 24 hours.`
-      );
+      const transactionId = response.data?.data?.transactionId || "";
+      const enrolledSessionIds = [];
+
+      if (effectiveCartItems.length > 0) {
+        for (const item of effectiveCartItems) {
+          if (!item?.sessionId) continue;
+
+          const entry = {
+            studentName: item.studentName || currentUser.name || "Student",
+            studentEmail: item.studentEmail || currentUser.email || "",
+            studentId: item.studentId || currentUser.studentRegistrationNumber || "",
+            contactNumber: item.contactNumber || "0700000000",
+            sessionId: item.sessionId,
+            paymentStatus: "pending",
+            paymentTransactionId: transactionId,
+            paymentMethod: "bank"
+          };
+
+          try {
+            await axios.post("http://localhost:5000/api/student-registrations", entry);
+            enrolledSessionIds.push(item.sessionId);
+          } catch (_error) {
+            // Keep failed cart items so student can retry.
+          }
+        }
+
+        const remainingCartItems = effectiveCartItems.filter((item) => !enrolledSessionIds.includes(item.sessionId));
+        sessionStorage.setItem("cartItems", JSON.stringify(remainingCartItems));
+      }
+
+      setPaymentResult({
+        status: "pending",
+        transactionId,
+        method: "bank"
+      });
+
+      if (effectiveCartItems.length > 0) {
+        const failedCount = effectiveCartItems.length - enrolledSessionIds.length;
+        if (enrolledSessionIds.length > 0 && failedCount === 0) {
+          openPopup(
+            "success",
+            `Receipt \"${fileName}\" uploaded. Cart sessions moved to My Kuppi Enrollments with pending payment status.`
+          );
+        } else if (enrolledSessionIds.length > 0 && failedCount > 0) {
+          openPopup(
+            "success",
+            `Receipt \"${fileName}\" uploaded. ${enrolledSessionIds.length} session(s) moved as pending. ${failedCount} item(s) remain in cart.`
+          );
+        } else {
+          openPopup(
+            "success",
+            `Receipt \"${fileName}\" uploaded, but cart sessions were not moved. Cart items are kept for retry.`
+          );
+        }
+      } else {
+        openPopup(
+          "success",
+          `Receipt \"${fileName}\" uploaded successfully. Your payment will be verified within 24 hours.`
+        );
+      }
     } catch (error) {
+      setPaymentResult(null);
       const message =
         error.response?.data?.message ||
         "Failed to submit bank transfer proof. Please try again.";

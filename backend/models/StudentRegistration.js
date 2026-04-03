@@ -24,6 +24,20 @@ const studentRegistrationSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'KuppiSession',
         required: [true, 'Session ID is required']
+    },
+    paymentStatus: {
+        type: String,
+        enum: ['success', 'pending', 'failed', 'unknown'],
+        default: 'unknown'
+    },
+    paymentTransactionId: {
+        type: String,
+        default: ''
+    },
+    paymentMethod: {
+        type: String,
+        enum: ['card', 'bank', ''],
+        default: ''
     }
 }, { timestamps: true });
 

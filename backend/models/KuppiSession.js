@@ -1,11 +1,23 @@
 const mongoose = require('mongoose');
 
+const generateKuppiSessionFormId = () => {
+    const timePart = Date.now().toString().slice(-10);
+    const randomPart = Math.floor(1000 + Math.random() * 9000);
+    return `KSF-${timePart}-${randomPart}`;
+};
+
 const kuppiSessionSchema = new mongoose.Schema({
+    kuppiSessionFormId: {
+        type: String,
+        default: generateKuppiSessionFormId,
+        unique: true,
+        sparse: true
+    },
     name: {
         type: String,
         required: [true, 'Name is required'],
         minlength: [3, 'Name must be at least 3 characters'],
-        match: [/^[A-Za-z\s]+$/, 'Name can only contain letters and spaces']
+        match: [/^[A-Za-z\s.'-]+$/, 'Name can only contain letters, spaces, and common punctuation']
     },
     email: {
         type: String,
@@ -69,6 +81,10 @@ const kuppiSessionSchema = new mongoose.Schema({
         required: [true, 'Meeting Link is required'],
         match: [/^https?:\/\//, 'Meeting Link must be a valid URL starting with http/https']
     },
+    coverImage: {
+        type: String,
+        required: [true, 'Cover image (JPG/PNG) is required']
+    },
     qualificationFile: {
         type: String, // File path to JPG
         required: [true, 'Qualification file (JPG) is required']
@@ -97,6 +113,20 @@ const kuppiSessionSchema = new mongoose.Schema({
     branchName: {
         type: String,
         required: [true, 'Branch Name is required']
+    },
+    registrationPaymentStatus: {
+        type: String,
+        enum: ['success', 'pending', 'failed', 'unknown'],
+        default: 'unknown'
+    },
+    registrationTransactionId: {
+        type: String,
+        default: ''
+    },
+    registrationPaymentMethod: {
+        type: String,
+        enum: ['card', 'bank', ''],
+        default: ''
     }
 }, { timestamps: true });
 

@@ -1,4 +1,6 @@
 const Payment = require("../Model_C/paymentModel");
+const KuppiSession = require("../models/KuppiSession");
+const StudentRegistration = require("../models/StudentRegistration");
 
 // Create Payment
 const createPayment = async (req, res) => {
@@ -123,6 +125,37 @@ const updatePaymentStatus = async (req, res) => {
             return res.status(404).json({
                 message: "Payment not found"
             });
+        }
+
+        // Keep Ghost Lec request payment state in sync using transaction code.
+        const normalizedStatus = String(status).trim().toLowerCase();
+        let sessionPaymentStatus = 'unknown';
+        if (normalizedStatus === 'approved' || normalizedStatus === 'success') {
+            sessionPaymentStatus = 'success';
+        } else if (normalizedStatus === 'pending') {
+            sessionPaymentStatus = 'pending';
+        } else if (normalizedStatus === 'rejected' || normalizedStatus === 'failed' || normalizedStatus === 'fail') {
+            sessionPaymentStatus = 'failed';
+        }
+
+        if (updatedPayment.transactionId) {
+            await KuppiSession.updateMany(
+                { registrationTransactionId: updatedPayment.transactionId },
+                {
+                    registrationPaymentStatus: sessionPaymentStatus,
+                    registrationTransactionId: updatedPayment.transactionId,
+                    registrationPaymentMethod: updatedPayment.method === 'bank' ? 'bank' : 'card'
+                }
+            );
+
+            await StudentRegistration.updateMany(
+                { paymentTransactionId: updatedPayment.transactionId },
+                {
+                    paymentStatus: sessionPaymentStatus,
+                    paymentTransactionId: updatedPayment.transactionId,
+                    paymentMethod: updatedPayment.method === 'bank' ? 'bank' : 'card'
+                }
+            );
         }
 
         res.status(200).json({

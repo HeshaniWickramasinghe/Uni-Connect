@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { jsPDF } from "jspdf";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -34,6 +34,55 @@ function CardPayment() {
     }
   })();
   const currentUser = stateUser || storedUser;
+  const returnTo = location.state?.returnTo || "/homepage";
+  const sessionDraft = location.state?.sessionDraft;
+  const registrationDraft = location.state?.registrationDraft;
+  const paymentAmount = location.state?.paymentAmount;
+  const cartItems = Array.isArray(location.state?.cartItems) ? location.state.cartItems : [];
+  const effectiveCartItems = (() => {
+    if (cartItems.length > 0) return cartItems;
+    try {
+      const raw = sessionStorage.getItem("cartItems");
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (_error) {
+      return [];
+    }
+  })();
+  const [paymentResult, setPaymentResult] = useState(null);
+
+  useEffect(() => {
+    if (paymentAmount !== undefined && paymentAmount !== null && paymentAmount !== "") {
+      setForm((prev) => ({ ...prev, amount: String(paymentAmount) }));
+      return;
+    }
+
+    const sessionAmount = sessionDraft?.formData?.price || sessionDraft?.formData?.amount;
+    if (sessionAmount) {
+      setForm((prev) => ({ ...prev, amount: String(sessionAmount) }));
+      return;
+    }
+
+    const loadRegistrationAmount = async () => {
+      const sessionId = registrationDraft?.sessionId;
+      if (!sessionId) return;
+
+      try {
+        const response = await axios.get("http://localhost:5000/api/kuppi-sessions");
+        const session = Array.isArray(response.data)
+          ? response.data.find((item) => item._id === sessionId)
+          : null;
+
+        if (session?.price !== undefined && session?.price !== null) {
+          setForm((prev) => ({ ...prev, amount: String(session.price) }));
+        }
+      } catch (_error) {
+        // Leave amount empty if the session lookup fails.
+      }
+    };
+
+    loadRegistrationAmount();
+  }, [paymentAmount, sessionDraft, registrationDraft]);
 
   const showPopup = (message, type) => {
     setPopup({
@@ -65,7 +114,15 @@ function CardPayment() {
 
   const handleDone = () => {
     closePopup();
-    navigate("/homepage");
+    const targetPath = effectiveCartItems.length > 0 ? "/my-enrollments" : returnTo;
+    navigate(targetPath, {
+      state: {
+        user: currentUser,
+        paymentResult,
+        sessionDraft,
+        registrationDraft
+      }
+    });
   };
 
   const handlePrintSummary = () => {
@@ -185,8 +242,6 @@ function CardPayment() {
       return;
     }
     if (name === "cvv" && !/^\d*$/.test(value)) return;
-    if (name === "amount" && !/^\d*(\.\d*)?$/.test(value)) return;
-
     if (name === "expiry") {
       const digits = value.replace(/\D/g, "").slice(0, 4);
 
@@ -282,13 +337,68 @@ function CardPayment() {
         })
       });
 
-      showPopup(
-        "Your payment has been processed successfully. You will receive a confirmation email shortly.",
-        "success"
-      );
+      setPaymentResult({
+        status: "success",
+        transactionId: res.data?.data?.transactionId || "",
+        method: "card"
+      });
+
+      if (effectiveCartItems.length > 0) {
+        const transactionId = res.data?.data?.transactionId || "";
+        const enrolledSessionIds = [];
+
+        for (const item of effectiveCartItems) {
+          if (!item?.sessionId) continue;
+
+          const entry = {
+            studentName: item.studentName || currentUser.name || "Student",
+            studentEmail: item.studentEmail || currentUser.email || "",
+            studentId: item.studentId || currentUser.studentRegistrationNumber || "",
+            contactNumber: item.contactNumber || "0700000000",
+            sessionId: item.sessionId,
+            paymentStatus: "success",
+            paymentTransactionId: transactionId,
+            paymentMethod: "card"
+          };
+
+          try {
+            await axios.post("http://localhost:5000/api/student-registrations", entry);
+            enrolledSessionIds.push(item.sessionId);
+          } catch (_error) {
+            // Keep failed items in cart so the student can retry or fix details.
+          }
+        }
+
+        const remainingCartItems = effectiveCartItems.filter((item) => !enrolledSessionIds.includes(item.sessionId));
+        sessionStorage.setItem("cartItems", JSON.stringify(remainingCartItems));
+
+        const failedCount = effectiveCartItems.length - enrolledSessionIds.length;
+        if (enrolledSessionIds.length > 0 && failedCount === 0) {
+          showPopup(
+            "Payment successful. Your cart sessions were enrolled and moved to My Kuppi Enrollments.",
+            "success"
+          );
+        } else if (enrolledSessionIds.length > 0 && failedCount > 0) {
+          showPopup(
+            `Payment successful. ${enrolledSessionIds.length} session(s) enrolled. ${failedCount} item(s) remain in cart.`,
+            "success"
+          );
+        } else {
+          showPopup(
+            "Payment successful, but we could not enroll cart sessions. Cart items are kept so you can retry.",
+            "success"
+          );
+        }
+      } else {
+        showPopup(
+          "Your payment has been processed successfully. You will receive a confirmation email shortly.",
+          "success"
+        );
+      }
 
     } catch (err) {
       setPaymentSummary(null);
+      setPaymentResult(null);
       showPopup(
         "Your payment could not be completed. Please check your card details and try again.",
         "error"
@@ -312,7 +422,7 @@ return (
           <input name="cvv" placeholder="CVV" value={form.cvv} maxLength={3} inputMode="numeric" onChange={handleChange} className="input-small" />
         </div>
 
-        <input name="amount" placeholder="Amount" value={form.amount} inputMode="decimal" onChange={handleChange} className="input" />
+        <input name="amount" placeholder="Amount" value={form.amount} readOnly className="input" />
 
         <button type="submit" className="button">
           Pay Now

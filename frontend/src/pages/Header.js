@@ -2,6 +2,16 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Header.css';
 
+function getCartItems() {
+    try {
+        const raw = sessionStorage.getItem('cartItems');
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+    } catch (_error) {
+        return [];
+    }
+}
+
 function Header({ user }) {
     const [profileOpen, setProfileOpen] = useState(false);
     const [cartOpen, setCartOpen] = useState(false);
@@ -10,8 +20,19 @@ function Header({ user }) {
     const isLoggedIn = Boolean(user?.id);
     const userEmail = user?.email?.trim().toLowerCase();
     const isAdmin = userEmail === 'it23722040@my.sliit.lk';
+    const [cartItems, setCartItems] = useState(() => getCartItems());
+
+    const cartCount = cartItems.length;
+    const cartTotal = cartItems.reduce((sum, item) => sum + (Number(item.price) || 0), 0);
+
+    const removeCartItem = (sessionId) => {
+        const updatedCart = cartItems.filter((item) => item.sessionId !== sessionId);
+        setCartItems(updatedCart);
+        sessionStorage.setItem('cartItems', JSON.stringify(updatedCart));
+    };
 
     const toggleCart = () => {
+        setCartItems(getCartItems());
         setCartOpen((prev) => !prev);
         setProfileOpen(false);
         setNotificationOpen(false);
@@ -127,21 +148,73 @@ function Header({ user }) {
                                     <circle cx="18" cy="20" r="1" />
                                     <path d="M3 4h2l2.2 10.4a2 2 0 0 0 2 1.6h7.5a2 2 0 0 0 2-1.5L21 7H7.1" />
                                 </svg>
+                                {cartCount > 0 && <span className="uc-cart-count">{cartCount}</span>}
                             </button>
 
                             {cartOpen && (
                                 <div className="uc-cart-menu">
                                     <p className="uc-cart-title">Your Cart</p>
-                                    <p className="uc-cart-empty">No items added yet.</p>
-                                    <button
-                                        className="uc-cart-btn"
-                                        onClick={() => {
-                                            setCartOpen(false);
-                                            navigateWithUser('/ghost-lec');
-                                        }}
-                                    >
-                                        Browse Items
-                                    </button>
+                                    {cartItems.length === 0 ? (
+                                        <>
+                                            <p className="uc-cart-empty">No items added yet.</p>
+                                            <button
+                                                className="uc-cart-btn"
+                                                onClick={() => {
+                                                    setCartOpen(false);
+                                                    navigateWithUser('/kuppi');
+                                                }}
+                                            >
+                                                Browse Sessions
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <div className="uc-cart-list">
+                                                {cartItems.map((item) => (
+                                                    <div className="uc-cart-item" key={item.sessionId}>
+                                                        <p className="uc-cart-line"><strong>Module ID:</strong> {item.moduleId || '-'}</p>
+                                                        <p className="uc-cart-line"><strong>Tutor:</strong> {item.tutorName || '-'}</p>
+                                                        <p className="uc-cart-line"><strong>Session ID:</strong> {item.sessionDisplayId || item.sessionId}</p>
+                                                        <p className="uc-cart-line"><strong>Price:</strong> LKR {Number(item.price || 0).toFixed(2)}</p>
+                                                        <button
+                                                            className="uc-cart-remove"
+                                                            onClick={() => removeCartItem(item.sessionId)}
+                                                        >
+                                                            Remove
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            <p className="uc-cart-total">Total: LKR {cartTotal.toFixed(2)}</p>
+                                            <div className="uc-cart-actions">
+                                                <button
+                                                    className="uc-cart-btn"
+                                                    onClick={() => {
+                                                        setCartOpen(false);
+                                                        navigateWithUser('/kuppi');
+                                                    }}
+                                                >
+                                                    more browse
+                                                </button>
+                                                <button
+                                                    className="uc-cart-btn uc-cart-pay"
+                                                    onClick={() => {
+                                                        setCartOpen(false);
+                                                        navigate('/payments', {
+                                                            state: {
+                                                                user,
+                                                                returnTo: '/kuppi',
+                                                                paymentAmount: Number(cartTotal.toFixed(2)),
+                                                                cartItems
+                                                            }
+                                                        });
+                                                    }}
+                                                >
+                                                    Pay
+                                                </button>
+                                            </div>
+                                        </>
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -232,12 +305,29 @@ function Header({ user }) {
                                     <circle cx="18" cy="20" r="1" />
                                     <path d="M3 4h2l2.2 10.4a2 2 0 0 0 2 1.6h7.5a2 2 0 0 0 2-1.5L21 7H7.1" />
                                 </svg>
+                                {cartCount > 0 && <span className="uc-cart-count">{cartCount}</span>}
                             </button>
 
                             {cartOpen && (
                                 <div className="uc-cart-menu">
                                     <p className="uc-cart-title">Your Cart</p>
-                                    <p className="uc-cart-empty">No items added yet.</p>
+                                    {cartItems.length === 0 ? (
+                                        <p className="uc-cart-empty">No items added yet.</p>
+                                    ) : (
+                                        <>
+                                            <div className="uc-cart-list">
+                                                {cartItems.map((item) => (
+                                                    <div className="uc-cart-item" key={item.sessionId}>
+                                                        <p className="uc-cart-line"><strong>Module ID:</strong> {item.moduleId || '-'}</p>
+                                                        <p className="uc-cart-line"><strong>Tutor:</strong> {item.tutorName || '-'}</p>
+                                                        <p className="uc-cart-line"><strong>Session ID:</strong> {item.sessionDisplayId || item.sessionId}</p>
+                                                        <p className="uc-cart-line"><strong>Price:</strong> LKR {Number(item.price || 0).toFixed(2)}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            <p className="uc-cart-total">Total: LKR {cartTotal.toFixed(2)}</p>
+                                        </>
+                                    )}
                                     <button
                                         className="uc-cart-btn"
                                         onClick={() => {

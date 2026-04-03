@@ -1,21 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import './StudentRegistrationForm.css';
+
+function getStoredUser() {
+    try {
+        const rawUser = sessionStorage.getItem('loggedInUser');
+        return rawUser ? JSON.parse(rawUser) : null;
+    } catch (_error) {
+        return null;
+    }
+}
 
 const StudentRegistrationForm = () => {
     const { sessionId } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
+    const user = location.state?.user || getStoredUser();
     const [sessionData, setSessionData] = useState(null);
     const [formData, setFormData] = useState({
-        studentName: '',
-        studentEmail: '',
-        studentId: '',
+        studentName: user?.name || '',
+        studentEmail: user?.email || '',
+        studentId: user?.studentRegistrationNumber || user?.studentId || '',
         contactNumber: ''
     });
     const [loading, setLoading] = useState(true);
-    const [submitting, setSubmitting] = useState(false);
-    const [showPaymentModal, setShowPaymentModal] = useState(false);
     const [message, setMessage] = useState({ type: '', text: '' });
 
     useEffect(() => {
@@ -44,34 +53,64 @@ const StudentRegistrationForm = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         setMessage({ type: '', text: '' });
-        
-        // Instead of immediate submission, show the payment modal
-        setShowPaymentModal(true);
-    };
 
-    const confirmRegistration = async () => {
-        setShowPaymentModal(false);
-        setSubmitting(true);
-
-        try {
-            const response = await axios.post('http://localhost:5000/api/student-registrations', {
-                ...formData,
-                sessionId
-            });
-            setMessage({ type: 'success', text: response.data.message || 'Successfully registered for the session!' });
-            setFormData({ studentName: '', studentEmail: '', studentId: '', contactNumber: '' });
-        } catch (error) {
-            const errorMsg = error.response?.data?.message || 'Enrollment failed. Please try again.';
-            setMessage({ type: 'error', text: errorMsg });
-        } finally {
-            setSubmitting(false);
+        if (!sessionData) {
+            setMessage({ type: 'error', text: 'Session data not found.' });
+            return;
         }
+
+        const cartItem = {
+            sessionId: sessionData._id,
+            moduleId: sessionData.moduleCode,
+            tutorName: sessionData.name,
+            sessionDisplayId: sessionData.kuppiSessionFormId || sessionData._id,
+            price: Number(sessionData.price) || 0,
+            studentName: formData.studentName,
+            studentEmail: formData.studentEmail,
+            studentId: formData.studentId,
+            contactNumber: formData.contactNumber
+        };
+
+        let cartItems = [];
+        try {
+            const rawCart = sessionStorage.getItem('cartItems');
+            const parsed = rawCart ? JSON.parse(rawCart) : [];
+            cartItems = Array.isArray(parsed) ? parsed : [];
+        } catch (_error) {
+            cartItems = [];
+        }
+
+        const existingIndex = cartItems.findIndex((item) => item.sessionId === cartItem.sessionId);
+        if (existingIndex === -1) {
+            cartItems.push(cartItem);
+        } else {
+            cartItems[existingIndex] = cartItem;
+        }
+
+        sessionStorage.setItem('cartItems', JSON.stringify(cartItems));
+        navigate('/kuppi', { state: { user } });
     };
 
     if (loading) return <div className="sr-loading"><div className="loader"></div></div>;
+
+    if (!user) {
+        return (
+            <div className="sr-form-container">
+                <div className="sr-form-wrapper" style={{ textAlign: 'center' }}>
+                    <div className="sr-form-header">
+                        <h2>Login Required</h2>
+                        <p>Please log in first to register for a Kuppi session.</p>
+                    </div>
+                    <button type="button" className="sr-submit-btn" onClick={() => navigate('/login')}>
+                        Log In
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="sr-form-container">
@@ -100,7 +139,7 @@ const StudentRegistrationForm = () => {
                 )}
 
                 {!sessionData && !loading ? (
-                    <button onClick={() => navigate('/')} className="back-btn">Go Back To Home</button>
+                    <button onClick={() => navigate('/kuppi')} className="back-btn">Go Back To Kuppi Home</button>
                 ) : (
                     <form className="sr-form" onSubmit={handleSubmit}>
                         <div className="sr-input-group">
@@ -109,8 +148,7 @@ const StudentRegistrationForm = () => {
                                 type="text" 
                                 name="studentName" 
                                 value={formData.studentName} 
-                                onChange={handleChange} 
-                                placeholder="Enter your full name" 
+                                readOnly
                                 required 
                             />
                         </div>
@@ -121,8 +159,7 @@ const StudentRegistrationForm = () => {
                                 type="email" 
                                 name="studentEmail" 
                                 value={formData.studentEmail} 
-                                onChange={handleChange} 
-                                placeholder="e.g. it21xxxx@my.sliit.lk" 
+                                readOnly
                                 required 
                             />
                         </div>
@@ -133,8 +170,7 @@ const StudentRegistrationForm = () => {
                                 type="text" 
                                 name="studentId" 
                                 value={formData.studentId} 
-                                onChange={handleChange} 
-                                placeholder="Enter your Student ID" 
+                                readOnly
                                 required 
                             />
                         </div>
@@ -154,51 +190,17 @@ const StudentRegistrationForm = () => {
                         </div>
 
                         <div className="sr-submit-row">
-                            <button type="submit" className="sr-submit-btn" disabled={submitting}>
-                                {submitting ? <span className="loader"></span> : 'Complete Registration'}
+                            <button type="submit" className="sr-submit-btn">
+                                Add To Cart
                             </button>
                         </div>
                         
-                        <div className="sr-back-home" onClick={() => navigate('/')}>
+                        <div className="sr-back-home" onClick={() => navigate('/kuppi')}>
                             ← Return to Home Page
                         </div>
                     </form>
                 )}
             </div>
-
-            {/* Payment Confirmation Modal */}
-            {showPaymentModal && sessionData && (
-                <div className="sr-modal-overlay">
-                    <div className="sr-modal-content">
-                        <div className="sr-modal-header">
-                            <h3>Payment Required</h3>
-                        </div>
-                        <div className="sr-modal-body">
-                            <p className="payment-msg">
-                                Please pay the session fee of <strong>LKR {sessionData.price}</strong> to the tutor's bank account to complete your registration.
-                            </p>
-                            
-                            <div className="tutor-bank-card">
-                                <h4 className="card-subtitle">Tutor's Bank Details:</h4>
-                                <div className="bank-info-row"><span>Bank Name:</span> {sessionData.bankName}</div>
-                                <div className="bank-info-row"><span>Account Holder:</span> {sessionData.accountHolderName}</div>
-                                <div className="bank-info-row"><span>Account Number:</span> {sessionData.accountNumber}</div>
-                                <div className="bank-info-row"><span>Branch:</span> {sessionData.branchName}</div>
-                            </div>
-                            
-                            <p className="payment-notice">Once paid, click "Proceed" to finalize your enrollment.</p>
-                        </div>
-                        <div className="sr-modal-footer">
-                            <button className="sr-modal-btn sr-confirm-btn" onClick={confirmRegistration}>
-                                Proceed
-                            </button>
-                            <button className="sr-modal-btn sr-cancel-btn" onClick={() => setShowPaymentModal(false)}>
-                                Cancel
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

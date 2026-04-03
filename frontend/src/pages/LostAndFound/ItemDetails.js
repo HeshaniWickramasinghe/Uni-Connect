@@ -29,12 +29,11 @@ const ItemDetails = () => {
 
     const currentUser = location.state?.user || getStoredUser();
     const currentUserName = currentUser?.name || 'Guest User';
+    const canChat = !!currentUser;
 
     useEffect(() => {
-        if (!currentUser) {
-            navigate('/Login', { state: { from: location.pathname } });
-        }
-    }, [currentUser, navigate, location.pathname]);
+        fetchItemDetails();
+    }, [id]);
 
     const getRoomId = (itemId, user1, user2) => {
         const users = [user1, user2].sort();
@@ -42,11 +41,7 @@ const ItemDetails = () => {
     };
 
     useEffect(() => {
-        fetchItemDetails();
-    }, [id]);
-
-    useEffect(() => {
-        if (!item) return;
+        if (!item || !currentUser) return;
         const isOwner = item.userName === currentUserName;
         if (isOwner) {
             fetchConversations();
@@ -55,10 +50,10 @@ const ItemDetails = () => {
             setSelectedPartner(item.userName);
             setViewMode('chat');
         }
-    }, [item]);
+    }, [item, currentUser, currentUserName]);
 
     useEffect(() => {
-        if (!selectedPartner || !item) return;
+        if (!selectedPartner || !item || !currentUser) return;
 
         const roomId = getRoomId(id, currentUserName, selectedPartner);
         socket.emit("join_room", roomId);
@@ -74,7 +69,7 @@ const ItemDetails = () => {
 
         socket.on("receive_message", receiveMessageListener);
         return () => socket.off("receive_message", receiveMessageListener);
-    }, [id, selectedPartner, item]);
+    }, [id, selectedPartner, item, currentUser, currentUserName]);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -122,6 +117,7 @@ const ItemDetails = () => {
 
     const handleSendMessage = async (e) => {
         if (e) e.preventDefault();
+        if (!currentUser) return;
         const textToSend = typeof e === 'string' ? e : newMessage;
         if (!textToSend.trim() || !item || !selectedPartner) return;
 
@@ -205,7 +201,23 @@ const ItemDetails = () => {
 
                 {/* Chat Column */}
                 <div className="w-full lg:w-2/5">
-                    {isOwner && viewMode === 'list' ? (
+                    {!canChat ? (
+                        <div className="bg-white rounded-[40px] shadow-2xl border border-slate-100 p-8 h-[600px] flex flex-col items-center justify-center text-center">
+                            <div className="w-16 h-16 rounded-2xl bg-[#023E8A]/10 text-[#023E8A] flex items-center justify-center mb-5">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21v-2a4 4 0 0 1 4-4h3" /><circle cx="12" cy="7" r="4" /><path d="M16 11l2 2 4-4" /></svg>
+                            </div>
+                            <h3 className="text-lg font-black uppercase tracking-tight text-slate-900">Login Required</h3>
+                            <p className="mt-3 text-sm font-medium leading-relaxed text-slate-500 max-w-xs">
+                                Sign in to start a private chat with the owner or reply to inquiries.
+                            </p>
+                            <button
+                                onClick={() => navigate('/Login', { state: { from: location.pathname } })}
+                                className="mt-8 rounded-2xl bg-[#023E8A] px-5 py-3 text-[10px] font-black uppercase tracking-widest text-white transition-all hover:bg-[#022f6a]"
+                            >
+                                Go to Login
+                            </button>
+                        </div>
+                    ) : isOwner && viewMode === 'list' ? (
                         <div className="bg-white rounded-[40px] shadow-2xl border border-slate-100 p-8 h-[600px] flex flex-col">
                             <div className="flex items-center gap-3 mb-8">
                                 <div className="h-8 w-1.5 bg-[#023E8A] rounded-full"></div>

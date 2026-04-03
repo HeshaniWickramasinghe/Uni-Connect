@@ -125,6 +125,24 @@
   justify-content: center;
   cursor: pointer;
   transition: transform 0.2s ease, filter 0.2s ease;
+  position: relative;
+}
+
+.uc-cart-count {
+  position: absolute;
+  top: -5px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  padding: 0 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: #fff;
+  background: #ef4444;
 }
 
 .uc-icon-pill:hover {
@@ -176,7 +194,7 @@
   position: absolute;
   top: calc(100% + 10px);
   right: 0;
-  width: 240px;
+  width: 320px;
   border-radius: 16px;
   border: 1px solid rgba(13, 59, 102, 0.2);
   background: var(--uc-white);
@@ -214,6 +232,58 @@
 
 .uc-cart-btn:hover {
   filter: brightness(0.98);
+}
+
+.uc-cart-list {
+  max-height: 280px;
+  overflow-y: auto;
+  margin-bottom: 0.7rem;
+}
+
+.uc-cart-item {
+  border: 1px solid rgba(13, 59, 102, 0.16);
+  border-radius: 12px;
+  padding: 0.55rem;
+  margin-top: 0.55rem;
+  background: #f8fbff;
+}
+
+.uc-cart-line {
+  margin: 0.15rem 0;
+  font-size: 0.78rem;
+  color: #0f172a;
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.uc-cart-remove {
+  margin-top: 0.45rem;
+  border: 0;
+  border-radius: 8px;
+  padding: 0.36rem 0.5rem;
+  cursor: pointer;
+  font-size: 0.74rem;
+  font-weight: 700;
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.uc-cart-total {
+  margin: 0.35rem 0 0.6rem;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #0d3b66;
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.uc-cart-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem;
+}
+
+.uc-cart-pay {
+  background: #0d3b66;
+  color: #fff;
 }
 
 .uc-profile-trigger {

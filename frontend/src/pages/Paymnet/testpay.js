@@ -1,17 +1,24 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./testpay.css";
 
 function TestPay() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const user = location.state?.user;
+  const returnTo = location.state?.returnTo;
+  const sessionDraft = location.state?.sessionDraft;
+  const registrationDraft = location.state?.registrationDraft;
+  const paymentAmount = location.state?.paymentAmount;
+  const cartItems = location.state?.cartItems;
 
   const handleBankTransfer = () => {
     // Navigate to bank transfer page
-    navigate("/bank-transfer");
+    navigate("/bank-transfer", { state: { user, returnTo, sessionDraft, registrationDraft, paymentAmount, cartItems } });
   };
 
   const handleOnlinePay = () => {
     // Navigate to card payment page
-    navigate("/card-payment");
+    navigate("/card-payment", { state: { user, returnTo, sessionDraft, registrationDraft, paymentAmount, cartItems } });
   };
 
   return (

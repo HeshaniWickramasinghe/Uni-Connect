@@ -19,17 +19,27 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
-    if (file.fieldname === "qualificationFile") {
-        if (file.mimetype === "image/jpeg" || file.mimetype === "image/jpg") {
+    const isPdf = file.mimetype === "application/pdf";
+    const isJpg = file.mimetype === "image/jpeg" || file.mimetype === "image/jpg";
+    const isPng = file.mimetype === "image/png";
+
+    if (file.fieldname === "coverImage") {
+        if (isJpg || isPng) {
             cb(null, true);
         } else {
-            cb(new Error("Qualification must be a JPG file"), false);
+            cb(new Error("Cover image must be JPG or PNG"), false);
+        }
+    } else if (file.fieldname === "qualificationFile") {
+        if (isPdf || isJpg || isPng) {
+            cb(null, true);
+        } else {
+            cb(new Error("Qualification must be a PDF, JPG, or PNG file"), false);
         }
     } else if (file.fieldname === "shortNoteFile") {
-        if (file.mimetype === "application/pdf") {
+        if (isPdf || isJpg || isPng) {
             cb(null, true);
         } else {
-            cb(new Error("Short Note must be a PDF file"), false);
+            cb(new Error("Short Notes must be a PDF, JPG, or PNG file"), false);
         }
     } else {
         cb(null, true);
@@ -43,6 +53,7 @@ const upload = multer({
 });
 
 const uploadMiddleware = upload.fields([
+    { name: 'coverImage', maxCount: 1 },
     { name: 'qualificationFile', maxCount: 1 },
     { name: 'shortNoteFile', maxCount: 1 }
 ]);
@@ -50,13 +61,33 @@ const uploadMiddleware = upload.fields([
 const createSession = async (req, res) => {
     try {
         // Extract fields
-        let { name, email, faculty, skills, moduleName, moduleCode, date, time, duration, price, meetingLink, bankName, accountNumber, accountHolderName, branchName } = req.body;
+        let {
+            name,
+            email,
+            faculty,
+            skills,
+            moduleName,
+            moduleCode,
+            date,
+            time,
+            duration,
+            price,
+            meetingLink,
+            bankName,
+            accountNumber,
+            accountHolderName,
+            branchName,
+            registrationPaymentStatus,
+            registrationTransactionId,
+            registrationPaymentMethod
+        } = req.body;
 
         // Check for required files
-        if (!req.files || !req.files.qualificationFile || !req.files.shortNoteFile) {
-            return res.status(400).json({ message: "Both Qualification (JPG) and Short Note (PDF) files are required." });
+        if (!req.files || !req.files.coverImage || !req.files.qualificationFile || !req.files.shortNoteFile) {
+            return res.status(400).json({ message: "Cover Image (JPG/PNG), Qualification Proof (PDF/JPG/PNG), and Short Notes (PDF/JPG/PNG) files are required." });
         }
 
+        const coverImage = req.files.coverImage[0].path;
         const qualificationFile = req.files.qualificationFile[0].path;
         const shortNoteFile = req.files.shortNoteFile[0].path;
 
@@ -83,12 +114,16 @@ const createSession = async (req, res) => {
             duration,
             price,
             meetingLink,
+            coverImage,
             qualificationFile,
             shortNoteFile,
             bankName,
             accountNumber,
             accountHolderName,
-            branchName
+            branchName,
+            registrationPaymentStatus: ['success', 'pending', 'failed'].includes(registrationPaymentStatus) ? registrationPaymentStatus : 'unknown',
+            registrationTransactionId: registrationTransactionId || '',
+            registrationPaymentMethod: ['card', 'bank'].includes(registrationPaymentMethod) ? registrationPaymentMethod : ''
         });
 
         await newSession.save();
@@ -99,6 +134,7 @@ const createSession = async (req, res) => {
 
         // If validation fails or another error occurs, we should clean up uploaded files
         if (req.files) {
+            if (req.files.coverImage) fs.unlinkSync(req.files.coverImage[0].path);
             if (req.files.qualificationFile) fs.unlinkSync(req.files.qualificationFile[0].path);
             if (req.files.shortNoteFile) fs.unlinkSync(req.files.shortNoteFile[0].path);
         }
@@ -154,10 +190,43 @@ const getSessionsByEmail = async (req, res) => {
     }
 };
 
+const deleteSession = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const session = await KuppiSession.findByIdAndDelete(id);
+
+        if (!session) {
+            return res.status(404).json({ message: "Session not found" });
+        }
+
+        // Clean up uploaded files
+        try {
+            if (session.coverImage && fs.existsSync(session.coverImage)) {
+                fs.unlinkSync(session.coverImage);
+            }
+            if (session.qualificationFile && fs.existsSync(session.qualificationFile)) {
+                fs.unlinkSync(session.qualificationFile);
+            }
+            if (session.shortNoteFile && fs.existsSync(session.shortNoteFile)) {
+                fs.unlinkSync(session.shortNoteFile);
+            }
+        } catch (fileErr) {
+            console.warn("Warning: Could not delete some files:", fileErr.message);
+        }
+
+        res.status(200).json({ message: "Session deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting session:", error);
+        res.status(500).json({ message: "Failed to delete session" });
+    }
+};
+
 module.exports = {
     uploadMiddleware,
     createSession,
     getAllSessions,
     updateSessionStatus,
-    getSessionsByEmail
+    getSessionsByEmail,
+    deleteSession
 };

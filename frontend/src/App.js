@@ -10,19 +10,18 @@ import EditProfile from './pages/Login/EditProfile';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import AdminUsers from './pages/Admin/AdminUsers';
 import AdminLostFound from './pages/Admin/AdminLostFound';
-import GostLec from './pages/GostLec/GostLec';
 import LostAndFoundDashboard from './pages/LostAndFound/LostAndFoundDashboard';
 import ItemDetails from './pages/LostAndFound/ItemDetails';
 import AdminPayments from './pages/Paymnet/AdminPayments';
 import TestPay from './pages/Paymnet/testpay';
 import CardPayment from './pages/Paymnet/CardPayment';
 import BankTransfer from './pages/Paymnet/BankTransfer';
-import KuppiHomePage from './components/Kuppi-Registration/KuppiHomePage';
-import KuppiSessionForm from './components/Kuppi-Registration/KuppiSessionForm';
-import AdminKuppiSessions from './components/Kuppi-Registration/admin/AdminKuppiSessions';
-import MySessions from './components/Kuppi-Registration/MySessions';
-import StudentRegistrationForm from './components/Kuppi-Registration/StudentRegistrationForm';
-import MyEnrollments from './components/Kuppi-Registration/MyEnrollments';
+import KuppiHomePage from './pages/GostLec/KuppiHomePage';
+import KuppiSessionForm from './pages/GostLec/KuppiSessionForm';
+import KuppiRequestForm from './pages/GostLec/KuppiRequestForm';
+import MySessions from './pages/GostLec/MySessions';
+import StudentRegistrationForm from './pages/GostLec/StudentRegistrationForm';
+import MyEnrollments from './pages/GostLec/MyEnrollments';
 
 const ADMIN_EMAIL = 'it23722040@my.sliit.lk';
 
@@ -74,17 +73,17 @@ function App() {
           <Route path="/homepage" element={<HomeRoute />} />
           <Route path="/kuppi" element={<KuppiHomePage />} />
           <Route path="/host-session" element={<KuppiSessionForm />} />
-          <Route path="/admin-kuppi-sessions" element={<AdminKuppiSessions />} />
+          <Route path="/admin-kuppi-sessions" element={<AdminRoute component={KuppiRequestForm} />} />
           <Route path="/my-sessions" element={<MySessions />} />
           <Route path="/register-session/:sessionId" element={<StudentRegistrationForm />} />
           <Route path="/my-enrollments" element={<MyEnrollments />} />
           <Route path="/admin" element={<AdminRoute component={AdminUsers} />} />
           <Route path="/admin/dashboard" element={<AdminRoute component={AdminDashboard} />} />
           <Route path="/admin/users" element={<AdminRoute component={AdminUsers} />} />
-          <Route path="/admin/ghost-lec" element={<AdminRoute component={GostLec} />} />
+          <Route path="/admin/ghost-lec" element={<AdminRoute component={KuppiRequestForm} />} />
           <Route path="/admin/lost-found" element={<AdminRoute component={AdminLostFound} />} />
           <Route path="/admin/payments" element={<AdminRoute component={AdminPayments} />} />
-          <Route path="/ghost-lec" element={<GostLec />} />
+          <Route path="/ghost-lec" element={<KuppiHomePage />} />
           <Route path="/lost-and-found" element={<LostAndFoundDashboard />} />
           <Route path="/item/:id" element={<ItemDetails />} />
           <Route path="/payments" element={<TestPay />} />

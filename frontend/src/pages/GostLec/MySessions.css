@@ -158,6 +158,15 @@
   color: #fff;
 }
 
+.session-form-id {
+  margin: -0.6rem 0 1rem 0;
+  color: #cbd5e1;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
 .session-info {
   display: flex;
   flex-direction: column;
@@ -185,6 +194,65 @@
   font-size: 0.9rem;
   line-height: 1.5;
   margin-top: auto;
+}
+
+.ms-payment-box {
+  margin-bottom: 1.25rem;
+  border: 1px solid var(--ms-border);
+  background: rgba(15, 23, 42, 0.45);
+  border-radius: 12px;
+  padding: 0.8rem 0.9rem;
+}
+
+.ms-payment-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin: 0.28rem 0;
+}
+
+.ms-payment-label {
+  color: #cbd5e1;
+  font-size: 0.9rem;
+}
+
+.ms-payment-badge {
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+
+.ms-payment-success {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.35);
+}
+
+.ms-payment-pending {
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.15);
+  border-color: rgba(251, 191, 36, 0.35);
+}
+
+.ms-payment-failed {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+.ms-payment-unknown {
+  color: #94a3b8;
+  background: rgba(148, 163, 184, 0.15);
+  border-color: rgba(148, 163, 184, 0.35);
+}
+
+.ms-transaction-code {
+  color: #bfdbfe;
+  font-family: 'Courier New', monospace;
+  font-size: 0.83rem;
 }
 
 .success-text { color: #10b981; font-weight: 600; }
@@ -255,14 +323,6 @@
   border-color: rgba(99, 102, 241, 0.5);
 }
 
-.students-list-container {
-  margin-top: 1.5rem;
-  background: rgba(15, 23, 42, 0.5);
-  border-radius: 12px;
-  padding: 1rem;
-  animation: slideDown 0.3s ease-out;
-}
-
 .no-students {
   text-align: center;
   color: var(--ms-text-muted);
@@ -292,6 +352,17 @@
   padding: 0.75rem 1rem;
   color: var(--ms-text);
   border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+}
+
+.students-table td:last-child {
+  white-space: nowrap;
+}
+
+.ms-transaction-cell {
+  font-family: 'Courier New', monospace;
+  color: #bfdbfe;
+  font-size: 0.82rem;
+  white-space: nowrap;
 }
 
 .students-table tr:last-child td {

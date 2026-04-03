@@ -36,6 +36,7 @@ const LostAndFoundDashboard = () => {
 
     const categories = ['All Items', 'My Posts', 'Lost', 'Found', 'Electronics', 'Essentials', 'Books', 'Keys'];
     const [editingItem, setEditingItem] = useState(null);
+    const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
     const getStoredUser = () => {
         try {
@@ -52,11 +53,18 @@ const LostAndFoundDashboard = () => {
 
         if (userFromState || storedUser) {
             setCurrentUser(userFromState || storedUser);
-        } else {
-            // Force redirect to login if no genuine user is found
-            navigate('/Login', { state: { from: location.pathname } });
         }
     }, [location.state, navigate, location.pathname]);
+
+    const isLoggedIn = !!currentUser;
+
+    const handleGuestAction = () => {
+        setShowLoginPrompt(true);
+    };
+
+    const handleLoginRedirect = () => {
+        navigate('/Login', { state: { from: location.pathname } });
+    };
 
     useEffect(() => {
         fetchItems();
@@ -137,7 +145,7 @@ const LostAndFoundDashboard = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
                         {/* I Lost Something Card */}
                         <div
-                            onClick={() => setIsLostModalOpen(true)}
+                            onClick={() => (isLoggedIn ? setIsLostModalOpen(true) : handleGuestAction())}
                             className="group cursor-pointer bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-[32px] hover:bg-white/10 transition-all duration-500 text-left relative overflow-hidden shadow-xl"
                         >
                             <div className="w-12 h-12 bg-red-500/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
@@ -149,7 +157,7 @@ const LostAndFoundDashboard = () => {
 
                         {/* I Found Something Card */}
                         <div
-                            onClick={() => setIsFoundModalOpen(true)}
+                            onClick={() => (isLoggedIn ? setIsFoundModalOpen(true) : handleGuestAction())}
                             className="group cursor-pointer bg-white/5 backdrop-blur-xl border border-white/10 p-6 rounded-[32px] hover:bg-white/10 transition-all duration-500 text-left relative overflow-hidden shadow-xl"
                         >
                             <div className="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
@@ -371,11 +379,17 @@ const LostAndFoundDashboard = () => {
                                         </>
                                     ) : (
                                         <button
-                                            onClick={() => setActiveChat({
-                                                itemId: item._id,
-                                                itemName: item.name,
-                                                receiverName: item.userName || 'Owner'
-                                            })}
+                                            onClick={() => {
+                                                if (!isLoggedIn) {
+                                                    handleGuestAction();
+                                                    return;
+                                                }
+                                                setActiveChat({
+                                                    itemId: item._id,
+                                                    itemName: item.name,
+                                                    receiverName: item.userName || 'Owner'
+                                                });
+                                            }}
                                             className="flex-1 py-3.5 rounded-2xl text-white font-black uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
                                             style={{ backgroundColor: primaryBlue }}
                                         >
@@ -424,6 +438,34 @@ const LostAndFoundDashboard = () => {
                     receiverName={activeChat.receiverName}
                     onClose={() => setActiveChat(null)}
                 />
+            )}
+
+            {showLoginPrompt && (
+                <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+                    <div className="w-full max-w-md rounded-[32px] bg-white p-8 shadow-2xl border border-slate-100 text-center">
+                        <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#023E8A]/10 text-[#023E8A]">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21v-2a4 4 0 0 1 4-4h3" /><circle cx="12" cy="7" r="4" /><path d="M16 11l2 2 4-4" /></svg>
+                        </div>
+                        <h3 className="text-xl font-black uppercase tracking-tight text-slate-900">Login Required</h3>
+                        <p className="mt-3 text-sm font-medium leading-relaxed text-slate-500">
+                            Please log in to report lost or found items and to use private chat.
+                        </p>
+                        <div className="mt-8 flex gap-3">
+                            <button
+                                onClick={() => setShowLoginPrompt(false)}
+                                className="flex-1 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-500 transition-all hover:bg-slate-50"
+                            >
+                                Close
+                            </button>
+                            <button
+                                onClick={handleLoginRedirect}
+                                className="flex-1 rounded-2xl bg-[#023E8A] px-4 py-3 text-[10px] font-black uppercase tracking-widest text-white transition-all hover:bg-[#022f6a]"
+                            >
+                                Go to Login
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
 
             <Footer />
