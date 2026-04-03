@@ -34,7 +34,7 @@ const LostAndFoundDashboard = () => {
     const warningAmber = '#B45309';
     const dangerRed = '#C0392B';
 
-    const categories = ['All Items', 'Lost', 'Found', 'Electronics', 'Essentials', 'Books', 'Keys'];
+    const categories = ['All Items', 'My Posts', 'Lost', 'Found', 'Electronics', 'Essentials', 'Books', 'Keys'];
 
     const getStoredUser = () => {
         try {
@@ -51,16 +51,11 @@ const LostAndFoundDashboard = () => {
 
         if (userFromState || storedUser) {
             setCurrentUser(userFromState || storedUser);
-            return;
+        } else {
+            // Strictly enforce login for this feature
+            alert('Access Denied: You must be logged in to view the Lost and Found dashboard.');
+            navigate('/homepage');
         }
-
-        let tempUser = JSON.parse(localStorage.getItem('tempUser'));
-        if (!tempUser) {
-            tempUser = { id: uuidv4(), name: `User_${Math.floor(Math.random() * 1000)}`, avatar: 'U' };
-            localStorage.setItem('tempUser', JSON.stringify(tempUser));
-        }
-
-        setCurrentUser(tempUser);
     }, [location.state]);
 
     useEffect(() => {
@@ -72,6 +67,7 @@ const LostAndFoundDashboard = () => {
             let url = 'http://localhost:5000/api/items?';
             if (filter === 'Lost') url += 'type=Lost&';
             else if (filter === 'Found') url += 'type=Found&';
+            else if (filter === 'My Posts' && currentUser) url += `userName=${encodeURIComponent(currentUser.name)}&`;
             else if (filter !== 'All Items') url += `category=${filter}&`;
 
             if (searchQuery) url += `search=${searchQuery}&`;
@@ -138,7 +134,7 @@ const LostAndFoundDashboard = () => {
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
                             </div>
                             <h3 className="text-xl font-bold mb-2 tracking-tight">I Lost Something</h3>
-                            <p className="text-white/40 text-[11px] leading-relaxed font-medium">Post a detailed report of your missing item to our community grid.</p>
+                            <p className="text-white/40 text-[11px] leading-relaxed font-medium">Post a detailed report of your missing item.</p>
                         </div>
 
                         {/* I Found Something Card */}
@@ -150,7 +146,7 @@ const LostAndFoundDashboard = () => {
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14" /></svg>
                             </div>
                             <h3 className="text-xl font-bold mb-2 tracking-tight">I Found Something</h3>
-                            <p className="text-white/40 text-[11px] leading-relaxed font-medium">Found an item? Report it here to help it find its way back home.</p>
+                            <p className="text-white/40 text-[11px] leading-relaxed font-medium">Report a found item to the community.</p>
                         </div>
                     </div>
                 </div>
@@ -218,7 +214,18 @@ const LostAndFoundDashboard = () => {
                     </div>
                 </div>
 
-                <div className="flex justify-end gap-3 mb-10">
+                <div className="flex justify-end items-center gap-3 mb-10">
+                    <button
+                        onClick={() => setFilter(filter === 'My Posts' ? 'All Items' : 'My Posts')}
+                        className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-sm transition-all border-2 ${filter === 'My Posts'
+                                ? 'bg-[#023E8A] text-white border-[#023E8A]'
+                                : 'bg-white text-slate-400 border-slate-100 hover:bg-slate-50'
+                            }`}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" /><polyline points="17 21 17 13 7 13 7 21" /><polyline points="7 3 7 8 15 8" /></svg>
+                        {filter === 'My Posts' ? 'My Posts' : 'My Posts'}
+                    </button>
+                    <div className="h-4 w-[2px] bg-slate-200 mx-1"></div>
                     <button
                         onClick={() => setShowDateFilter(!showDateFilter)}
                         className="flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-sm hover:bg-slate-50 transition-all text-[#023E8A]"
@@ -269,7 +276,6 @@ const LostAndFoundDashboard = () => {
                         </div>
                     </div>
                 )}
-
 
                 {/* Items Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -329,23 +335,25 @@ const LostAndFoundDashboard = () => {
                                 <div className="flex gap-2">
                                     <button
                                         onClick={() => navigate(`/item/${item._id}`, { state: { user: currentUser } })}
-                                        className="flex-1 py-3.5 rounded-2xl text-white font-black uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-1"
+                                        className="flex-1 py-3.5 rounded-2xl text-white font-black uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-1 shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0"
                                         style={{ backgroundColor: darkGray }}
                                     >
                                         Details
                                     </button>
-                                    <button
-                                        onClick={() => setActiveChat({
-                                            itemId: item._id,
-                                            itemName: item.name,
-                                            receiverName: item.userName || 'Owner'
-                                        })}
-                                        className="flex-1 py-3.5 rounded-2xl text-white font-black uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-2 shadow-lg"
-                                        style={{ backgroundColor: primaryBlue }}
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
-                                        Chat
-                                    </button>
+                                    {item.userName !== currentUser?.name && (
+                                        <button
+                                            onClick={() => setActiveChat({
+                                                itemId: item._id,
+                                                itemName: item.name,
+                                                receiverName: item.userName || 'Owner'
+                                            })}
+                                            className="flex-1 py-3.5 rounded-2xl text-white font-black uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
+                                            style={{ backgroundColor: primaryBlue }}
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
+                                            Chat
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </div>

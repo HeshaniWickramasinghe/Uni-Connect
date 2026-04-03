@@ -185,7 +185,7 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser }) => {
         .slice(0, 16);
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
             <div className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl overflow-hidden animate-fade-in relative flex flex-col max-h-[95vh] border-4 border-white">
 
                 {/* Header */}

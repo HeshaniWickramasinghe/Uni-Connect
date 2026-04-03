@@ -11,10 +11,11 @@ cloudinary.config({
 // Get all items
 const getItems = async (req, res) => {
     try {
-        const { category, type, search, startDate, endDate } = req.query;
+        const { category, type, search, startDate, endDate, userName } = req.query;
         let query = {};
         if (category) query.category = category;
         if (type) query.type = type;
+        if (userName) query.userName = userName;
 
         // Date range filter
         if (startDate || endDate) {
