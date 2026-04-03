@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import ReportModal from './ReportModal';
 import Header from '../Header';
 import Footer from '../Footer';
@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 const LostAndFoundDashboard = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [items, setItems] = useState([]);
     const [filter, setFilter] = useState('All Items');
     const [searchQuery, setSearchQuery] = useState('');
@@ -35,14 +36,32 @@ const LostAndFoundDashboard = () => {
 
     const categories = ['All Items', 'Lost', 'Found', 'Electronics', 'Essentials', 'Books', 'Keys'];
 
-    useEffect(() => {
-        let user = JSON.parse(localStorage.getItem('tempUser'));
-        if (!user) {
-            user = { id: uuidv4(), name: `User_${Math.floor(Math.random() * 1000)}`, avatar: 'U' };
-            localStorage.setItem('tempUser', JSON.stringify(user));
+    const getStoredUser = () => {
+        try {
+            const rawUser = sessionStorage.getItem('loggedInUser');
+            return rawUser ? JSON.parse(rawUser) : null;
+        } catch (_error) {
+            return null;
         }
-        setCurrentUser(user);
-    }, []);
+    };
+
+    useEffect(() => {
+        const userFromState = location.state?.user;
+        const storedUser = getStoredUser();
+
+        if (userFromState || storedUser) {
+            setCurrentUser(userFromState || storedUser);
+            return;
+        }
+
+        let tempUser = JSON.parse(localStorage.getItem('tempUser'));
+        if (!tempUser) {
+            tempUser = { id: uuidv4(), name: `User_${Math.floor(Math.random() * 1000)}`, avatar: 'U' };
+            localStorage.setItem('tempUser', JSON.stringify(tempUser));
+        }
+
+        setCurrentUser(tempUser);
+    }, [location.state]);
 
     useEffect(() => {
         fetchItems();
@@ -97,7 +116,7 @@ const LostAndFoundDashboard = () => {
 
     return (
         <div className="min-h-screen font-sans flex flex-col" style={{ backgroundColor: lightBg }}>
-            <Header user={{ name: currentUser?.name, avatar: currentUser?.avatar, email: `${currentUser?.id.substring(0, 8)}@temp.cli.lk` }} />
+            <Header user={currentUser} />
 
             {/* Hero Section */}
             <header className="bg-[#023E8A] text-white pt-10 pb-20 px-6 text-center relative overflow-hidden">
@@ -309,7 +328,7 @@ const LostAndFoundDashboard = () => {
 
                                 <div className="flex gap-2">
                                     <button
-                                        onClick={() => navigate(`/item/${item._id}`)}
+                                        onClick={() => navigate(`/item/${item._id}`, { state: { user: currentUser } })}
                                         className="flex-1 py-3.5 rounded-2xl text-white font-black uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-1"
                                         style={{ backgroundColor: darkGray }}
                                     >

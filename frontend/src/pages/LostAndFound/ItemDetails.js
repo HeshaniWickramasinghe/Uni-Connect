@@ -1,18 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import Header from '../Header';
 import Footer from '../Footer';
 
 const ItemDetails = () => {
     const { id } = useParams();
+    const location = useLocation();
     const navigate = useNavigate();
     const [item, setItem] = useState(null);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const messagesEndRef = useRef(null);
 
-    // Mock current user
-    const currentUser = 'Heshani Wickramasinghe';
+    const getStoredUser = () => {
+        try {
+            const rawUser = sessionStorage.getItem('loggedInUser');
+            return rawUser ? JSON.parse(rawUser) : null;
+        } catch (_error) {
+            return null;
+        }
+    };
+
+    const currentUser = location.state?.user || getStoredUser();
 
     useEffect(() => {
         fetchItemDetails();
@@ -89,7 +98,7 @@ const ItemDetails = () => {
     // Based on the 5th image, layout has a left column with item image + details, and a right column with chat
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
-            <Header user={{ name: currentUser, avatar: 'HW', email: 'it23890988@my.sliit.lk' }} />
+            <Header user={currentUser} />
 
             <main className="flex-grow max-w-7xl mx-auto w-full p-6 flex flex-col lg:flex-row gap-8">
                 {/* Left Column: Item Details */}

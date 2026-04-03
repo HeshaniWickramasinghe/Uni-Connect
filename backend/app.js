@@ -27,7 +27,7 @@ const io = new Server(server, {
 app.use(cors());
 app.use(express.json({ limit: "50mb" }));
 
-// Routes
+// Use Routes
 app.use("/api/items", itemRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/users", loggingRoutes);
