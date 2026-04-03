@@ -4,6 +4,7 @@ import axios from 'axios';
 import KuppiLayout from './KuppiLayout';
 import './KuppiHomePage.css';
 
+<<<<<<< Updated upstream
 function getStoredUser() {
     try {
         const rawUser = sessionStorage.getItem('loggedInUser');
@@ -17,6 +18,12 @@ const KuppiHomePage = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const user = location.state?.user || getStoredUser();
+=======
+const KuppiHomePage = () => {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const user = location.state?.user;
+>>>>>>> Stashed changes
     const [sessions, setSessions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -50,9 +57,19 @@ const KuppiHomePage = () => {
 
     const uniqueFaculties = ['All', ...new Set(sessions.map(s => s.faculty))];
 
+<<<<<<< Updated upstream
     if (loading) {
         return (
             <KuppiLayout title="Explore Kuppi Sessions">
+=======
+    const handleHostSession = () => {
+        navigate('/host-session', { state: { user } });
+    };
+
+    if (loading) {
+        return (
+            <KuppiLayout user={user} title="Explore Kuppi Sessions">
+>>>>>>> Stashed changes
                 <div className="kuppi-home-container loading-container">
                     <div className="loader"></div>
                     <p>Loading Sessions...</p>
@@ -62,9 +79,14 @@ const KuppiHomePage = () => {
     }
 
     return (
+<<<<<<< Updated upstream
         <KuppiLayout title="Explore Kuppi Sessions">
             {/* Search and Filter Section */}
             <div className="kuppi-page-body">
+=======
+        <KuppiLayout user={user} title="Explore Kuppi Sessions">
+            <div className="kuppi-home-container">
+>>>>>>> Stashed changes
                 <section className="kuppi-controls">
                     <div className="search-bar">
                         <input
@@ -88,11 +110,15 @@ const KuppiHomePage = () => {
                     </div>
                 </section>
 
+<<<<<<< Updated upstream
                 {/* Sessions Grid */}
+=======
+>>>>>>> Stashed changes
                 <section className="kuppi-grid">
                     {filteredSessions.length > 0 ? (
                         filteredSessions.map(session => (
                             <div key={session._id} className="session-card">
+<<<<<<< Updated upstream
                                 {session.coverImage && (
                                     <div className="session-cover">
                                         <img
@@ -103,15 +129,20 @@ const KuppiHomePage = () => {
                                     </div>
                                 )}
 
+=======
+>>>>>>> Stashed changes
                                 <div className="card-header">
                                     <span className="module-code">{session.moduleCode}</span>
                                     <span className="price">LKR {session.price}</span>
                                 </div>
 
+<<<<<<< Updated upstream
                                 <p className="session-form-id">
                                     Session ID: <span>{session.kuppiSessionFormId || 'N/A'}</span>
                                 </p>
 
+=======
+>>>>>>> Stashed changes
                                 <h3 className="module-name">{session.moduleName}</h3>
                                 <p className="tutor-name">by {session.name} <span className="faculty-badge">({session.faculty})</span></p>
 

@@ -1,11 +1,19 @@
+<<<<<<< Updated upstream
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+=======
+import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
+>>>>>>> Stashed changes
 import axios from 'axios';
 import KuppiLayout from './KuppiLayout';
 import './KuppiSessionForm.css';
 
+<<<<<<< Updated upstream
 const REGISTRATION_FEE = 1000;
 
+=======
+>>>>>>> Stashed changes
 function getStoredUser() {
     try {
         const rawUser = sessionStorage.getItem('loggedInUser');
@@ -17,7 +25,10 @@ function getStoredUser() {
 
 const KuppiSessionForm = () => {
     const location = useLocation();
+<<<<<<< Updated upstream
     const navigate = useNavigate();
+=======
+>>>>>>> Stashed changes
     const user = location.state?.user || getStoredUser();
     const [formData, setFormData] = useState({
         name: user?.name || '',
@@ -196,12 +207,26 @@ const KuppiSessionForm = () => {
     }
 
     return (
+<<<<<<< Updated upstream
         <KuppiLayout title="Host A LEC">
             <div className="ks-form-container">
                 <div className="ks-form-wrapper">
                     <div className="ks-form-header">
                         <h2>Host A Kuppi Session</h2>
                         <p>Share your knowledge and help your peers succeed by registering a new module session.</p>
+=======
+        <KuppiLayout user={user} title="Host A Kuppi Session">
+        <div className="ks-form-container">
+            <div className="ks-form-wrapper">
+                <div className="ks-form-header">
+                    <h2>Host A Kuppi Session</h2>
+                    <p>Share your knowledge and help your peers succeed by registering a new module session.</p>
+                </div>
+
+                {message.text && (
+                    <div className={`ks-message ks-${message.type}`}>
+                        {message.text}
+>>>>>>> Stashed changes
                     </div>
 
                     {message.text && (
@@ -356,7 +381,12 @@ const KuppiSessionForm = () => {
 
                     </form>
                 </div>
+<<<<<<< Updated upstream
             </div>
+=======
+            )}
+        </div>
+>>>>>>> Stashed changes
         </KuppiLayout>
     );
 };

@@ -9,7 +9,10 @@ import UserProfile from './pages/Login/UserProfile';
 import EditProfile from './pages/Login/EditProfile';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import AdminUsers from './pages/Admin/AdminUsers';
+<<<<<<< Updated upstream
 import AdminLostFound from './pages/Admin/AdminLostFound';
+=======
+>>>>>>> Stashed changes
 import LostAndFoundDashboard from './pages/LostAndFound/LostAndFoundDashboard';
 import ItemDetails from './pages/LostAndFound/ItemDetails';
 import AdminPayments from './pages/Paymnet/AdminPayments';
@@ -60,6 +63,18 @@ function AdminRoute({ component: Component }) {
   return <Component />;
 }
 
+function RequireLoginRoute({ component: Component }) {
+  const location = useLocation();
+  const userFromState = location.state?.user;
+  const user = userFromState || getStoredUser();
+
+  if (!user?.id) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <Component />;
+}
+
 function App() {
   return (
     <BrowserRouter>
@@ -72,8 +87,12 @@ function App() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/homepage" element={<HomeRoute />} />
           <Route path="/kuppi" element={<KuppiHomePage />} />
+<<<<<<< Updated upstream
           <Route path="/host-session" element={<KuppiSessionForm />} />
           <Route path="/admin-kuppi-sessions" element={<AdminRoute component={KuppiRequestForm} />} />
+=======
+          <Route path="/host-session" element={<RequireLoginRoute component={KuppiSessionForm} />} />
+>>>>>>> Stashed changes
           <Route path="/my-sessions" element={<MySessions />} />
           <Route path="/register-session/:sessionId" element={<StudentRegistrationForm />} />
           <Route path="/my-enrollments" element={<MyEnrollments />} />
@@ -81,7 +100,11 @@ function App() {
           <Route path="/admin/dashboard" element={<AdminRoute component={AdminDashboard} />} />
           <Route path="/admin/users" element={<AdminRoute component={AdminUsers} />} />
           <Route path="/admin/ghost-lec" element={<AdminRoute component={KuppiRequestForm} />} />
+<<<<<<< Updated upstream
           <Route path="/admin/lost-found" element={<AdminRoute component={AdminLostFound} />} />
+=======
+          <Route path="/admin/lost-found" element={<AdminRoute component={LostAndFoundDashboard} />} />
+>>>>>>> Stashed changes
           <Route path="/admin/payments" element={<AdminRoute component={AdminPayments} />} />
           <Route path="/ghost-lec" element={<KuppiHomePage />} />
           <Route path="/lost-and-found" element={<LostAndFoundDashboard />} />
