@@ -50,20 +50,25 @@ io.on("connection", (socket) => {
     console.log("User Connected:", socket.id);
 
     socket.on("join_room", (data) => {
+        // data can be itemId for public or a combined ID for private
+        // Recommended format for private: itemId-user1-user2 (sorted users)
         socket.join(data);
         console.log(`User with ID: ${socket.id} joined room: ${data}`);
     });
 
     socket.on("send_message", async (data) => {
         try {
-            const { itemId, senderName, receiverName, text } = data;
+            const { itemId, senderName, receiverName, text, room } = data;
             const newMessage = await Message.create({
                 itemId,
                 senderName,
                 receiverName,
                 text,
             });
-            io.to(data.itemId).emit("receive_message", newMessage);
+            
+            // If room is provided, emit only to that room, otherwise use default itemId room
+            const targetRoom = room || itemId;
+            io.to(targetRoom).emit("receive_message", newMessage);
         } catch (error) {
             console.error("Error saving message:", error);
         }
