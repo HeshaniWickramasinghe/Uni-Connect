@@ -72,7 +72,7 @@ const getRegistrationsByStudentEmail = async (req, res) => {
 const getAllRegistrations = async (req, res) => {
     try {
         const registrations = await StudentRegistration.find({})
-            .populate('sessionId', 'moduleName moduleCode kuppiSessionFormId name price')
+            .populate('sessionId', 'moduleName moduleCode kuppiSessionFormId name')
             .sort({ createdAt: -1 });
         res.status(200).json(registrations);
     } catch (error) {

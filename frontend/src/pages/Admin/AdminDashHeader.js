@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 const adminNavigationItems = [
   { key: 'users', label: 'Users List', path: '/admin/users' },
   { key: 'ghost-lec', label: 'Ghost-Lec Requests', path: '/admin/ghost-lec' },
-  { key: 'lost-found', label: 'Lost and Found', path: '/admin/lost-found' },
+  { key: 'lost-found', label: 'Lost and Found Reports', path: '/admin/lost-found' },
   { key: 'payments', label: 'Check Payments', path: '/admin/payments' },
 ];
 

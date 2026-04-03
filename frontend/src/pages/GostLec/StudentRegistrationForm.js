@@ -1,12 +1,6 @@
-<<<<<<< Updated upstream
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-=======
-import React, { useState, useEffect } from 'react';
-import { useLocation, useParams, useNavigate } from 'react-router-dom';
->>>>>>> Stashed changes
 import axios from 'axios';
-import KuppiLayout from './KuppiLayout';
 import './StudentRegistrationForm.css';
 
 function getStoredUser() {
@@ -19,15 +13,10 @@ function getStoredUser() {
 }
 
 const StudentRegistrationForm = () => {
-    const location = useLocation();
     const { sessionId } = useParams();
     const navigate = useNavigate();
-<<<<<<< Updated upstream
     const location = useLocation();
     const user = location.state?.user || getStoredUser();
-=======
-    const user = location.state?.user;
->>>>>>> Stashed changes
     const [sessionData, setSessionData] = useState(null);
     const [formData, setFormData] = useState({
         studentName: user?.name || '',
@@ -105,13 +94,7 @@ const StudentRegistrationForm = () => {
         navigate('/kuppi', { state: { user } });
     };
 
-    if (loading) {
-        return (
-            <KuppiLayout user={user} title="Register for Kuppi">
-                <div className="sr-loading"><div className="loader"></div></div>
-            </KuppiLayout>
-        );
-    }
+    if (loading) return <div className="sr-loading"><div className="loader"></div></div>;
 
     if (!user) {
         return (
@@ -130,7 +113,6 @@ const StudentRegistrationForm = () => {
     }
 
     return (
-        <KuppiLayout user={user} title="Register for Kuppi">
         <div className="sr-form-container">
             <div className="sr-form-wrapper">
                 <div className="sr-form-header">
@@ -213,18 +195,13 @@ const StudentRegistrationForm = () => {
                             </button>
                         </div>
                         
-<<<<<<< Updated upstream
                         <div className="sr-back-home" onClick={() => navigate('/kuppi')}>
-=======
-                        <div className="sr-back-home" onClick={() => navigate('/kuppi', { state: { user } })}>
->>>>>>> Stashed changes
                             ← Return to Home Page
                         </div>
                     </form>
                 )}
             </div>
         </div>
-        </KuppiLayout>
     );
 };
 

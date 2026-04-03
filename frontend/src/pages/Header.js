@@ -60,7 +60,7 @@ function Header({ user }) {
     };
 
     const socialLinks = [
-        { label: 'Ghost-Lec', path: '/kuppi' },
+        { label: 'Ghost-Lec', path: '/ghost-lec' },
         { label: 'Lost and Found', path: '/lost-and-found' },
     ];
 
@@ -154,7 +154,6 @@ function Header({ user }) {
                             {cartOpen && (
                                 <div className="uc-cart-menu">
                                     <p className="uc-cart-title">Your Cart</p>
-<<<<<<< Updated upstream
                                     {cartItems.length === 0 ? (
                                         <>
                                             <p className="uc-cart-empty">No items added yet.</p>
@@ -216,18 +215,6 @@ function Header({ user }) {
                                             </div>
                                         </>
                                     )}
-=======
-                                    <p className="uc-cart-empty">No items added yet.</p>
-                                    <button
-                                        className="uc-cart-btn"
-                                        onClick={() => {
-                                            setCartOpen(false);
-                                            navigateWithUser('/kuppi');
-                                        }}
-                                    >
-                                        Browse Items
-                                    </button>
->>>>>>> Stashed changes
                                 </div>
                             )}
                         </div>

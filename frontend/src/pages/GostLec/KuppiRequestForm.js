@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-<<<<<<< Updated upstream
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import Header from '../Header';
@@ -275,7 +274,6 @@ function KuppiRequestForm() {
                                             <th>Student ID</th>
                                             <th>Session ID</th>
                                             <th>Module</th>
-                                            <th>Module Fee</th>
                                             <th>Tutor</th>
                                             <th>Payment Status</th>
                                             <th>Transaction ID</th>
@@ -289,7 +287,6 @@ function KuppiRequestForm() {
                                                 <td>{item.studentId || '-'}</td>
                                                 <td>{item.sessionId?.kuppiSessionFormId || item.sessionId?._id || '-'}</td>
                                                 <td>{item.sessionId ? `${item.sessionId.moduleName || '-'} (${item.sessionId.moduleCode || '-'})` : '-'}</td>
-                                                <td>{item.sessionId?.price !== undefined && item.sessionId?.price !== null ? `LKR ${item.sessionId.price}` : '-'}</td>
                                                 <td>{item.sessionId?.name || '-'}</td>
                                                 <td>
                                                     <span className={`krf-payment-badge krf-payment-${(item.paymentStatus || 'unknown').toLowerCase()}`}>
@@ -309,172 +306,6 @@ function KuppiRequestForm() {
             <Footer />
         </div>
     );
-=======
-import { useLocation } from 'react-router-dom';
-import axios from 'axios';
-import KuppiLayout from './KuppiLayout';
-import './KuppiRequestForm.css';
-
-const statusLabels = {
-  Pending: 'Pending',
-  Approved: 'Published',
-  Rejected: 'Denied',
-};
-
-function KuppiRequestForm() {
-  const location = useLocation();
-  const user = location.state?.user;
-  const [sessions, setSessions] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [savingId, setSavingId] = useState('');
-
-  useEffect(() => {
-    fetchSessions();
-  }, []);
-
-  const sortSessions = (items) =>
-    [...items].sort((left, right) => {
-      const leftPriority = left.status === 'Pending' ? 0 : 1;
-      const rightPriority = right.status === 'Pending' ? 0 : 1;
-
-      if (leftPriority !== rightPriority) {
-        return leftPriority - rightPriority;
-      }
-
-      return new Date(right.createdAt || 0) - new Date(left.createdAt || 0);
-    });
-
-  const fetchSessions = async () => {
-    try {
-      const response = await axios.get('http://localhost:5000/api/kuppi-sessions');
-      setSessions(sortSessions(response.data));
-      setError('');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to fetch Kuppi requests');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const updateSessionStatus = async (sessionId, status) => {
-    setSavingId(sessionId);
-
-    try {
-      await axios.put(`http://localhost:5000/api/kuppi-sessions/${sessionId}/status`, { status });
-      setSessions((currentSessions) =>
-        sortSessions(
-          currentSessions.map((session) =>
-            session._id === sessionId ? { ...session, status } : session
-          )
-        )
-      );
-      setError('');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to update request status');
-    } finally {
-      setSavingId('');
-    }
-  };
-
-  return (
-    <KuppiLayout user={user} title="Ghost-Lec Requests">
-      <div className="kuppi-requests-page">
-        <section className="kuppi-requests-hero">
-          <p className="kuppi-requests-badge">Uni-Connect Admin</p>
-          <h1>Ghost-Lec Requests</h1>
-          <p className="kuppi-requests-subtitle">
-            Review submitted sessions, publish the ones that are ready, or deny invalid requests.
-          </p>
-        </section>
-
-        {error && <div className="kuppi-requests-error">{error}</div>}
-
-        {loading ? (
-          <div className="kuppi-requests-loading">
-            <span className="loader" />
-          </div>
-        ) : sessions.length === 0 ? (
-          <div className="kuppi-requests-empty">No Ghost-Lec requests have been submitted yet.</div>
-        ) : (
-          <div className="kuppi-requests-grid">
-            {sessions.map((session) => {
-              const isBusy = savingId === session._id;
-              const canModerate = session.status !== 'Approved' && session.status !== 'Rejected';
-
-              return (
-                <article key={session._id} className="kuppi-requests-card">
-                  <div className="kuppi-requests-card-header">
-                    <span className={`kuppi-status-badge status-${session.status?.toLowerCase() || 'pending'}`}>
-                      {statusLabels[session.status] || session.status || 'Pending'}
-                    </span>
-                    <span className="kuppi-module-code">{session.moduleCode}</span>
-                  </div>
-
-                  <h2>{session.moduleName}</h2>
-
-                  <div className="kuppi-host-info">
-                    <strong>{session.name}</strong>
-                    <span>{session.email}</span>
-                    <span>{session.faculty}</span>
-                  </div>
-
-                  <div className="kuppi-request-details">
-                    <p>
-                      Duration: {session.duration} mins | Price: LKR {session.price}
-                    </p>
-                    <p>
-                      Schedule: {new Date(session.date).toLocaleDateString()} at {session.time}
-                    </p>
-                    <p>
-                      Meeting: <a href={session.meetingLink} target="_blank" rel="noreferrer">Open link</a>
-                    </p>
-                  </div>
-
-                  <div className="kuppi-request-files">
-                    <a
-                      href={`http://localhost:5000/${session.qualificationFile.replace(/\\/g, '/')}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      View Qualification
-                    </a>
-                    <a
-                      href={`http://localhost:5000/${session.shortNoteFile.replace(/\\/g, '/')}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      View Short Note
-                    </a>
-                  </div>
-
-                  <div className="kuppi-request-actions">
-                    <button
-                      type="button"
-                      className="kuppi-publish-btn"
-                      onClick={() => updateSessionStatus(session._id, 'Approved')}
-                      disabled={isBusy || !canModerate}
-                    >
-                      {session.status === 'Approved' ? 'Published' : isBusy ? 'Publishing...' : 'Publish'}
-                    </button>
-                    <button
-                      type="button"
-                      className="kuppi-deny-btn"
-                      onClick={() => updateSessionStatus(session._id, 'Rejected')}
-                      disabled={isBusy || !canModerate}
-                    >
-                      {session.status === 'Rejected' ? 'Denied' : isBusy ? 'Denying...' : 'Deny'}
-                    </button>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    </KuppiLayout>
-  );
->>>>>>> Stashed changes
 }
 
 export default KuppiRequestForm;
