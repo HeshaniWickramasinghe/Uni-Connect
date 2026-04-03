@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const http = require("http");
+const path = require("path");
 const { Server } = require("socket.io");
 require("dotenv").config();
 
@@ -10,6 +11,8 @@ const itemRoutes = require("./Routes/itemRoutes");
 const messageRoutes = require("./Routes/messageRoutes");
 const loggingRoutes = require("./Routes_Logging/loggingRoutes");
 const paymentRoutes = require("./Routes_C/paymentRoutes");
+const kuppiSessionRoutes = require("./Routes/kuppiSessionRoutes");
+const studentRegistrationRoutes = require("./Routes/studentRegistrationRoutes");
 
 // Import Models
 const Message = require("./Model/messageModel");
@@ -26,12 +29,16 @@ const io = new Server(server, {
 // Middleware
 app.use(cors());
 app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: false }));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Use Routes
 app.use("/api/items", itemRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/users", loggingRoutes);
 app.use("/api/payments", paymentRoutes);
+app.use("/api/kuppi-sessions", kuppiSessionRoutes);
+app.use("/api/student-registrations", studentRegistrationRoutes);
 
 // Test Route
 app.get("/", (req, res) => {

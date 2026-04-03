@@ -1,0 +1,375 @@
+/* KuppiSessionForm.css - Deep Dark Premium Frosted Aesthetic */
+
+:root {
+  --kf-bg-main: #0b0f19;
+  --kf-card-bg: rgba(22, 28, 45, 0.7);
+  --kf-border: rgba(255, 255, 255, 0.1);
+  --kf-accent: #6366f1;
+  --kf-accent-glow: rgba(99, 102, 241, 0.4);
+  --kf-text: #f8fafc;
+  --kf-text-muted: #94a3b8;
+  --kf-error: #ef4444;
+  --kf-success: #10b981;
+}
+
+.ks-form-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 1rem;
+  background-color: var(--kf-bg-main);
+  background-image:
+    radial-gradient(ellipse at top right, rgba(99, 102, 241, 0.15), transparent 50%),
+    radial-gradient(ellipse at bottom left, rgba(16, 185, 129, 0.1), transparent 50%);
+  font-family: 'Inter', system-ui, sans-serif;
+  color: var(--kf-text);
+  box-sizing: border-box;
+}
+
+.ks-form-wrapper {
+  background: var(--kf-card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--kf-border);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 850px;
+  padding: 3.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glowing Top Border */
+.ks-form-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #38bdf8, var(--kf-accent));
+}
+
+.ks-form-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.ks-form-header h2 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem 0;
+  background: linear-gradient(to right, #fff, #cbd5e1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.02em;
+}
+
+.ks-form-header p {
+  color: var(--kf-text-muted);
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.ks-section-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  margin: 2.5rem 0 1.25rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.ks-form-header+.ks-section-title {
+  margin-top: 1rem;
+}
+
+.ks-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.ks-input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.ks-input-group label,
+.ks-file-group label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #cbd5e1;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.02em;
+}
+
+.ks-input-group input,
+.ks-input-group select {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 0.85rem 1.15rem;
+  color: white;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.ks-input-group input:focus,
+.ks-input-group select:focus {
+  border-color: var(--kf-accent);
+  box-shadow: 0 0 0 4px var(--kf-accent-glow);
+  background: rgba(15, 23, 42, 0.9);
+}
+
+.ks-input-group input::placeholder {
+  color: #475569;
+}
+
+.ks-input-group select option {
+  background: var(--kf-bg-main);
+  color: white;
+}
+
+.fill-width {
+  grid-column: 1 / -1;
+  margin-bottom: 1.5rem;
+}
+
+/* Custom File Inputs */
+.ks-file-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.file-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.file-input-wrapper:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(15, 23, 42, 0.8);
+}
+
+.file-input-wrapper input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.file-custom-btn {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.6rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  pointer-events: none;
+}
+
+.file-name {
+  margin-left: 1rem;
+  font-size: 0.9rem;
+  color: var(--kf-text-muted);
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+/* Submit Button & Messages */
+.ks-submit-row {
+  margin-top: 3rem;
+  text-align: center;
+}
+
+.ks-submit-btn {
+  background: linear-gradient(135deg, var(--kf-accent), #4f46e5);
+  color: white;
+  border: none;
+  padding: 1.15rem 3rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px var(--kf-accent-glow);
+  width: 100%;
+  max-width: 400px;
+}
+
+.ks-submit-btn:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.6);
+}
+
+.ks-submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.ks-message {
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  font-weight: 500;
+  font-size: 0.95rem;
+  text-align: center;
+  animation: slideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.ks-error {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+}
+
+.ks-success {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #6ee7b7;
+}
+
+/* Mini Loader */
+.loader {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ks-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .ks-form-wrapper {
+    padding: 2rem 1.5rem;
+  }
+}
+
+/* Modal Styling */
+.ks-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.ks-modal-content {
+    background: rgba(30, 41, 59, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 2.5rem;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    animation: ksModalFadeIn 0.3s ease-out;
+}
+
+@keyframes ksModalFadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.ks-modal-header h3 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    color: #fff;
+    margin-top: 0;
+}
+
+.ks-modal-body p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #cbd5e1;
+    margin-bottom: 2rem;
+}
+
+.ks-modal-footer {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.ks-modal-btn {
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.ks-confirm-btn {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.ks-confirm-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+}
+
+.ks-cancel-btn {
+    background: rgba(255, 255, 255, 0.05);
+    color: #94a3b8;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ks-cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}

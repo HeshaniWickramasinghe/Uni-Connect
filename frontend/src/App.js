@@ -16,6 +16,12 @@ import AdminPayments from './pages/Paymnet/AdminPayments';
 import TestPay from './pages/Paymnet/testpay';
 import CardPayment from './pages/Paymnet/CardPayment';
 import BankTransfer from './pages/Paymnet/BankTransfer';
+import KuppiHomePage from './components/Kuppi-Registration/KuppiHomePage';
+import KuppiSessionForm from './components/Kuppi-Registration/KuppiSessionForm';
+import AdminKuppiSessions from './components/Kuppi-Registration/admin/AdminKuppiSessions';
+import MySessions from './components/Kuppi-Registration/MySessions';
+import StudentRegistrationForm from './components/Kuppi-Registration/StudentRegistrationForm';
+import MyEnrollments from './components/Kuppi-Registration/MyEnrollments';
 
 const ADMIN_EMAIL = 'it23722040@my.sliit.lk';
 
@@ -65,6 +71,12 @@ function App() {
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/homepage" element={<HomeRoute />} />
+          <Route path="/kuppi" element={<KuppiHomePage />} />
+          <Route path="/host-session" element={<KuppiSessionForm />} />
+          <Route path="/admin-kuppi-sessions" element={<AdminKuppiSessions />} />
+          <Route path="/my-sessions" element={<MySessions />} />
+          <Route path="/register-session/:sessionId" element={<StudentRegistrationForm />} />
+          <Route path="/my-enrollments" element={<MyEnrollments />} />
           <Route path="/admin" element={<AdminRoute component={AdminUsers} />} />
           <Route path="/admin/dashboard" element={<AdminRoute component={AdminDashboard} />} />
           <Route path="/admin/users" element={<AdminRoute component={AdminUsers} />} />
