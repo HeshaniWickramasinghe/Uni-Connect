@@ -23,6 +23,12 @@ import MySessions from './pages/GostLec/MySessions';
 import StudentRegistrationForm from './pages/GostLec/StudentRegistrationForm';
 import MyEnrollments from './pages/GostLec/MyEnrollments';
 
+// Reward system imports
+import BadgeManagement from '../components/Admin/BadgeManagement';
+import Leaderboard from '../components/Rewards/Leaderboard';
+import RatingAndReward from '../components/Rewards/RatingAndReward';
+import RewardUserProfile from '../components/Profile/UserProfile';
+
 const ADMIN_EMAIL = 'it23722040@my.sliit.lk';
 
 function getStoredUser() {
@@ -102,6 +108,12 @@ function App() {
           <Route path="/bank-transfer" element={<BankTransfer />} />
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/profile/edit" element={<EditProfile />} />
+
+          {/* Reward system routes */}
+          <Route path="/admin/badges" element={<BadgeManagement />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/rate-reward/:itemId" element={<RatingAndReward />} />
+          <Route path="/reward-profile" element={<RewardUserProfile />} />
         </Routes>
       </div>
     </BrowserRouter>

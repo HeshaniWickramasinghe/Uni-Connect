@@ -13,8 +13,10 @@ const loggingRoutes = require("./Routes_Logging/loggingRoutes");
 const paymentRoutes = require("./Routes_C/paymentRoutes");
 const kuppiSessionRoutes = require("./Routes/kuppiSessionRoutes");
 const studentRegistrationRoutes = require("./Routes/studentRegistrationRoutes");
-
-// Import Models
+const badgeRoutes = require("./Routes/badgeRoutes");
+const userProfileRoutes = require("./Routes/userProfileRoutes");
+const rewardRoutes = require("./Routes/rewardRoutes");
+const ratingRoutes = require("./Routes/ratingRoutes");
 const Message = require("./Model/messageModel");
 
 const app = express();
@@ -39,6 +41,10 @@ app.use("/api/users", loggingRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/kuppi-sessions", kuppiSessionRoutes);
 app.use("/api/student-registrations", studentRegistrationRoutes);
+app.use("/api/badges", badgeRoutes);
+app.use("/api/profiles", userProfileRoutes);
+app.use("/api/rewards", rewardRoutes);
+app.use("/api/ratings", ratingRoutes);
 
 // Test Route
 app.get("/", (req, res) => {
