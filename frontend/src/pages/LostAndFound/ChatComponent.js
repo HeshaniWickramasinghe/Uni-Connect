@@ -8,6 +8,7 @@ function ChatComponent({ itemId, senderName, receiverName, itemName, onClose }) 
     const [messageList, setMessageList] = useState([]);
     const messagesEndRef = useRef(null);
 
+    //sorts the usernames alphabetically to create a unique room id
     const getRoomId = (itemId, user1, user2) => {
         const users = [user1, user2].sort();
         return `${itemId}-${users[0]}-${users[1]}`;
@@ -29,7 +30,7 @@ function ChatComponent({ itemId, senderName, receiverName, itemName, onClose }) 
         // Join the unique private chat room for this item + pair of users
         socket.emit("join_room", roomId);
 
-        // Fetch only private existing messages for this pair
+        // get chat history from the database.
         const fetchMessages = async () => {
             try {
                 const res = await fetch(`http://localhost:5000/api/messages/${itemId}?user1=${encodeURIComponent(senderName)}&user2=${encodeURIComponent(receiverName)}`);
@@ -43,7 +44,7 @@ function ChatComponent({ itemId, senderName, receiverName, itemName, onClose }) 
         };
         fetchMessages();
 
-        // Real-time message listener
+        // Real-time message listener(update chat according to new message)
         const eventListener = (data) => {
             const currentRoom = getRoomId(itemId, senderName, receiverName);
             const incomingRoom = getRoomId(data.itemId, data.senderName, data.receiverName);

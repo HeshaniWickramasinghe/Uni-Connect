@@ -4,7 +4,7 @@ import Header from '../Header';
 import Footer from '../Footer';
 import RewardSuggestionPopup from '../../components/Rewards/RewardSuggestionPopup';
 import io from 'socket.io-client';
-
+//The UI is split into two main columns using Tailwind's
 const socket = io.connect('http://localhost:5000');
 
 const ItemDetails = () => {
@@ -37,11 +37,13 @@ const ItemDetails = () => {
         fetchItemDetails();
     }, [id]);
 
+    //sorts the usernames alphabetically to create a unique room id
     const getRoomId = (itemId, user1, user2) => {
         const users = [user1, user2].sort();
         return `${itemId}-${users[0]}-${users[1]}`;
     };
 
+    //sets the view mode to chat or list and owner or not
     useEffect(() => {
         if (!item || !currentUser) return;
         const isOwner = item.userName === currentUserName;
@@ -54,6 +56,7 @@ const ItemDetails = () => {
         }
     }, [item, currentUser, currentUserName]);
 
+    //sets up the chat room and listens for messages
     useEffect(() => {
         if (!selectedPartner || !item || !currentUser) return;
 
@@ -81,6 +84,7 @@ const ItemDetails = () => {
         scrollToBottom();
     }, [messages]);
 
+    //GET request to get the item details
     const fetchItemDetails = async () => {
         try {
             const res = await fetch(`http://localhost:5000/api/items/${id}`);
@@ -93,6 +97,7 @@ const ItemDetails = () => {
         }
     };
 
+    //Give list of every unique perso message regarding this item ID
     const fetchConversations = async () => {
         try {
             const res = await fetch(`http://localhost:5000/api/messages/${id}/conversations?ownerName=${currentUserName}`);
@@ -105,6 +110,7 @@ const ItemDetails = () => {
         }
     };
 
+    //load msg between current user and their partner
     const fetchMessages = async (partner) => {
         try {
             const res = await fetch(`http://localhost:5000/api/messages/${id}?user1=${currentUserName}&user2=${partner}`);
@@ -117,6 +123,7 @@ const ItemDetails = () => {
         }
     };
 
+    //handles the sending of messages
     const handleSendMessage = async (e) => {
         if (e) e.preventDefault();
         if (!currentUser) return;
@@ -140,6 +147,7 @@ const ItemDetails = () => {
         }
     };
 
+    //selects the conversation
     const selectConversation = (partner) => {
         setSelectedPartner(partner);
         setViewMode('chat');
@@ -153,7 +161,7 @@ const ItemDetails = () => {
         <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
             <Header user={currentUser} />
 
-            <main className="flex-grow max-w-7xl mx-auto w-full p-6 flex flex-col lg:flex-row gap-8">
+           <main className="flex-grow max-w-7xl mx-auto w-full p-6 flex flex-col lg:flex-row gap-8">
                 {/* Item Info Column */}
                 <div className="w-full lg:w-3/5 space-y-6">
                     <div className="w-full h-96 bg-gray-200 rounded-[40px] overflow-hidden shadow-2xl relative border-8 border-white">
