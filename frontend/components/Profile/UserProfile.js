@@ -9,6 +9,9 @@ const UserProfile = () => {
     const navigate = useNavigate();
     const [profile, setProfile] = useState(null);
     const [rewards, setRewards] = useState([]);
+    const [givenRewards, setGivenRewards] = useState([]);
+    const [allBadges, setAllBadges] = useState([]);
+    const [ratingSummary, setRatingSummary] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState("overview");
@@ -53,9 +56,20 @@ const UserProfile = () => {
                 bio: data.bio || "",
             });
 
-            const rewardsRes = await fetch(`${API_BASE}/rewards/received/${user.id}`);
+            const [rewardsRes, givenRes, badgesRes, ratingRes] = await Promise.all([
+                fetch(`${API_BASE}/rewards/received/${user.id}`),
+                fetch(`${API_BASE}/rewards/given/${user.id}`),
+                fetch(`${API_BASE}/badges/active`),
+                fetch(`${API_BASE}/ratings/summary/${user.id}`),
+            ]);
             const rewardsData = await rewardsRes.json();
+            const givenData = await givenRes.json();
+            const badgesData = await badgesRes.json();
+            const ratingData = await ratingRes.json();
             setRewards(rewardsData);
+            setGivenRewards(givenData);
+            setAllBadges(badgesData);
+            setRatingSummary(ratingData);
         } catch (error) {
             console.error("Error fetching profile:", error);
         } finally {
@@ -142,7 +156,7 @@ const UserProfile = () => {
     if (!profile) {
         return (
             <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
-                <div className="text-center bg-white/80 backdrop-blur-sm rounded-3xl border border-white/60 p-12 max-w-md">
+                <div className="text-center bg-white rounded-2xl shadow-sm border border-gray-100 p-12 max-w-md">
                     <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center text-4xl mx-auto mb-5">
                         👤
                     </div>
@@ -167,63 +181,76 @@ const UserProfile = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+        <div className="min-h-screen bg-gray-50">
             <Header />
-            <div className="max-w-5xl mx-auto px-4 py-8 mt-16">
-                {/* Profile Hero Card */}
-                <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl border border-white/60 overflow-hidden mb-6 shadow-sm">
-                    {/* Gradient Banner */}
-                    <div className="h-40 bg-gradient-to-br from-[#023E8A] via-[#0353A4] to-[#4C6EF5] relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-60 h-60 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/4"></div>
-                        <div className="absolute bottom-0 left-1/4 w-32 h-32 bg-white/5 rounded-full translate-y-1/2"></div>
-                        <div className="absolute top-8 right-1/4 w-2 h-2 bg-yellow-300/30 rounded-full"></div>
-                        <div className="absolute top-16 right-1/3 w-1.5 h-1.5 bg-blue-300/30 rounded-full"></div>
-                        <div className="absolute bottom-4 left-1/3 w-2.5 h-2.5 bg-white/10 rounded-full"></div>
-                    </div>
 
-                    <div className="px-8 pb-8">
-                        {/* Avatar & Info Row */}
-                        <div className="flex flex-col sm:flex-row items-start sm:items-end gap-5 -mt-14 relative">
+            {/* Full-width Banner */}
+            <div className="relative bg-gradient-to-br from-[#012A5E] via-[#023E8A] to-[#0353A4] pt-24 pb-32 overflow-hidden">
+                {/* Decorative mesh */}
+                <div className="absolute inset-0 opacity-[0.07]" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)", backgroundSize: "32px 32px" }}></div>
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#4C6EF5]/10 rounded-full -translate-y-1/2 translate-x-1/3 blur-3xl"></div>
+                <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#0353A4]/20 rounded-full translate-y-1/2 -translate-x-1/4 blur-3xl"></div>
+            </div>
+
+            {/* Profile Content - overlaps the banner */}
+            <div className="max-w-5xl mx-auto px-4 -mt-24 relative z-10 pb-8">
+                {/* Profile Card */}
+                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-6">
+                    <div className="p-6 sm:p-8">
+                        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
                             {/* Avatar */}
-                            <div className="relative">
-                                <div className="w-28 h-28 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-100 border-4 border-white shadow-xl flex items-center justify-center text-4xl font-bold text-[#023E8A]">
-                                    {getInitials(profile.name)}
+                            <div className="relative flex-shrink-0 -mt-20 sm:-mt-20">
+                                <div className="w-32 h-32 rounded-full bg-gradient-to-br from-[#023E8A] to-[#4C6EF5] p-[3px] shadow-xl">
+                                    <div className="w-full h-full rounded-full bg-white flex items-center justify-center text-4xl font-extrabold text-[#023E8A]">
+                                        {getInitials(profile.name)}
+                                    </div>
                                 </div>
-                                <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-emerald-500 rounded-lg border-2 border-white flex items-center justify-center">
-                                    <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div className="absolute bottom-1 right-1 w-8 h-8 bg-emerald-500 rounded-full border-[3px] border-white flex items-center justify-center shadow-sm">
+                                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                                     </svg>
                                 </div>
                             </div>
 
-                            {/* Name & Details */}
-                            <div className="flex-1 min-w-0 pb-1">
-                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                            {/* Info */}
+                            <div className="flex-1 min-w-0 text-center sm:text-left sm:pt-2">
+                                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                                     <div>
                                         <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">{profile.name}</h1>
-                                        <div className="flex flex-wrap items-center gap-2 mt-1.5">
+                                        {profile.bio && !isEditing && (
+                                            <p className="text-sm text-gray-500 mt-1 max-w-md leading-relaxed">{profile.bio}</p>
+                                        )}
+                                        <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 mt-3">
                                             {profile.studentId && (
-                                                <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1 rounded-full bg-blue-50 text-[#023E8A] border border-blue-100">
-                                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-[#023E8A]/5 text-[#023E8A]">
+                                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0" />
                                                     </svg>
                                                     {profile.studentId}
                                                 </span>
                                             )}
                                             {profile.email && (
-                                                <span className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1 rounded-full bg-gray-50 text-gray-600 border border-gray-100">
-                                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <span className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-gray-100 text-gray-600">
+                                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                                     </svg>
                                                     {profile.email}
                                                 </span>
                                             )}
                                             {profile.phone && (
-                                                <span className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1 rounded-full bg-gray-50 text-gray-600 border border-gray-100">
-                                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <span className="inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg bg-gray-100 text-gray-600">
+                                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                                                     </svg>
                                                     {profile.phone}
+                                                </span>
+                                            )}
+                                            {ratingSummary && ratingSummary.totalRatings > 0 && (
+                                                <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-amber-50 text-amber-700">
+                                                    <svg className="w-3.5 h-3.5 text-amber-500" fill="currentColor" viewBox="0 0 24 24">
+                                                        <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                                    </svg>
+                                                    {ratingSummary.averageStars} ({ratingSummary.totalRatings})
                                                 </span>
                                             )}
                                         </div>
@@ -233,7 +260,7 @@ const UserProfile = () => {
                                             setIsEditing(!isEditing);
                                             setErrors({});
                                         }}
-                                        className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 flex-shrink-0 ${
+                                        className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center gap-2 flex-shrink-0 self-center sm:self-start ${
                                             isEditing
                                                 ? "bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-200"
                                                 : "bg-[#023E8A] text-white hover:bg-[#022e6a] shadow-lg shadow-blue-200/40"
@@ -258,19 +285,12 @@ const UserProfile = () => {
                                 </div>
                             </div>
                         </div>
-
-                        {/* Bio */}
-                        {profile.bio && !isEditing && (
-                            <div className="mt-5 ml-0 sm:ml-[148px] p-4 bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl border border-gray-100/80">
-                                <p className="text-sm text-gray-600 leading-relaxed italic">"{profile.bio}"</p>
-                            </div>
-                        )}
                     </div>
                 </div>
 
                 {/* Edit Form */}
                 {isEditing && (
-                    <div className="bg-white/80 backdrop-blur-sm rounded-3xl border border-white/60 overflow-hidden mb-6 shadow-sm">
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-6 shadow-sm">
                         <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center text-xl">
@@ -396,7 +416,7 @@ const UserProfile = () => {
                     {STATS.map((stat, i) => (
                         <div
                             key={i}
-                            className="group bg-white/80 backdrop-blur-sm rounded-2xl border border-white/60 p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
+                            className="group bg-white rounded-2xl shadow-sm border border-gray-100 p-5 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5"
                         >
                             <div className="flex items-center gap-3 mb-3">
                                 <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stat.bgFrom} ${stat.bgTo} flex items-center justify-center text-lg shadow-sm group-hover:scale-110 transition-transform`}>
@@ -411,11 +431,108 @@ const UserProfile = () => {
                     ))}
                 </div>
 
+                {/* Rating Summary */}
+                {ratingSummary && ratingSummary.totalRatings > 0 && (
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-6">
+                        <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-100 to-amber-100 flex items-center justify-center text-xl shadow-sm">
+                                    ⭐
+                                </div>
+                                <div>
+                                    <h2 className="text-lg font-bold text-gray-900">Ratings & Feedback</h2>
+                                    <p className="text-xs text-gray-500">Based on {ratingSummary.totalRatings} rating{ratingSummary.totalRatings !== 1 ? "s" : ""} from item owners</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="p-6">
+                            <div className="flex flex-col md:flex-row gap-8">
+                                {/* Left - Overall Score */}
+                                <div className="flex flex-col items-center justify-center md:w-1/3">
+                                    <p className="text-5xl font-extrabold text-gray-900">{ratingSummary.averageStars}</p>
+                                    <div className="flex gap-0.5 my-2">
+                                        {[1, 2, 3, 4, 5].map((star) => (
+                                            <svg
+                                                key={star}
+                                                className={`w-5 h-5 ${star <= Math.round(ratingSummary.averageStars) ? "text-yellow-400" : "text-gray-200"}`}
+                                                fill="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                            </svg>
+                                        ))}
+                                    </div>
+                                    <p className="text-xs font-medium text-gray-400">{ratingSummary.totalRatings} total ratings</p>
+                                </div>
+
+                                {/* Middle - Star Distribution */}
+                                <div className="flex-1 space-y-2">
+                                    {[5, 4, 3, 2, 1].map((star) => {
+                                        const count = ratingSummary.starDistribution[star] || 0;
+                                        const percent = ratingSummary.totalRatings > 0 ? Math.round((count / ratingSummary.totalRatings) * 100) : 0;
+                                        return (
+                                            <div key={star} className="flex items-center gap-2">
+                                                <span className="text-xs font-bold text-gray-500 w-4 text-right">{star}</span>
+                                                <svg className="w-3.5 h-3.5 text-yellow-400 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                                                </svg>
+                                                <div className="flex-1 h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                                                    <div
+                                                        className="h-full bg-yellow-400 rounded-full transition-all duration-500"
+                                                        style={{ width: `${percent}%` }}
+                                                    ></div>
+                                                </div>
+                                                <span className="text-xs font-semibold text-gray-400 w-10 text-right">{percent}%</span>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            {/* Labels */}
+                            {Object.keys(ratingSummary.labelCounts).length > 0 && (
+                                <div className="mt-6 pt-6 border-t border-gray-100">
+                                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">What people are saying</p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {Object.entries(ratingSummary.labelCounts)
+                                            .sort((a, b) => b[1] - a[1])
+                                            .map(([label, count]) => {
+                                                const percent = Math.round((count / ratingSummary.totalRatings) * 100);
+                                                const labelIcons = {
+                                                    "Delivered with care": "📦",
+                                                    "Easy to retrieve": "🤝",
+                                                    "Trustworthy": "🛡️",
+                                                    "Quick response": "⚡",
+                                                    "Friendly": "😊",
+                                                    "Well packaged": "🎁",
+                                                };
+                                                return (
+                                                    <div
+                                                        key={label}
+                                                        className="flex items-center gap-2 bg-white rounded-xl border border-gray-100 px-4 py-2.5 shadow-sm"
+                                                    >
+                                                        <span className="text-base">{labelIcons[label] || "🏷️"}</span>
+                                                        <div>
+                                                            <p className="text-xs font-semibold text-gray-700">{label}</p>
+                                                            <p className="text-[10px] font-bold text-gray-400">{percent}% ({count})</p>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+
                 {/* Tabs */}
-                <div className="flex gap-1 bg-white/80 backdrop-blur-sm rounded-2xl border border-white/60 p-1.5 mb-6 max-w-md">
+                <div className="flex gap-1 bg-white rounded-2xl shadow-sm border border-gray-100 p-1.5 mb-6 max-w-lg">
                     {[
                         { key: "overview", label: "Badges", icon: "🏅" },
-                        { key: "rewards", label: "Rewards History", icon: "🎁" },
+                        { key: "rewards", label: "Received", icon: "🎁" },
+                        { key: "given", label: "Given", icon: "💝" },
                     ].map((tab) => (
                         <button
                             key={tab.key}
@@ -434,7 +551,8 @@ const UserProfile = () => {
 
                 {/* Badges Tab */}
                 {activeTab === "overview" && (
-                    <div className="bg-white/80 backdrop-blur-sm rounded-3xl border border-white/60 overflow-hidden shadow-sm">
+                    <>
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden shadow-sm">
                         <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-100 to-violet-100 flex items-center justify-center text-xl shadow-sm">
@@ -502,11 +620,77 @@ const UserProfile = () => {
                             )}
                         </div>
                     </div>
+
+                    {/* Badge Progress Section */}
+                    {allBadges.length > 0 && (
+                        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden shadow-sm mt-4">
+                            <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center text-xl shadow-sm">
+                                        📈
+                                    </div>
+                                    <div>
+                                        <h2 className="text-lg font-bold text-gray-900">Badge Progress</h2>
+                                        <p className="text-xs text-gray-500">Track your progress toward the next badge</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="p-6 space-y-4">
+                                {allBadges.map((badge) => {
+                                    const earnedBadgeIds = (profile.badges || []).map((b) => b.badgeId?._id || b.badgeId);
+                                    const isEarned = earnedBadgeIds.includes(badge._id);
+                                    const currentValue = profile[badge.triggerField] || 0;
+                                    const progress = Math.min((currentValue / badge.triggerValue) * 100, 100);
+
+                                    return (
+                                        <div key={badge._id} className={`p-4 rounded-xl border transition-all ${isEarned ? "bg-emerald-50/50 border-emerald-200/60" : "bg-white border-gray-100"}`}>
+                                            <div className="flex items-center gap-3 mb-3">
+                                                <div
+                                                    className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+                                                    style={{
+                                                        backgroundColor: `${badge.color}12`,
+                                                        border: `2px solid ${badge.color}25`,
+                                                    }}
+                                                >
+                                                    {badge.emoji}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center justify-between">
+                                                        <h4 className="text-sm font-bold text-gray-900 truncate">{badge.name}</h4>
+                                                        {isEarned ? (
+                                                            <span className="text-xs font-semibold text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full flex-shrink-0 ml-2">Earned</span>
+                                                        ) : (
+                                                            <span className="text-xs font-semibold text-gray-500 flex-shrink-0 ml-2">{currentValue}/{badge.triggerValue}</span>
+                                                        )}
+                                                    </div>
+                                                    <p className="text-[10px] text-gray-400 uppercase tracking-wider mt-0.5">
+                                                        {badge.triggerField === "itemsReturned" && "Items Returned"}
+                                                        {badge.triggerField === "itemsReported" && "Items Reported"}
+                                                        {badge.triggerField === "rewardsEarned" && "Rewards Earned"}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                                                <div
+                                                    className="h-full rounded-full transition-all duration-500"
+                                                    style={{
+                                                        width: `${progress}%`,
+                                                        backgroundColor: isEarned ? "#10B981" : badge.color,
+                                                    }}
+                                                ></div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
+                    </>
                 )}
 
                 {/* Rewards Tab */}
                 {activeTab === "rewards" && (
-                    <div className="bg-white/80 backdrop-blur-sm rounded-3xl border border-white/60 overflow-hidden shadow-sm">
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden shadow-sm">
                         <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
@@ -587,6 +771,83 @@ const UserProfile = () => {
                                     <p className="text-gray-600 font-semibold text-lg">No rewards received yet</p>
                                     <p className="text-gray-400 text-sm mt-1 max-w-sm mx-auto">
                                         Help others find their lost items to earn rewards!
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {/* Given Rewards Tab */}
+                {activeTab === "given" && (
+                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden shadow-sm">
+                        <div className="p-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-100 to-rose-100 flex items-center justify-center text-xl shadow-sm">
+                                    💝
+                                </div>
+                                <div>
+                                    <h2 className="text-lg font-bold text-gray-900">Rewards You've Given</h2>
+                                    <p className="text-xs text-gray-500">
+                                        {givenRewards.length} reward{givenRewards.length !== 1 ? "s" : ""} sent
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="p-6">
+                            {givenRewards.length > 0 ? (
+                                <div className="space-y-3">
+                                    {givenRewards.map((reward) => (
+                                        <div
+                                            key={reward._id}
+                                            className="group flex items-center gap-4 p-4 bg-white rounded-2xl border border-gray-100/80 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+                                        >
+                                            {reward.itemId?.photo ? (
+                                                <img
+                                                    src={reward.itemId.photo}
+                                                    alt={reward.itemId.name}
+                                                    className="w-14 h-14 rounded-xl object-cover shadow-sm border border-gray-100 flex-shrink-0"
+                                                />
+                                            ) : (
+                                                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 flex items-center justify-center text-2xl flex-shrink-0 shadow-sm">
+                                                    💝
+                                                </div>
+                                            )}
+                                            <div className="flex-1 min-w-0">
+                                                <p className="font-semibold text-gray-900 text-sm truncate">
+                                                    {reward.itemId?.name || "Unknown Item"}
+                                                </p>
+                                                <div className="flex items-center gap-1.5 mt-1">
+                                                    <span className="text-xs text-gray-400">to</span>
+                                                    <span className="text-xs font-semibold text-gray-600">{reward.receiverName}</span>
+                                                </div>
+                                                {reward.message && (
+                                                    <p className="text-xs text-gray-400 mt-1 italic truncate">"{reward.message}"</p>
+                                                )}
+                                            </div>
+                                            <div className="text-right flex-shrink-0">
+                                                <div className="inline-flex items-center gap-1 bg-pink-50 px-3 py-1 rounded-full border border-pink-100">
+                                                    <svg className="w-3.5 h-3.5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                                    </svg>
+                                                    <span className="text-sm font-bold text-pink-700">-{reward.points}</span>
+                                                </div>
+                                                <p className="text-[10px] font-medium text-gray-400 mt-1.5 uppercase tracking-wider">
+                                                    {new Date(reward.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-center py-16">
+                                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-pink-100 to-rose-100 flex items-center justify-center text-4xl mx-auto mb-5 shadow-sm">
+                                        💝
+                                    </div>
+                                    <p className="text-gray-600 font-semibold text-lg">No rewards given yet</p>
+                                    <p className="text-gray-400 text-sm mt-1 max-w-sm mx-auto">
+                                        When someone returns your lost item, you can reward them here!
                                     </p>
                                 </div>
                             )}

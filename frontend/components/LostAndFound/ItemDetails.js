@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../common/Header';
 import Footer from '../common/Footer';
+import RewardSuggestionPopup from '../Rewards/RewardSuggestionPopup';
 
 const ItemDetails = () => {
     const { id } = useParams();
@@ -10,6 +11,8 @@ const ItemDetails = () => {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const messagesEndRef = useRef(null);
+
+    const [showRewardPopup, setShowRewardPopup] = useState(false);
 
     // Mock current user
     const currentUser = 'Heshani Wickramasinghe';
@@ -168,7 +171,10 @@ const ItemDetails = () => {
                                     <h3 className="font-bold text-gray-800 truncate">{item.userName}</h3>
                                     <span className="text-xs font-medium text-teal-600 truncate">Re: {item.name}</span>
                                 </div>
-                                <button className="shrink-0 bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-md hover:bg-slate-800 transition flex items-center gap-2">
+                                <button
+                                    onClick={() => setShowRewardPopup(true)}
+                                    className="shrink-0 bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-md hover:bg-slate-800 transition flex items-center gap-2"
+                                >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-teal-400"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" /></svg>
                                     Handover
                                 </button>
@@ -240,6 +246,19 @@ const ItemDetails = () => {
                     </div>
                 </div>
             </main>
+            {/* Reward Suggestion Popup */}
+            {showRewardPopup && (
+                <RewardSuggestionPopup
+                    finderName={item.userName}
+                    onProceed={() => {
+                        setShowRewardPopup(false);
+                        const tempUser = JSON.parse(localStorage.getItem('tempUser') || '{}');
+                        navigate(`/rate-reward/${id}?finderId=${tempUser.id || 'finder123'}&finderName=${encodeURIComponent(item.userName)}`);
+                    }}
+                    onClose={() => setShowRewardPopup(false)}
+                />
+            )}
+
             <Footer />
         </div>
     );

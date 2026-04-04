@@ -49,13 +49,6 @@ function Header({ user, onLogout }) {
                     >
                         Leaderboard
                     </button>
-                    <button
-                        onClick={() => navigate('/admin/badges')}
-                        className="px-4 py-2 rounded-lg text-sm font-semibold transition-colors hover:bg-gray-100"
-                        style={{ color: darkGray }}
-                    >
-                        Manage Badges
-                    </button>
                 </nav>
 
                 {user ? (

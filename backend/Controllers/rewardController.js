@@ -18,6 +18,7 @@ const giveReward = async (req, res) => {
         });
 
         // Update receiver's profile
+        const newBadges = [];
         const receiverProfile = await UserProfile.findOne({ tempUserId: receiverId });
         if (receiverProfile) {
             receiverProfile.rewardsEarned += 1;
@@ -30,13 +31,14 @@ const giveReward = async (req, res) => {
             for (const badge of rewardBadges) {
                 if (!earnedBadgeIds.includes(badge._id.toString()) && receiverProfile.rewardsEarned >= badge.triggerValue) {
                     receiverProfile.badges.push({ badgeId: badge._id, earnedAt: new Date() });
+                    newBadges.push(badge);
                 }
             }
 
             await receiverProfile.save();
         }
 
-        res.status(201).json(reward);
+        res.status(201).json({ reward, newBadges });
     } catch (error) {
         if (error.name === "ValidationError") {
             const messages = Object.values(error.errors).map((e) => e.message);

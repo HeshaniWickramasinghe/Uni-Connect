@@ -6,6 +6,7 @@ import ItemDetails from '../components/LostAndFound/ItemDetails';
 import UserProfile from '../components/Profile/UserProfile';
 import BadgeManagement from '../components/Admin/BadgeManagement';
 import Leaderboard from '../components/Rewards/Leaderboard';
+import RatingAndReward from '../components/Rewards/RatingAndReward';
 
 function AppRoutes() {
   return (
@@ -15,6 +16,7 @@ function AppRoutes() {
       <Route path="/profile" element={<UserProfile />} />
       <Route path="/admin/badges" element={<BadgeManagement />} />
       <Route path="/leaderboard" element={<Leaderboard />} />
+      <Route path="/rate-reward/:itemId" element={<RatingAndReward />} />
 
       {/* Catch-all */}
       <Route path="*" element={<Navigate to="/" replace />} />

@@ -10,6 +10,7 @@ const messageRoutes = require("./Routes/messageRoutes");
 const badgeRoutes = require("./Routes/badgeRoutes");
 const userProfileRoutes = require("./Routes/userProfileRoutes");
 const rewardRoutes = require("./Routes/rewardRoutes");
+const ratingRoutes = require("./Routes/ratingRoutes");
 const Message = require("./Model/messageModel");
 
 const app = express();
@@ -29,6 +30,7 @@ app.use("/api/messages", messageRoutes);
 app.use("/api/badges", badgeRoutes);
 app.use("/api/profiles", userProfileRoutes);
 app.use("/api/rewards", rewardRoutes);
+app.use("/api/ratings", ratingRoutes);
 
 app.get("/", (req, res) => {
     res.send("Success");
