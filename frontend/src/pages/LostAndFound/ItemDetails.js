@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import Header from '../Header';
 import Footer from '../Footer';
+import RewardSuggestionPopup from '../../components/Rewards/RewardSuggestionPopup';
 import io from 'socket.io-client';
 
 const socket = io.connect('http://localhost:5000');
@@ -16,6 +17,7 @@ const ItemDetails = () => {
     const [conversations, setConversations] = useState([]); // List of users who messaged the owner
     const [selectedPartner, setSelectedPartner] = useState(null); // Current chat partner
     const [viewMode, setViewMode] = useState('list'); // 'list' or 'chat'
+    const [showRewardPopup, setShowRewardPopup] = useState(false);
     const messagesEndRef = useRef(null);
 
     const getStoredUser = () => {
@@ -265,14 +267,23 @@ const ItemDetails = () => {
                                         <h3 className="font-black text-slate-800 text-base uppercase tracking-tight">{selectedPartner || "Direct Message"}</h3>
                                     </div>
                                 </div>
-                                {isOwner && (
-                                    <button 
-                                        onClick={() => setViewMode('list')}
-                                        className="px-4 py-2 bg-slate-100 rounded-xl text-[8px] font-black uppercase tracking-widest text-slate-600 hover:bg-slate-200 transition-all border border-slate-200"
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={() => setShowRewardPopup(true)}
+                                        className="px-4 py-2 bg-emerald-600 rounded-xl text-[8px] font-black uppercase tracking-widest text-white hover:bg-emerald-700 transition-all shadow-lg flex items-center gap-1.5"
                                     >
-                                        Back to List
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" /></svg>
+                                        Handover
                                     </button>
-                                )}
+                                    {isOwner && (
+                                        <button
+                                            onClick={() => setViewMode('list')}
+                                            className="px-4 py-2 bg-slate-100 rounded-xl text-[8px] font-black uppercase tracking-widest text-slate-600 hover:bg-slate-200 transition-all border border-slate-200"
+                                        >
+                                            Back
+                                        </button>
+                                    )}
+                                </div>
                             </div>
 
                             {/* Messages List Area */}
@@ -323,6 +334,19 @@ const ItemDetails = () => {
                     )}
                 </div>
             </main>
+            {showRewardPopup && (
+                <RewardSuggestionPopup
+                    finderName={selectedPartner || item.userName}
+                    onProceed={() => {
+                        setShowRewardPopup(false);
+                        const userId = currentUser?.id || 'user123';
+                        const partnerName = selectedPartner || item.userName;
+                        navigate(`/rate-reward/${id}?finderId=${userId}&finderName=${encodeURIComponent(partnerName)}`);
+                    }}
+                    onClose={() => setShowRewardPopup(false)}
+                />
+            )}
+
             <Footer />
         </div>
     );
