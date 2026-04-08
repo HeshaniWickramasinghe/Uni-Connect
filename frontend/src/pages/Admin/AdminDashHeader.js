@@ -4,6 +4,7 @@ const adminNavigationItems = [
   { key: 'users', label: 'Users List', path: '/admin/users' },
   { key: 'ghost-lec', label: 'Ghost-Lec Requests', path: '/admin/ghost-lec' },
   { key: 'lost-found', label: 'Lost and Found Reports', path: '/admin/lost-found' },
+  { key: 'handovers', label: 'Handover Logs', path: '/admin/handovers' },
   { key: 'payments', label: 'Check Payments', path: '/admin/payments' },
 ];
 
