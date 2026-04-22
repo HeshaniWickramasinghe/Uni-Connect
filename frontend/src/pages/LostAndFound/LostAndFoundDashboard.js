@@ -25,14 +25,14 @@ const LostAndFoundDashboard = () => {
     const today = new Date().toISOString().split('T')[0];
 
     // Theme Colors
-    const primaryBlue = '#023E8A';
-    const accentBlue = '#4C6EF5';
-    const darkGray = '#4A5568';
-    const lightBg = '#F7F9FC';
-    const borderGray = '#DDE3ED';
-    const successGreen = '#0E7C5B';
-    const warningAmber = '#B45309';
-    const dangerRed = '#C0392B';
+    const primaryBlue = '#0EA5E9';
+    const accentBlue = '#38BDF8';
+    const darkGray = '#1E293B';
+    const lightBg = '#020617';
+    const borderGray = 'rgba(56, 189, 248, 0.24)';
+    const successGreen = '#22C55E';
+    const warningAmber = '#F59E0B';
+    const dangerRed = '#EF4444';
 
     const categories = ['All Items', 'My Posts', 'Lost', 'Found', 'Electronics', 'Essentials', 'Books', 'Keys'];
     const [editingItem, setEditingItem] = useState(null);
@@ -129,16 +129,22 @@ const LostAndFoundDashboard = () => {
     };
 
     return (
-        <div className="min-h-screen font-sans flex flex-col" style={{ backgroundColor: lightBg }}>
+        <div className="min-h-screen font-sans flex flex-col text-slate-100" style={{ backgroundColor: lightBg }}>
             <Header user={currentUser} />
 
             {/* Hero Section */}
-            <header className="bg-[#023E8A] text-white pt-10 pb-20 px-6 text-center relative overflow-hidden">
+            <header
+                className="text-white pt-10 pb-20 px-6 text-center relative overflow-hidden border-b"
+                style={{
+                    borderColor: 'rgba(56, 189, 248, 0.2)',
+                    background: 'linear-gradient(145deg, rgba(2, 6, 23, 0.95), rgba(30, 58, 138, 0.8) 55%, rgba(37, 99, 235, 0.85))'
+                }}
+            >
                 <div className="max-w-4xl mx-auto relative z-10">
                     <h1 className="text-3xl md:text-5xl font-bold mb-4 tracking-tight" style={{ fontFamily: 'Georgia, serif' }}>
                         Find what was lost.
                     </h1>
-                    <p className="text-blue-100/60 text-base md:text-lg max-w-xl mx-auto mb-10 leading-relaxed">
+                    <p className="text-slate-300 text-base md:text-lg max-w-xl mx-auto mb-10 leading-relaxed">
                         The most trusted community platform for recovering lost belongings and returning found treasures.
                     </p>
 
@@ -236,24 +242,24 @@ const LostAndFoundDashboard = () => {
                     <button
                         onClick={() => setFilter(filter === 'My Posts' ? 'All Items' : 'My Posts')}
                         className={`flex items-center gap-2 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-sm transition-all border-2 ${filter === 'My Posts'
-                                ? 'bg-[#023E8A] text-white border-[#023E8A]'
-                                : 'bg-white text-slate-400 border-slate-100 hover:bg-slate-50'
+                                ? 'bg-sky-500 text-white border-sky-400'
+                                : 'bg-slate-900/70 text-slate-300 border-sky-900/60 hover:bg-slate-900'
                             }`}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" /><polyline points="17 21 17 13 7 13 7 21" /><polyline points="7 3 7 8 15 8" /></svg>
                         {filter === 'My Posts' ? 'My Posts' : 'My Posts'}
                     </button>
-                    <div className="h-4 w-[2px] bg-slate-200 mx-1"></div>
+                    <div className="h-4 w-[2px] bg-sky-900/60 mx-1"></div>
                     <button
                         onClick={() => setShowDateFilter(!showDateFilter)}
-                        className="flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-sm hover:bg-slate-50 transition-all text-[#023E8A]"
+                        className="flex items-center gap-2 px-6 py-3 bg-slate-900/70 border border-sky-900/60 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-sm hover:bg-slate-900 transition-all text-sky-300"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg>
                         {showDateFilter ? 'Hide Dates' : 'Date Range Filter'}
                     </button>
                     <button
                         onClick={() => clearFilters()}
-                        className="px-6 py-3 bg-white border border-slate-200 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-sm hover:bg-slate-50 transition-all text-slate-400"
+                        className="px-6 py-3 bg-slate-900/70 border border-sky-900/60 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-sm hover:bg-slate-900 transition-all text-slate-300"
                     >
                         Reset All
                     </button>
@@ -261,8 +267,8 @@ const LostAndFoundDashboard = () => {
 
                 {/* Date Filter Panel */}
                 {showDateFilter && (
-                    <div className="mb-8 p-6 bg-white border-2 rounded-[32px] shadow-sm animate-in fade-in slide-in-from-top-4 duration-300" style={{ borderColor: borderGray }}>
-                        <div className="flex flex-col md:flex-row items-end gap-6 text-slate-700">
+                    <div className="mb-8 p-6 bg-slate-950/70 border rounded-[32px] shadow-sm animate-in fade-in slide-in-from-top-4 duration-300" style={{ borderColor: borderGray }}>
+                        <div className="flex flex-col md:flex-row items-end gap-6 text-slate-300">
                             <div className="flex-1 space-y-2">
                                 <label className="text-[10px] font-black uppercase tracking-widest ml-1" style={{ color: accentBlue }}>From Date</label>
                                 <input
@@ -270,7 +276,7 @@ const LostAndFoundDashboard = () => {
                                     value={startDate}
                                     max={today}
                                     onChange={(e) => setStartDate(e.target.value)}
-                                    className="w-full p-4 border rounded-xl text-sm font-bold bg-slate-50 focus:outline-none focus:ring-2"
+                                    className="w-full p-4 border rounded-xl text-sm font-bold bg-slate-900/80 text-slate-100 focus:outline-none focus:ring-2"
                                     style={{ borderColor: borderGray }}
                                 />
                             </div>
@@ -281,13 +287,13 @@ const LostAndFoundDashboard = () => {
                                     value={endDate}
                                     max={today}
                                     onChange={(e) => setEndDate(e.target.value)}
-                                    className="w-full p-4 border rounded-xl text-sm font-bold bg-slate-50 focus:outline-none focus:ring-2"
+                                    className="w-full p-4 border rounded-xl text-sm font-bold bg-slate-900/80 text-slate-100 focus:outline-none focus:ring-2"
                                     style={{ borderColor: borderGray }}
                                 />
                             </div>
                             <button
                                 onClick={clearFilters}
-                                className="px-6 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all border border-slate-200"
+                                className="px-6 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest bg-slate-900 text-slate-300 hover:bg-slate-800 transition-all border border-sky-900/60"
                             >
                                 Reset All
                             </button>
@@ -302,12 +308,12 @@ const LostAndFoundDashboard = () => {
                         if (sortBy === 'Oldest First') return new Date(a.date) - new Date(b.date);
                         return 0;
                     }).map(item => (
-                        <div key={item._id} className="bg-white rounded-3xl shadow-sm border overflow-hidden flex flex-col hover:shadow-xl transition-all duration-300 group" style={{ borderColor: borderGray }}>
-                            <div className="relative h-56 bg-gray-50 overflow-hidden">
+                        <div key={item._id} className="bg-slate-950/70 rounded-3xl shadow-sm border overflow-hidden flex flex-col hover:shadow-xl transition-all duration-300 group" style={{ borderColor: borderGray }}>
+                            <div className="relative h-56 bg-slate-900 overflow-hidden">
                                 {item.photo ? (
                                     <img src={item.photo} alt={item.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                 ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-gray-300 bg-slate-100">
+                                    <div className="w-full h-full flex items-center justify-center text-slate-500 bg-slate-900">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="opacity-20"><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7" /><line x1="16" y1="5" x2="22" y2="5" /><line x1="19" y1="2" x2="19" y2="8" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></svg>
                                     </div>
                                 )}
@@ -319,7 +325,7 @@ const LostAndFoundDashboard = () => {
                                         {item.status === 'CLAIMING' ? 'CLAIMING' : item.type}
                                     </span>
                                 </div>
-                                <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur px-3 py-1 text-[10px] font-bold text-gray-600 uppercase rounded-lg shadow-sm">
+                                <div className="absolute bottom-4 right-4 bg-slate-900/80 backdrop-blur px-3 py-1 text-[10px] font-bold text-slate-200 uppercase rounded-lg shadow-sm border border-sky-900/60">
                                     {item.status}
                                 </div>
                             </div>
@@ -339,11 +345,11 @@ const LostAndFoundDashboard = () => {
                                     </div>
 
                                     <div className="flex flex-col gap-2.5 mb-6">
-                                        <div className="text-gray-500 text-sm font-bold flex items-center gap-2">
+                                        <div className="text-slate-300 text-sm font-bold flex items-center gap-2">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: accentBlue }}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
                                             {item.location}
                                         </div>
-                                        <div className="text-gray-400 text-xs font-bold flex items-center gap-2">
+                                        <div className="text-slate-400 text-xs font-bold flex items-center gap-2">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-60"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
                                             {new Date(item.date).toLocaleDateString()} ({timeAgo(item.date)})
                                         </div>
@@ -403,7 +409,7 @@ const LostAndFoundDashboard = () => {
                     ))}
                     {items.length === 0 && (
                         <div className="col-span-full py-32 flex flex-col items-center opacity-40">
-                            <div className="w-24 h-24 mb-6 rounded-full bg-slate-200 flex items-center justify-center">
+                            <div className="w-24 h-24 mb-6 rounded-full bg-slate-900 flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ color: darkGray }}><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
                             </div>
                             <p className="font-black text-xl uppercase tracking-tighter" style={{ color: darkGray }}>No results found</p>
@@ -441,25 +447,25 @@ const LostAndFoundDashboard = () => {
             )}
 
             {showLoginPrompt && (
-                <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-                    <div className="w-full max-w-md rounded-[32px] bg-white p-8 shadow-2xl border border-slate-100 text-center">
-                        <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#023E8A]/10 text-[#023E8A]">
+                <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+                    <div className="w-full max-w-md rounded-[32px] bg-slate-950/95 p-8 shadow-2xl border border-sky-900/50 text-center">
+                        <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-500/10 text-sky-300">
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21v-2a4 4 0 0 1 4-4h3" /><circle cx="12" cy="7" r="4" /><path d="M16 11l2 2 4-4" /></svg>
                         </div>
-                        <h3 className="text-xl font-black uppercase tracking-tight text-slate-900">Login Required</h3>
-                        <p className="mt-3 text-sm font-medium leading-relaxed text-slate-500">
+                        <h3 className="text-xl font-black uppercase tracking-tight text-slate-100">Login Required</h3>
+                        <p className="mt-3 text-sm font-medium leading-relaxed text-slate-300">
                             Please log in to report lost or found items and to use private chat.
                         </p>
                         <div className="mt-8 flex gap-3">
                             <button
                                 onClick={() => setShowLoginPrompt(false)}
-                                className="flex-1 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-500 transition-all hover:bg-slate-50"
+                                className="flex-1 rounded-2xl border border-sky-900/60 bg-slate-900 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-300 transition-all hover:bg-slate-800"
                             >
                                 Close
                             </button>
                             <button
                                 onClick={handleLoginRedirect}
-                                className="flex-1 rounded-2xl bg-[#023E8A] px-4 py-3 text-[10px] font-black uppercase tracking-widest text-white transition-all hover:bg-[#022f6a]"
+                                className="flex-1 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-700 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-white transition-all hover:brightness-110"
                             >
                                 Go to Login
                             </button>
