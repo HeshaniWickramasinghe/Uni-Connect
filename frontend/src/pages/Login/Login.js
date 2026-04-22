@@ -92,10 +92,10 @@ function Login() {
         </form>
 
         <div className="auth-links">
-          <p>
+          <p className="auth-links-text">
             New user? <Link to="/register">Create an account</Link>
           </p>
-          <p>
+          <p className="auth-links-text">
             <Link to="/forgot-password">Forgot Password?</Link>
           </p>
         </div>

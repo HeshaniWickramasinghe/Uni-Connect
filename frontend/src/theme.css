@@ -93,8 +93,10 @@ button,
 [type="submit"],
 .btn,
 .button,
-[class*="btn"],
-[class*="button"] {
+[class$="-btn"],
+[class*=" btn-"],
+[class$="-button"],
+[class*=" button-"] {
   border-radius: 12px;
   border: 1px solid rgba(56, 189, 248, 0.36);
   background: var(--uc-gradient);
@@ -109,8 +111,10 @@ button:hover,
 [type="submit"]:hover,
 .btn:hover,
 .button:hover,
-[class*="btn"]:hover,
-[class*="button"]:hover {
+[class$="-btn"]:hover,
+[class*=" btn-"]:hover,
+[class$="-button"]:hover,
+[class*=" button-"]:hover {
   transform: translateY(-1px);
   box-shadow: 0 14px 26px -12px rgba(14, 165, 233, 0.65);
   filter: brightness(1.06);
@@ -121,8 +125,10 @@ button:disabled,
 [type="submit"]:disabled,
 .btn:disabled,
 .button:disabled,
-[class*="btn"]:disabled,
-[class*="button"]:disabled {
+[class$="-btn"]:disabled,
+[class*=" btn-"]:disabled,
+[class$="-button"]:disabled,
+[class*=" button-"]:disabled {
   opacity: 0.7;
   cursor: not-allowed;
 }
