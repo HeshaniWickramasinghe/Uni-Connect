@@ -13,6 +13,20 @@ function Chatbot() {
   const [recommendations, setRecommendations] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
+  const recsRef = useRef(null);
+
+  const clearChat = () => {
+    setMessages([{ text: "Hi! How can I help you today?", isUser: false }]);
+  };
+  const scrollRecs = (direction) => {
+    if (recsRef.current) {
+      const scrollAmount = 200;
+      recsRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -55,6 +69,7 @@ function Chatbot() {
       setTimeout(() => {
         setMessages(prev => [...prev, { text: response.data.answer, isUser: false }]);
         setIsTyping(false);
+        fetchRecommendations(); // Refresh suggestions
       }, 1000);
 
     } catch (error) {
@@ -75,8 +90,13 @@ function Chatbot() {
       {isOpen && (
         <div className="chatbot-window">
           <div className="chatbot-header">
-            <h4>Uni-Connect Assistant</h4>
-            <p>Always here to help</p>
+            <div className="header-info">
+              <h4>Uni-Connect Assistant</h4>
+              <p>Always here to help</p>
+            </div>
+            <button className="clear-chat-btn" onClick={clearChat} title="Clear Chat">
+              🗑️
+            </button>
           </div>
 
           <div className="chatbot-messages">
@@ -93,16 +113,17 @@ function Chatbot() {
             <div ref={messagesEndRef} />
           </div>
 
-          {recommendations.length > 0 && messages.length === 1 && (
+          {recommendations.length > 0 && (
             <div className="chatbot-recommendations">
-              <p>Common Questions:</p>
-              <div className="rec-chips">
+              <button className="scroll-btn left" onClick={() => scrollRecs('left')}>‹</button>
+              <div className="rec-chips" ref={recsRef}>
                 {recommendations.map((rec, i) => (
                   <button key={i} onClick={() => handleSendMessage(null, rec)}>
                     {rec}
                   </button>
                 ))}
               </div>
+              <button className="scroll-btn right" onClick={() => scrollRecs('right')}>›</button>
             </div>
           )}
 
