@@ -23,6 +23,23 @@ function AdminPayments() {
   const [filterAmountOperator, setFilterAmountOperator] = useState('=');
   const [searchQuery, setSearchQuery] = useState('');
   const [filterMethod, setFilterMethod] = useState('');
+  const [loadingProofId, setLoadingProofId] = useState(null);
+
+  const handleViewProof = async (paymentId) => {
+    setLoadingProofId(paymentId);
+    try {
+      const response = await axios.get(`${API_BASE_URL}/api/payments/${paymentId}/proof`);
+      if (response.data?.proofFileData) {
+        window.open(response.data.proofFileData, '_blank');
+      } else {
+        alert('No proof file found for this payment.');
+      }
+    } catch (error) {
+      alert('Failed to load proof file.');
+    } finally {
+      setLoadingProofId(null);
+    }
+  };
 
   const getStatusClass = (status) => {
     const normalizedStatus = String(status || '').trim().toLowerCase();
@@ -59,8 +76,8 @@ function AdminPayments() {
       const response = await axios.put(`${API_BASE_URL}/api/payments/${paymentId}`, {
         status: 'approved'
       });
-      
-      setPayments(payments.map(p => 
+
+      setPayments(payments.map(p =>
         p._id === paymentId ? response.data.data : p
       ));
       alert('Payment approved successfully');
@@ -78,8 +95,8 @@ function AdminPayments() {
       const response = await axios.put(`${API_BASE_URL}/api/payments/${paymentId}`, {
         status: 'rejected'
       });
-      
-      setPayments(payments.map(p => 
+
+      setPayments(payments.map(p =>
         p._id === paymentId ? response.data.data : p
       ));
       alert('Payment rejected successfully');
@@ -143,10 +160,10 @@ function AdminPayments() {
     const paymentDate = payment.date ? new Date(payment.date).toLocaleDateString('en-GB') : '-';
     const paymentTime = payment.date
       ? new Date(payment.date).toLocaleTimeString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-        })
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      })
       : '-';
 
     const rows = [
@@ -200,7 +217,7 @@ function AdminPayments() {
     window.open(pdfUrl, '_blank');
   };
 
-  const pendingPayments = payments.filter(p => 
+  const pendingPayments = payments.filter(p =>
     String(p.status || '').trim().toLowerCase() === 'pending'
   );
 
@@ -212,7 +229,7 @@ function AdminPayments() {
         const transId = String(p.transactionId || '').toLowerCase();
         const email = String(p.userEmail || '').toLowerCase();
         const studentId = String(p.studentRegistrationNumber || '').toLowerCase();
-        
+
         const matches = transId.includes(searchLower) || email.includes(searchLower) || studentId.includes(searchLower);
         if (!matches) return false;
       }
@@ -240,7 +257,7 @@ function AdminPayments() {
       if (filterAmountValue) {
         const amount = parseFloat(p.amount) || 0;
         const filterValue = parseFloat(filterAmountValue);
-        
+
         if (filterAmountOperator === '=') {
           if (amount !== filterValue) return false;
         } else if (filterAmountOperator === '>') {
@@ -276,13 +293,13 @@ function AdminPayments() {
           <header className="admin-panel-head">
             <h3>Payment Management</h3>
             <div className="payment-view-buttons">
-              <button 
+              <button
                 className={`view-btn ${!showPendingOnly ? 'active' : ''}`}
                 onClick={() => setShowPendingOnly(false)}
               >
                 All Payments
               </button>
-              <button 
+              <button
                 className={`view-btn pending-badge ${showPendingOnly ? 'active' : ''}`}
                 onClick={() => setShowPendingOnly(true)}
               >
@@ -295,87 +312,87 @@ function AdminPayments() {
 
           {!loadingPayments && !paymentsError && (
             <div className="filter-section">
-            <div className="filter-group">
-              <label className="filter-label">Search:</label>
-              <input
-                type="text"
-                className="filter-input"
-                placeholder="Transaction ID, Email, or Student ID..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-
-            <div className="filter-group">
-              <label className="filter-label">Method:</label>
-              <select
-                className="filter-input"
-                value={filterMethod}
-                onChange={(e) => setFilterMethod(e.target.value)}
-              >
-                <option value="">All Methods</option>
-                <option value="card">Card</option>
-                <option value="bank">Bank Transfer</option>
-              </select>
-            </div>
-
-            <div className="filter-group">
-              <label className="filter-label">Date From:</label>
-              <input
-                type="date"
-                className="filter-input"
-                value={filterDateFrom}
-                onChange={(e) => setFilterDateFrom(e.target.value)}
-              />
-            </div>
-            
-            <div className="filter-group">
-              <label className="filter-label">Date To:</label>
-              <input
-                type="date"
-                className="filter-input"
-                value={filterDateTo}
-                onChange={(e) => setFilterDateTo(e.target.value)}
-              />
-            </div>
-
-            <div className="filter-group">
-              <label className="filter-label">Amount:</label>
-              <div className="filter-amount-group">
-                <select
-                  className="filter-operator"
-                  value={filterAmountOperator}
-                  onChange={(e) => setFilterAmountOperator(e.target.value)}
-                >
-                  <option value="=">=</option>
-                  <option value=">">&gt;</option>
-                  <option value="<">&lt;</option>
-                  <option value=">=">&gt;=</option>
-                  <option value="<=">&lt;=</option>
-                </select>
+              <div className="filter-group">
+                <label className="filter-label">Search:</label>
                 <input
-                  type="number"
+                  type="text"
                   className="filter-input"
-                  placeholder="Enter amount"
-                  value={filterAmountValue}
-                  onChange={(e) => setFilterAmountValue(e.target.value)}
+                  placeholder="Transaction ID, Email, or Student ID..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-            </div>
 
-            <button
-              className="filter-reset-btn"
-              onClick={() => {
-                setSearchQuery('');
-                setFilterMethod('');
-                setFilterDateFrom('');
-                setFilterDateTo('');
-                setFilterAmountValue('');
-                setFilterAmountOperator('=');
-              }}
-            >
-              Clear All Filters
-            </button>
+              <div className="filter-group">
+                <label className="filter-label">Method:</label>
+                <select
+                  className="filter-input"
+                  value={filterMethod}
+                  onChange={(e) => setFilterMethod(e.target.value)}
+                >
+                  <option value="">All Methods</option>
+                  <option value="card">Card</option>
+                  <option value="bank">Bank Transfer</option>
+                </select>
+              </div>
+
+              <div className="filter-group">
+                <label className="filter-label">Date From:</label>
+                <input
+                  type="date"
+                  className="filter-input"
+                  value={filterDateFrom}
+                  onChange={(e) => setFilterDateFrom(e.target.value)}
+                />
+              </div>
+
+              <div className="filter-group">
+                <label className="filter-label">Date To:</label>
+                <input
+                  type="date"
+                  className="filter-input"
+                  value={filterDateTo}
+                  onChange={(e) => setFilterDateTo(e.target.value)}
+                />
+              </div>
+
+              <div className="filter-group">
+                <label className="filter-label">Amount:</label>
+                <div className="filter-amount-group">
+                  <select
+                    className="filter-operator"
+                    value={filterAmountOperator}
+                    onChange={(e) => setFilterAmountOperator(e.target.value)}
+                  >
+                    <option value="=">=</option>
+                    <option value=">">&gt;</option>
+                    <option value="<">&lt;</option>
+                    <option value=">=">&gt;=</option>
+                    <option value="<=">&lt;=</option>
+                  </select>
+                  <input
+                    type="number"
+                    className="filter-input"
+                    placeholder="Enter amount"
+                    value={filterAmountValue}
+                    onChange={(e) => setFilterAmountValue(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <button
+                className="filter-reset-btn"
+                onClick={() => {
+                  setSearchQuery('');
+                  setFilterMethod('');
+                  setFilterDateFrom('');
+                  setFilterDateTo('');
+                  setFilterAmountValue('');
+                  setFilterAmountOperator('=');
+                }}
+              >
+                Clear All Filters
+              </button>
             </div>
           )}
 
@@ -402,10 +419,10 @@ function AdminPayments() {
                       const date = item.date ? new Date(item.date).toLocaleDateString('en-GB') : '-';
                       const time = item.date
                         ? new Date(item.date).toLocaleTimeString('en-US', {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            second: '2-digit',
-                          })
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          second: '2-digit',
+                        })
                         : '-';
 
                       return (
@@ -417,15 +434,14 @@ function AdminPayments() {
                           <td>{date}</td>
                           <td>{time}</td>
                           <td>
-                            {item.proofFileData ? (
-                              <a
-                                href={item.proofFileData}
-                                target="_blank"
-                                rel="noreferrer"
+                            {item.hasProofFile ? (
+                              <button
                                 className="admin-receipt-link"
+                                onClick={() => handleViewProof(item._id)}
+                                disabled={loadingProofId === item._id}
                               >
-                                Open
-                              </a>
+                                {loadingProofId === item._id ? 'Loading...' : 'Open'}
+                              </button>
                             ) : (
                               '-'
                             )}
@@ -481,10 +497,10 @@ function AdminPayments() {
                       const date = item.date ? new Date(item.date).toLocaleDateString('en-GB') : '-';
                       const time = item.date
                         ? new Date(item.date).toLocaleTimeString('en-US', {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            second: '2-digit',
-                          })
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          second: '2-digit',
+                        })
                         : '-';
 
                       return (
@@ -507,15 +523,14 @@ function AdminPayments() {
                               >
                                 View
                               </button>
-                            ) : item.proofFileData ? (
-                              <a
-                                href={item.proofFileData}
-                                target="_blank"
-                                rel="noreferrer"
+                            ) : item.hasProofFile ? (
+                              <button
                                 className="admin-receipt-link"
+                                onClick={() => handleViewProof(item._id)}
+                                disabled={loadingProofId === item._id}
                               >
-                                Open
-                              </a>
+                                {loadingProofId === item._id ? 'Loading...' : 'Open'}
+                              </button>
                             ) : (
                               '-'
                             )}

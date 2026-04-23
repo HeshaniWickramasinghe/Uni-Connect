@@ -10,6 +10,8 @@ import EditProfile from './pages/Login/EditProfile';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import AdminUsers from './pages/Admin/AdminUsers';
 import AdminLostFound from './pages/Admin/AdminLostFound';
+import AdminHandovers from './pages/Admin/AdminHandovers';
+import AdminFAQ from './pages/Admin/AdminFAQ';
 import LostAndFoundDashboard from './pages/LostAndFound/LostAndFoundDashboard';
 import ItemDetails from './pages/LostAndFound/ItemDetails';
 import AdminPayments from './pages/Paymnet/AdminPayments';
@@ -99,7 +101,9 @@ function App() {
           <Route path="/admin/users" element={<AdminRoute component={AdminUsers} />} />
           <Route path="/admin/ghost-lec" element={<AdminRoute component={KuppiRequestForm} />} />
           <Route path="/admin/lost-found" element={<AdminRoute component={AdminLostFound} />} />
+          <Route path="/admin/handovers" element={<AdminRoute component={AdminHandovers} />} />
           <Route path="/admin/payments" element={<AdminRoute component={AdminPayments} />} />
+          <Route path="/admin/faq" element={<AdminRoute component={AdminFAQ} />} />
           <Route path="/ghost-lec" element={<KuppiHomePage />} />
           <Route path="/lost-and-found" element={<LostAndFoundDashboard />} />
           <Route path="/item/:id" element={<ItemDetails />} />

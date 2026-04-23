@@ -276,9 +276,8 @@ function BankTransfer() {
         <div className="popup-overlay" onClick={closePopup}>
           <div className="popup-box" onClick={(e) => e.stopPropagation()}>
             <div
-              className={`popup-icon ${
-                popup.type === "success" ? "popup-icon-success" : "popup-icon-error"
-              }`}
+              className={`popup-icon ${popup.type === "success" ? "popup-icon-success" : "popup-icon-error"
+                }`}
             >
               <span className="popup-icon-inner">{popup.type === "success" ? "✓" : "✕"}</span>
             </div>

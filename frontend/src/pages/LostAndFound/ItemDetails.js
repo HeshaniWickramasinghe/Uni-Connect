@@ -4,7 +4,8 @@ import Header from '../Header';
 import Footer from '../Footer';
 import RewardSuggestionPopup from '../../components/Rewards/RewardSuggestionPopup';
 import io from 'socket.io-client';
-
+import HandoverModal from './HandoverModal';
+//The UI is split into two main columns using Tailwind's
 const socket = io.connect('http://localhost:5000');
 
 const ItemDetails = () => {
@@ -18,6 +19,7 @@ const ItemDetails = () => {
     const [selectedPartner, setSelectedPartner] = useState(null); // Current chat partner
     const [viewMode, setViewMode] = useState('list'); // 'list' or 'chat'
     const [showRewardPopup, setShowRewardPopup] = useState(false);
+    const [showHandoverModal, setShowHandoverModal] = useState(false);
     const messagesEndRef = useRef(null);
 
     const getStoredUser = () => {
@@ -37,11 +39,13 @@ const ItemDetails = () => {
         fetchItemDetails();
     }, [id]);
 
+    //sorts the usernames alphabetically to create a unique room id
     const getRoomId = (itemId, user1, user2) => {
         const users = [user1, user2].sort();
         return `${itemId}-${users[0]}-${users[1]}`;
     };
 
+    //sets the view mode to chat or list and owner or not
     useEffect(() => {
         if (!item || !currentUser) return;
         const isOwner = item.userName === currentUserName;
@@ -54,6 +58,7 @@ const ItemDetails = () => {
         }
     }, [item, currentUser, currentUserName]);
 
+    //sets up the chat room and listens for messages
     useEffect(() => {
         if (!selectedPartner || !item || !currentUser) return;
 
@@ -81,6 +86,7 @@ const ItemDetails = () => {
         scrollToBottom();
     }, [messages]);
 
+    //GET request to get the item details
     const fetchItemDetails = async () => {
         try {
             const res = await fetch(`http://localhost:5000/api/items/${id}`);
@@ -93,6 +99,7 @@ const ItemDetails = () => {
         }
     };
 
+    //Give list of every unique perso message regarding this item ID
     const fetchConversations = async () => {
         try {
             const res = await fetch(`http://localhost:5000/api/messages/${id}/conversations?ownerName=${currentUserName}`);
@@ -105,6 +112,7 @@ const ItemDetails = () => {
         }
     };
 
+    //load msg between current user and their partner
     const fetchMessages = async (partner) => {
         try {
             const res = await fetch(`http://localhost:5000/api/messages/${id}?user1=${currentUserName}&user2=${partner}`);
@@ -117,6 +125,7 @@ const ItemDetails = () => {
         }
     };
 
+    //handles the sending of messages
     const handleSendMessage = async (e) => {
         if (e) e.preventDefault();
         if (!currentUser) return;
@@ -140,6 +149,7 @@ const ItemDetails = () => {
         }
     };
 
+    //selects the conversation
     const selectConversation = (partner) => {
         setSelectedPartner(partner);
         setViewMode('chat');
@@ -153,7 +163,7 @@ const ItemDetails = () => {
         <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
             <Header user={currentUser} />
 
-            <main className="flex-grow max-w-7xl mx-auto w-full p-6 flex flex-col lg:flex-row gap-8">
+           <main className="flex-grow max-w-7xl mx-auto w-full p-6 flex flex-col lg:flex-row gap-8">
                 {/* Item Info Column */}
                 <div className="w-full lg:w-3/5 space-y-6">
                     <div className="w-full h-96 bg-gray-200 rounded-[40px] overflow-hidden shadow-2xl relative border-8 border-white">
@@ -194,10 +204,57 @@ const ItemDetails = () => {
 
                         <div>
                             <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1">Description</p>
-                            <div className="text-slate-600 bg-slate-50/50 p-6 rounded-3xl text-sm leading-relaxed border border-dashed border-slate-200">
+                            <div className="text-slate-600 bg-slate-50/50 p-6 rounded-3xl text-sm leading-relaxed border border-dashed border-slate-200 mb-8">
                                 {item.description || "No description provided."}
                             </div>
                         </div>
+
+                        {/* Handover Action for Founder */}
+                        {isOwner && item.type === 'Found' && (
+                            <div className="mt-10 p-8 bg-emerald-50 rounded-[32px] border-2 border-emerald-100 border-dashed relative overflow-hidden group">
+                                <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                                    <div className="flex items-center gap-5">
+                                        <div className="w-16 h-16 bg-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-transform">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" /><path d="m9 12 2 2 4-4" /></svg>
+                                        </div>
+                                        <div>
+                                            <h4 className="text-sm font-black uppercase tracking-tight text-emerald-900">Initiate Secure Handover</h4>
+                                            <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-1">Found something? Verify the owner now.</p>
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={() => setShowHandoverModal(true)}
+                                        className="w-full md:w-auto px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-lg active:scale-95"
+                                    >
+                                        Start Handover
+                                    </button>
+                                </div>
+                                <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-emerald-100/50 rounded-full blur-3xl"></div>
+                            </div>
+                        )}
+
+                        {/* Report Found Action for Lost Item */}
+                        {!isOwner && item.type === 'Lost' && (
+                            <div className="mt-10 p-8 bg-blue-50 rounded-[32px] border-2 border-blue-100 border-dashed relative overflow-hidden group">
+                                <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                                    <div className="flex items-center gap-5">
+                                        <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-transform">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" /><path d="m9 12 2 2 4-4" /></svg>
+                                        </div>
+                                        <div>
+                                            <h4 className="text-sm font-black uppercase tracking-tight text-blue-900">Found this item?</h4>
+                                            <p className="text-[10px] font-bold text-blue-600 uppercase tracking-widest mt-1">Start the verification process to return it.</p>
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={() => setShowHandoverModal(true)}
+                                        className="w-full md:w-auto px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-lg active:scale-95"
+                                    >
+                                        Report Found
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
 
@@ -270,10 +327,10 @@ const ItemDetails = () => {
                                 <div className="flex items-center gap-2">
                                     <button
                                         onClick={() => setShowRewardPopup(true)}
-                                        className="px-4 py-2 bg-emerald-600 rounded-xl text-[8px] font-black uppercase tracking-widest text-white hover:bg-emerald-700 transition-all shadow-lg flex items-center gap-1.5"
+                                        className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-[8px] font-black uppercase tracking-widest transition-all border border-slate-200 flex items-center gap-2"
                                     >
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" /></svg>
-                                        Handover
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 8v8" /><path d="M8 12h8" /></svg>
+                                        Reward
                                     </button>
                                     {isOwner && (
                                         <button
@@ -344,6 +401,22 @@ const ItemDetails = () => {
                         navigate(`/rate-reward/${id}?finderId=${userId}&finderName=${encodeURIComponent(partnerName)}`);
                     }}
                     onClose={() => setShowRewardPopup(false)}
+                />
+            )}
+
+            {showHandoverModal && (
+                <HandoverModal
+                    itemId={id}
+                    itemName={item.name}
+                    finderName={item.type === 'Found' ? item.userName : currentUserName}
+                    receiverName={item.type === 'Found' ? selectedPartner : item.userName}
+                    onClose={() => setShowHandoverModal(false)}
+                    onSuccess={() => {
+                        setShowHandoverModal(false);
+                        fetchItemDetails();
+                        // Trigger reward popup after successful handover
+                        setShowRewardPopup(true);
+                    }}
                 />
             )}
 

@@ -17,6 +17,9 @@ const badgeRoutes = require("./Routes/badgeRoutes");
 const userProfileRoutes = require("./Routes/userProfileRoutes");
 const rewardRoutes = require("./Routes/rewardRoutes");
 const ratingRoutes = require("./Routes/ratingRoutes");
+const handoverRoutes = require("./Routes/handoverRoutes");
+const faqRoutes = require("./Routes/faqRoutes");
+
 const Message = require("./Model/messageModel");
 
 const app = express();
@@ -45,6 +48,8 @@ app.use("/api/badges", badgeRoutes);
 app.use("/api/profiles", userProfileRoutes);
 app.use("/api/rewards", rewardRoutes);
 app.use("/api/ratings", ratingRoutes);
+app.use("/api/handovers", handoverRoutes);
+app.use("/api/faqs", faqRoutes);
 
 // Test Route
 app.get("/", (req, res) => {

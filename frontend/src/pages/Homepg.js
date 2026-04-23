@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "./Homepg.css";
 import Header from "./Header";
 import Footer from "./Footer";
+import Chatbot from "../components/Chatbot/Chatbot";
 
 function Homepg() {
   const location = useLocation();
@@ -80,6 +81,7 @@ function Homepg() {
       </main>
 
       <Footer />
+      <Chatbot />
     </div>
   );
 }

@@ -13,9 +13,10 @@
   position: sticky;
   top: 0;
   z-index: 120;
-  border-bottom: 1px solid rgba(13, 59, 102, 0.18);
-  background: rgb(45, 66, 134);
-  backdrop-filter: blur(4px);
+  border-bottom: 1px solid rgba(56, 189, 248, 0.25);
+  background: rgba(2, 6, 23, 0.86);
+  backdrop-filter: blur(12px);
+  
 }
 
 .uc-header::after {
@@ -102,9 +103,9 @@
 }
 
 .uc-pill-light {
-  color: var(--uc-ink);
-  background: rgba(255, 255, 255, 0.82);
-  border: 1px solid rgba(13, 59, 102, 0.2);
+  color: #e0f2fe;
+  background: rgba(14, 165, 233, 0.14);
+  border: 1px solid rgba(56, 189, 248, 0.36);
 }
 
 .uc-pill-strong {
@@ -117,9 +118,9 @@
   width: 42px;
   height: 42px;
   border-radius: 999px;
-  border: 1px solid rgba(13, 59, 102, 0.2);
-  background: rgba(255, 255, 255, 0.82);
-  color: var(--uc-deep);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  background: rgba(14, 165, 233, 0.1);
+  color: #e0f2fe;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -287,8 +288,8 @@
 }
 
 .uc-profile-trigger {
-  border: 1px solid rgba(13, 59, 102, 0.2);
-  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  background: rgba(14, 165, 233, 0.12);
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
@@ -325,11 +326,11 @@
   font-family: "Space Grotesk", sans-serif;
   font-size: 0.86rem;
   font-weight: 700;
-  color: var(--uc-ink);
+  color: #e0f2fe;
 }
 
 .uc-chevron {
-  color: #0d3b66;
+  color: #7dd3fc;
   transition: transform 0.2s ease;
 }
 
@@ -362,7 +363,7 @@
   font-size: 0.66rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: #3f5872;
+  color: #64748b;
   font-family: "Space Grotesk", sans-serif;
   font-weight: 700;
 }
@@ -380,18 +381,19 @@
   width: 100%;
   text-align: left;
   border: 0;
-  background: transparent;
+  background: rgba(15, 23, 42, 0.25);
   font-family: "Space Grotesk", sans-serif;
   font-weight: 700;
   font-size: 0.88rem;
-  color: var(--uc-ink);
+  color: #e2e8f0;
   border-radius: 10px;
   padding: 0.65rem 0.75rem;
   cursor: pointer;
 }
 
 .uc-menu-btn:hover {
-  background: #f4f8fc;
+  background: rgba(56, 189, 248, 0.16);
+  color: #f8fafc;
 }
 
 .uc-menu-btn.logout {
