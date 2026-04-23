@@ -3,8 +3,8 @@
 .uc-footer {
   position: relative;
   overflow: hidden;
-  border-top: 1px solid rgba(13, 59, 102, 0.18);
-  background: rgb(45, 66, 134);
+  border-top: 1px solid rgba(56, 189, 248, 0.22);
+  background: rgba(2, 6, 23, 0.86);
 }
 
 .uc-footer::before {
@@ -85,7 +85,7 @@
   margin: 0;
   font-family: "Space Grotesk", sans-serif;
   font-size: 0.78rem;
-  color: #2e4a62;
+  color: #cbd5e1;
   font-weight: 700;
 }
 
@@ -98,15 +98,15 @@
 }
 
 .uc-social {
-  border: 1px solid rgba(13, 59, 102, 0.2);
-  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  background: rgba(14, 165, 233, 0.14);
   border-radius: 999px;
   padding: 0.4rem 0.7rem;
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-family: "Space Grotesk", sans-serif;
-  color: #0d3b66;
+  color: #e0f2fe;
   font-weight: 700;
   cursor: pointer;
   text-decoration: none;
@@ -115,7 +115,7 @@
 
 .uc-social:hover {
   transform: translateY(-1px);
-  background: #ffffff;
+  background: rgba(14, 165, 233, 0.22);
 }
 
 @media (max-width: 720px) {
