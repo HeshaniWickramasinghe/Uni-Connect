@@ -86,11 +86,39 @@ const createBankTransferPayment = async (req, res) => {
     }
 };
 
-// Get All Payments (optional for demo)
+// Get All Payments (exclude large proof file data for performance)
 const getPayments = async (req, res) => {
     try {
-        const payments = await Payment.find().sort({ date: -1 });
-        res.status(200).json(payments);
+        const payments = await Payment.find()
+            .select('-proofFileData')
+            .sort({ date: -1 })
+            .lean();
+
+        // Add a flag so the frontend knows if a proof file exists
+        const result = payments.map(p => ({
+            ...p,
+            hasProofFile: !!(p.proofFileName && p.proofFileName.length > 0)
+        }));
+
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// Get proof file for a single payment
+const getPaymentProof = async (req, res) => {
+    try {
+        const { paymentId } = req.params;
+        const payment = await Payment.findById(paymentId).select('proofFileData proofFileName proofFileType');
+        if (!payment) {
+            return res.status(404).json({ message: "Payment not found" });
+        }
+        res.status(200).json({
+            proofFileData: payment.proofFileData,
+            proofFileName: payment.proofFileName,
+            proofFileType: payment.proofFileType
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -174,5 +202,6 @@ module.exports = {
     createPayment,
     createBankTransferPayment,
     getPayments,
+    getPaymentProof,
     updatePaymentStatus
 };

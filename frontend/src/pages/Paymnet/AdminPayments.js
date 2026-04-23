@@ -23,6 +23,23 @@ function AdminPayments() {
   const [filterAmountOperator, setFilterAmountOperator] = useState('=');
   const [searchQuery, setSearchQuery] = useState('');
   const [filterMethod, setFilterMethod] = useState('');
+  const [loadingProofId, setLoadingProofId] = useState(null);
+
+  const handleViewProof = async (paymentId) => {
+    setLoadingProofId(paymentId);
+    try {
+      const response = await axios.get(`${API_BASE_URL}/api/payments/${paymentId}/proof`);
+      if (response.data?.proofFileData) {
+        window.open(response.data.proofFileData, '_blank');
+      } else {
+        alert('No proof file found for this payment.');
+      }
+    } catch (error) {
+      alert('Failed to load proof file.');
+    } finally {
+      setLoadingProofId(null);
+    }
+  };
 
   const getStatusClass = (status) => {
     const normalizedStatus = String(status || '').trim().toLowerCase();
@@ -417,15 +434,14 @@ function AdminPayments() {
                           <td>{date}</td>
                           <td>{time}</td>
                           <td>
-                            {item.proofFileData ? (
-                              <a
-                                href={item.proofFileData}
-                                target="_blank"
-                                rel="noreferrer"
+                            {item.hasProofFile ? (
+                              <button
                                 className="admin-receipt-link"
+                                onClick={() => handleViewProof(item._id)}
+                                disabled={loadingProofId === item._id}
                               >
-                                Open
-                              </a>
+                                {loadingProofId === item._id ? 'Loading...' : 'Open'}
+                              </button>
                             ) : (
                               '-'
                             )}
@@ -507,15 +523,14 @@ function AdminPayments() {
                               >
                                 View
                               </button>
-                            ) : item.proofFileData ? (
-                              <a
-                                href={item.proofFileData}
-                                target="_blank"
-                                rel="noreferrer"
+                            ) : item.hasProofFile ? (
+                              <button
                                 className="admin-receipt-link"
+                                onClick={() => handleViewProof(item._id)}
+                                disabled={loadingProofId === item._id}
                               >
-                                Open
-                              </a>
+                                {loadingProofId === item._id ? 'Loading...' : 'Open'}
+                              </button>
                             ) : (
                               '-'
                             )}
