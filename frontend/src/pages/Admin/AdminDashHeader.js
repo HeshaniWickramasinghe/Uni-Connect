@@ -7,6 +7,7 @@ const adminNavigationItems = [
   { key: 'handovers', label: 'Handover Logs', path: '/admin/handovers' },
   { key: 'payments', label: 'Check Payments', path: '/admin/payments' },
   { key: 'faq', label: 'FAQ Management', path: '/admin/faq' },
+  { key: 'badges', label: 'Badge Management', path: '/admin/badges' },
 ];
 
 function AdminDashHeader({ user }) {

@@ -114,7 +114,7 @@ function App() {
           <Route path="/profile/edit" element={<EditProfile />} />
 
           {/* Reward system routes */}
-          <Route path="/admin/badges" element={<BadgeManagement />} />
+          <Route path="/admin/badges" element={<AdminRoute component={BadgeManagement} />} />
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/rate-reward/:itemId" element={<RatingAndReward />} />
           <Route path="/reward-profile" element={<RewardUserProfile />} />
