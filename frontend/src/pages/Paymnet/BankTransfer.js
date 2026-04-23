@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -42,116 +42,9 @@ function BankTransfer() {
     }
   })();
   const [paymentResult, setPaymentResult] = useState(null);
-  const [paymentSummary, setPaymentSummary] = useState({
-    amount: 0,
-    items: [],
-    type: ''
-  });
 
   const allowedFileTypes = ["application/pdf", "image/jpeg", "image/png", "image/gif"];
   const maxFileSize = 5 * 1024 * 1024;
-
-  useEffect(() => {
-    const calculatePaymentSummary = async () => {
-      let summary = {
-        amount: 0,
-        items: [],
-        type: ''
-      };
-
-      // Check for direct payment amount first
-      const paymentAmount = location.state?.paymentAmount;
-      if (paymentAmount !== undefined && paymentAmount !== null && paymentAmount !== "") {
-        summary.amount = parseFloat(paymentAmount);
-        summary.type = 'direct';
-        setPaymentSummary(summary);
-        return;
-      }
-
-      // Check for session draft
-      const sessionAmount = sessionDraft?.formData?.price || sessionDraft?.formData?.amount;
-      if (sessionAmount) {
-        summary.amount = parseFloat(sessionAmount);
-        summary.type = 'session';
-        summary.items = [{
-          name: sessionDraft?.formData?.subject || 'Session',
-          price: parseFloat(sessionAmount)
-        }];
-        setPaymentSummary(summary);
-        return;
-      }
-
-      // Check for cart items
-      if (effectiveCartItems.length > 0) {
-        summary.type = 'cart';
-        let totalAmount = 0;
-        const items = [];
-
-        for (const item of effectiveCartItems) {
-          let itemPrice = 0;
-          
-          // Try to get price from item directly
-          if (item.price) {
-            itemPrice = parseFloat(item.price);
-          } else if (item.sessionId) {
-            // Fetch session details to get price
-            try {
-              const response = await axios.get("http://localhost:5000/api/kuppi-sessions");
-              const session = Array.isArray(response.data)
-                ? response.data.find((s) => s._id === item.sessionId)
-                : null;
-              
-              if (session?.price !== undefined && session?.price !== null) {
-                itemPrice = parseFloat(session.price);
-              }
-            } catch (_error) {
-              // Leave price as 0 if fetch fails
-            }
-          }
-
-          totalAmount += itemPrice;
-          items.push({
-            name: item.subject || item.moduleName || `Session ${item.sessionId?.slice(-6)}`,
-            price: itemPrice
-          });
-        }
-
-        summary.amount = totalAmount;
-        summary.items = items;
-        setPaymentSummary(summary);
-        return;
-      }
-
-      // Check for registration draft
-      const loadRegistrationAmount = async () => {
-        const sessionId = registrationDraft?.sessionId;
-        if (!sessionId) return;
-
-        try {
-          const response = await axios.get("http://localhost:5000/api/kuppi-sessions");
-          const session = Array.isArray(response.data)
-            ? response.data.find((item) => item._id === sessionId)
-            : null;
-
-          if (session?.price !== undefined && session?.price !== null) {
-            summary.amount = parseFloat(session.price);
-            summary.type = 'registration';
-            summary.items = [{
-              name: session.subject || session.moduleName || 'Registration',
-              price: parseFloat(session.price)
-            }];
-            setPaymentSummary(summary);
-          }
-        } catch (_error) {
-          // Leave summary empty if session lookup fails
-        }
-      };
-
-      loadRegistrationAmount();
-    };
-
-    calculatePaymentSummary();
-  }, [location.state, sessionDraft, registrationDraft, effectiveCartItems]);
 
   const openPopup = (type, message) => {
     setPopup({ isOpen: true, type, message });
@@ -335,34 +228,6 @@ function BankTransfer() {
             </div>
           </div>
 
-          {paymentSummary.amount > 0 && (
-            <div className="payment-summary-section">
-              <h3 className="section-title">Payment Summary</h3>
-              <div className="summary-content">
-                {paymentSummary.items.length > 0 ? (
-                  <div className="summary-items">
-                    {paymentSummary.items.map((item, index) => (
-                      <div key={index} className="summary-item">
-                        <span className="item-name">{item.name}</span>
-                        <span className="item-price">Rs {item.price.toFixed(2)}</span>
-                      </div>
-                    ))}
-                    <div className="summary-divider"></div>
-                    <div className="summary-total">
-                      <span className="total-label">Total Amount</span>
-                      <span className="total-amount">Rs {paymentSummary.amount.toFixed(2)}</span>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="summary-single">
-                    <span className="single-label">Amount to Pay</span>
-                    <span className="single-amount">Rs {paymentSummary.amount.toFixed(2)}</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
           <div className="file-upload-section">
             <h3 className="section-title">Upload Payment Proof</h3>
             <p className="upload-description">
@@ -411,9 +276,8 @@ function BankTransfer() {
         <div className="popup-overlay" onClick={closePopup}>
           <div className="popup-box" onClick={(e) => e.stopPropagation()}>
             <div
-              className={`popup-icon ${
-                popup.type === "success" ? "popup-icon-success" : "popup-icon-error"
-              }`}
+              className={`popup-icon ${popup.type === "success" ? "popup-icon-success" : "popup-icon-error"
+                }`}
             >
               <span className="popup-icon-inner">{popup.type === "success" ? "✓" : "✕"}</span>
             </div>

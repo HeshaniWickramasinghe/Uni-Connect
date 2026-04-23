@@ -7,20 +7,20 @@
   display: grid;
   place-items: center;
   background:
-    radial-gradient(circle at 15% 20%, rgba(14, 165, 233, 0.22), transparent 34%),
-    radial-gradient(circle at 88% 10%, rgba(59, 130, 246, 0.2), transparent 32%),
-    linear-gradient(150deg, #020617 0%, #0b1228 54%, #020617 100%);
+    radial-gradient(circle at 15% 20%, rgba(76, 155, 186, 0.22), transparent 30%),
+    radial-gradient(circle at 88% 10%, rgba(150, 145, 245, 0.2), transparent 30%),
+    linear-gradient(140deg, #f7fffc 0%, #f3fbff 54%, #fef9ec 100%);
   font-family: "Space Grotesk", sans-serif;
-  color: #f0f9ff;
+  color: #0f172a;
 }
 
 .login-shell {
   width: min(520px, 100%);
   border-radius: 24px;
-  border: 1px solid rgba(56, 189, 248, 0.26);
-  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid rgba(13, 59, 102, 0.2);
+  background: rgba(255, 255, 255, 0.86);
   backdrop-filter: blur(10px);
-  box-shadow: 0 20px 60px rgba(2, 6, 23, 0.62);
+  box-shadow: 0 16px 50px rgba(13, 59, 102, 0.14);
   padding: clamp(20px, 3vw, 34px);
   animation: pop-up 420ms ease-out;
 }
@@ -30,8 +30,8 @@
   display: inline-block;
   padding: 6px 12px;
   border-radius: 999px;
-  background: rgba(224, 242, 254, 0.95);
-  color: #1e3a8a;
+  background: linear-gradient(120deg, #eef8ff, #f4fff9);
+  color: #0d3b66;
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -42,12 +42,11 @@
   margin: 12px 0 6px;
   font-family: "Outfit", sans-serif;
   font-size: clamp(1.8rem, 3vw, 2.2rem);
-  color: #f8fafc;
 }
 
 .login-subtitle {
   margin: 0 0 16px;
-  color: #94a3b8;
+  color: rgba(15, 23, 42, 0.72);
 }
 
 .login-form {
@@ -58,21 +57,14 @@
 .login-form label {
   font-size: 0.92rem;
   font-weight: 600;
-  color: #e2e8f0;
 }
 
 .login-form input {
   height: 46px;
   border-radius: 12px;
-  border: 1px solid rgba(56, 189, 248, 0.28);
+  border: 1px solid rgba(13, 59, 102, 0.2);
   padding: 0 14px;
-  background: rgba(15, 23, 42, 0.95);
-  color: #f0f9ff;
   font-size: 1rem;
-}
-
-.login-form input::placeholder {
-  color: #94a3b8;
 }
 
 .login-form input:focus {
@@ -118,15 +110,10 @@
 
 .auth-links p {
   margin: 6px 0;
-  color: #cbd5e1;
-}
-
-.auth-links .auth-links-text {
-  color: #e2e8f0 !important;
 }
 
 .auth-links a {
-  color: #7dd3fc;
+  color: #0d3b66;
   font-weight: 700;
   text-decoration: none;
 }

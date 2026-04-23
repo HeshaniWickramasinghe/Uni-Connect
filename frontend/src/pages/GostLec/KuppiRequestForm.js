@@ -162,12 +162,6 @@ function KuppiRequestForm() {
                         ) : (
                             sessions.map((session) => {
                                 const isBusy = actionLoading?.startsWith(session._id);
-                                const paymentStatus = String(session.registrationPaymentStatus || '').toLowerCase();
-                                const paymentIsSuccess = paymentStatus === 'success';
-                                const paymentIsFailed = paymentStatus === 'failed';
-                                const isPendingRequest = (session.status || 'Pending') === 'Pending';
-                                const canPublish = isPendingRequest && paymentIsSuccess && !isBusy;
-                                const canDeny = isPendingRequest && (paymentIsSuccess || paymentIsFailed) && !isBusy;
                                 return (
                                     <article key={session._id} className="krf-card">
                                         {session.coverImage && (
@@ -234,8 +228,7 @@ function KuppiRequestForm() {
                                                 type="button"
                                                 className="krf-btn krf-btn-publish"
                                                 onClick={() => updateStatus(session._id, 'Approved')}
-                                                disabled={!canPublish}
-                                                title={paymentIsSuccess ? '' : 'Payment must be Success before publishing'}
+                                                disabled={(session.status || 'Pending') !== 'Pending' || isBusy}
                                             >
                                                 {actionLoading === `${session._id}-Approved` ? 'Publishing...' : 'Publish'}
                                             </button>
@@ -243,8 +236,7 @@ function KuppiRequestForm() {
                                                 type="button"
                                                 className="krf-btn krf-btn-deny"
                                                 onClick={() => updateStatus(session._id, 'Rejected')}
-                                                disabled={!canDeny}
-                                                title={paymentIsSuccess || paymentIsFailed ? '' : 'Payment must be Success or Failed before denying'}
+                                                disabled={(session.status || 'Pending') !== 'Pending' || isBusy}
                                             >
                                                 {actionLoading === `${session._id}-Rejected` ? 'Denying...' : 'Deny'}
                                             </button>
