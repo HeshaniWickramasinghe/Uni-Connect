@@ -200,7 +200,7 @@ function Registration() {
         </form>
 
         <div className="auth-links">
-          <p>
+          <p className="auth-links-text">
             Already have an account? <Link to="/login">Login here</Link>
           </p>
         </div>

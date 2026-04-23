@@ -2,7 +2,11 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: radial-gradient(circle at top right, #d8f5ff 0%, #f6fbff 45%, #ffffff 100%);
+  background:
+    radial-gradient(circle at 10% 10%, rgba(14, 165, 233, 0.2), transparent 30%),
+    radial-gradient(circle at 90% 0%, rgba(37, 99, 235, 0.18), transparent 28%),
+    linear-gradient(160deg, #020617 0%, #0b1228 55%, #020617 100%);
+  color: #f0f9ff;
 }
 
 .admin-page {
@@ -15,15 +19,16 @@
 
 .admin-hero {
   border-radius: 18px;
-  border: 1px solid rgba(13, 59, 102, 0.16);
-  background: linear-gradient(120deg, #ecf7ff, #f1fff7);
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  background: rgba(15, 23, 42, 0.84);
   padding: 1.2rem 1.25rem;
+  box-shadow: 0 18px 40px -18px rgba(2, 6, 23, 0.8);
 }
 
 .admin-badge {
   margin: 0;
   display: inline-flex;
-  background: #0d3b66;
+  background: linear-gradient(135deg, #0ea5e9, #1d4ed8);
   color: #ffffff;
   border-radius: 999px;
   padding: 0.26rem 0.72rem;
@@ -34,21 +39,21 @@
 
 .admin-hero h1 {
   margin: 0.6rem 0 0;
-  color: #0d3b66;
+  color: #f8fafc;
   font-size: clamp(1.35rem, 1.25rem + 0.8vw, 1.95rem);
 }
 
 .admin-subtitle {
   margin: 0.45rem 0 0;
-  color: #1d3557;
+  color: #cbd5e1;
   max-width: 70ch;
   line-height: 1.45;
 }
 
 .admin-action-btn {
   margin-top: 0.9rem;
-  border: 1px solid rgba(13, 59, 102, 0.18);
-  background: #0d3b66;
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  background: linear-gradient(135deg, #0ea5e9, #2563eb);
   color: #ffffff;
   border-radius: 10px;
   padding: 0.55rem 1rem;
@@ -57,7 +62,7 @@
 }
 
 .admin-action-btn:hover {
-  background: #0b4a7c;
+  filter: brightness(1.06);
 }
 
 .admin-stats {
@@ -68,10 +73,10 @@
 
 .admin-stat-card {
   border-radius: 14px;
-  border: 1px solid rgba(13, 59, 102, 0.16);
-  background: #ffffff;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  background: rgba(15, 23, 42, 0.86);
   padding: 0.9rem;
-  box-shadow: 0 10px 20px rgba(13, 59, 102, 0.06);
+  box-shadow: 0 16px 34px -18px rgba(2, 6, 23, 0.85);
   width: 100%;
   text-align: left;
   cursor: pointer;
@@ -80,32 +85,32 @@
 .admin-stat-card h2 {
   margin: 0;
   font-size: 1.35rem;
-  color: #0b4a7c;
+  color: #7dd3fc;
 }
 
 .admin-stat-card p {
   margin: 0;
-  color: #35506a;
+  color: #e2e8f0;
   font-size: 0.95rem;
   font-weight: 600;
 }
 
 .admin-stat-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 14px 26px rgba(13, 59, 102, 0.1);
+  box-shadow: 0 18px 36px -18px rgba(14, 165, 233, 0.35);
 }
 
 .admin-panel {
   border-radius: 14px;
-  border: 1px solid rgba(13, 59, 102, 0.14);
-  background: #ffffff;
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  background: rgba(15, 23, 42, 0.86);
   overflow: hidden;
 }
 
 .admin-panel-head {
   padding: 0.85rem 1rem;
-  border-bottom: 1px solid rgba(13, 59, 102, 0.08);
-  background: #f8fcff;
+  border-bottom: 1px solid rgba(56, 189, 248, 0.14);
+  background: rgba(2, 6, 23, 0.88);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -115,7 +120,7 @@
 
 .admin-panel-head h3 {
   margin: 0;
-  color: #0d3b66;
+  color: #e0f2fe;
   font-size: 1rem;
 }
 
@@ -133,13 +138,14 @@
 .admin-table td {
   text-align: left;
   padding: 0.72rem 1rem;
-  border-bottom: 1px solid rgba(13, 59, 102, 0.08);
+  border-bottom: 1px solid rgba(56, 189, 248, 0.12);
   font-size: 0.9rem;
+  color: #e2e8f0;
 }
 
 .admin-table th {
-  color: #375a7f;
-  background: #fbfdff;
+  color: #e0f2fe;
+  background: rgba(2, 6, 23, 0.94);
   font-size: 0.83rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -158,26 +164,26 @@
 .pill.approved,
 .pill.found,
 .pill.completed {
-  background: #dcfce7;
-  color: #166534;
+  background: rgba(20, 83, 45, 0.35);
+  color: #bbf7d0;
 }
 
 .pill.success {
-  background: #dcfce7;
-  color: #166534;
+  background: rgba(20, 83, 45, 0.35);
+  color: #bbf7d0;
 }
 
 .pill.pending,
 .pill.lost {
-  background: #fef3c7;
-  color: #92400e;
+  background: rgba(120, 53, 15, 0.35);
+  color: #fde68a;
 }
 
 .pill.suspended,
 .pill.failed,
 .pill.fail {
-  background: #fee2e2;
-  color: #991b1b;
+  background: rgba(127, 29, 29, 0.35);
+  color: #fecaca;
 }
 
 .admin-receipt-link {
@@ -186,21 +192,21 @@
   justify-content: center;
   padding: 0.22rem 0.62rem;
   border-radius: 999px;
-  background: #dbeafe;
-  color: #1e40af;
+  background: rgba(14, 165, 233, 0.14);
+  color: #7dd3fc;
   text-decoration: none;
   font-size: 0.78rem;
   font-weight: 700;
 }
 
 .admin-receipt-link:hover {
-  background: #bfdbfe;
+  background: rgba(14, 165, 233, 0.22);
 }
 
 .admin-view-pdf-btn {
   border: none;
-  background: #dbeafe;
-  color: #1e40af;
+  background: rgba(14, 165, 233, 0.14);
+  color: #7dd3fc;
   border-radius: 999px;
   padding: 0.22rem 0.62rem;
   font-size: 0.78rem;
@@ -210,13 +216,13 @@
 }
 
 .admin-view-pdf-btn:hover {
-  background: #bfdbfe;
+  background: rgba(14, 165, 233, 0.22);
   transform: translateY(-1px);
 }
 
 .admin-view-pdf-btn:disabled {
-  background: #d1d5db;
-  color: #6b7280;
+  background: rgba(148, 163, 184, 0.2);
+  color: #94a3b8;
   cursor: not-allowed;
 }
 
@@ -227,9 +233,9 @@
 }
 
 .view-btn {
-  border: 1px solid rgba(13, 59, 102, 0.24);
-  background: #ffffff;
-  color: #0d3b66;
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  background: rgba(15, 23, 42, 0.8);
+  color: #cbd5e1;
   border-radius: 8px;
   padding: 0.45rem 0.95rem;
   font-weight: 600;
@@ -239,14 +245,14 @@
 }
 
 .view-btn:hover {
-  background: #f0f8ff;
-  border-color: rgba(13, 59, 102, 0.4);
+  background: rgba(14, 165, 233, 0.14);
+  border-color: rgba(56, 189, 248, 0.42);
 }
 
 .view-btn.active {
-  background: #0d3b66;
+  background: linear-gradient(135deg, #0ea5e9, #2563eb);
   color: #ffffff;
-  border-color: #0d3b66;
+  border-color: rgba(56, 189, 248, 0.42);
 }
 
 .pending-badge {
@@ -270,43 +276,43 @@
 }
 
 .btn-approve {
-  background: #dcfce7;
-  color: #166534;
+  background: rgba(20, 83, 45, 0.35);
+  color: #bbf7d0;
 }
 
 .btn-approve:hover {
-  background: #bbf7d0;
+  background: rgba(20, 83, 45, 0.5);
   transform: translateY(-1px);
 }
 
 .btn-approve:disabled {
-  background: #d1d5db;
-  color: #6b7280;
+  background: rgba(148, 163, 184, 0.2);
+  color: #94a3b8;
   cursor: not-allowed;
   opacity: 0.6;
 }
 
 .btn-reject {
-  background: #fee2e2;
-  color: #991b1b;
+  background: rgba(127, 29, 29, 0.35);
+  color: #fecaca;
 }
 
 .btn-reject:hover {
-  background: #fecaca;
+  background: rgba(127, 29, 29, 0.5);
   transform: translateY(-1px);
 }
 
 .btn-reject:disabled {
-  background: #d1d5db;
-  color: #6b7280;
+  background: rgba(148, 163, 184, 0.2);
+  color: #94a3b8;
   cursor: not-allowed;
   opacity: 0.6;
 }
 
 .filter-section {
   padding: 1rem;
-  background: #f0f8ff;
-  border-bottom: 1px solid rgba(13, 59, 102, 0.12);
+  background: rgba(2, 6, 23, 0.76);
+  border-bottom: 1px solid rgba(56, 189, 248, 0.12);
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
@@ -322,23 +328,23 @@
 .filter-label {
   font-size: 0.85rem;
   font-weight: 600;
-  color: #0d3b66;
+  color: #e2e8f0;
 }
 
 .filter-input {
   padding: 0.45rem 0.7rem;
-  border: 1px solid rgba(13, 59, 102, 0.24);
+  border: 1px solid rgba(56, 189, 248, 0.22);
   border-radius: 6px;
   font-size: 0.9rem;
   min-width: 140px;
-  background: #ffffff;
-  color: #0d3b66;
+  background: rgba(15, 23, 42, 0.9);
+  color: #f0f9ff;
 }
 
 .filter-input:focus {
   outline: none;
-  border-color: #0d3b66;
-  box-shadow: 0 0 0 3px rgba(13, 59, 102, 0.1);
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.16);
 }
 
 .filter-amount-group {
@@ -349,11 +355,11 @@
 
 .filter-operator {
   padding: 0.45rem 0.5rem;
-  border: 1px solid rgba(13, 59, 102, 0.24);
+  border: 1px solid rgba(56, 189, 248, 0.22);
   border-radius: 6px;
   font-size: 0.9rem;
-  background: #ffffff;
-  color: #0d3b66;
+  background: rgba(15, 23, 42, 0.9);
+  color: #f0f9ff;
   font-weight: 600;
   min-width: 60px;
   cursor: pointer;
@@ -361,15 +367,15 @@
 
 .filter-operator:focus {
   outline: none;
-  border-color: #0d3b66;
-  box-shadow: 0 0 0 3px rgba(13, 59, 102, 0.1);
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.16);
 }
 
 .filter-reset-btn {
   padding: 0.45rem 0.95rem;
-  background: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #fca5a5;
+  background: rgba(127, 29, 29, 0.28);
+  color: #fecaca;
+  border: 1px solid rgba(248, 113, 113, 0.32);
   border-radius: 6px;
   font-weight: 600;
   font-size: 0.85rem;
@@ -378,8 +384,8 @@
 }
 
 .filter-reset-btn:hover {
-  background: #fecaca;
-  border-color: #f87171;
+  background: rgba(127, 29, 29, 0.42);
+  border-color: rgba(248, 113, 113, 0.5);
   transform: translateY(-1px);
 }
 

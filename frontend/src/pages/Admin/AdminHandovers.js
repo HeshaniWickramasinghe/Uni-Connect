@@ -83,11 +83,16 @@ function AdminHandovers() {
                     borderRadius: '8px',
                     fontSize: '0.7rem',
                     fontWeight: '800',
-                    border: 'none',
+                    border: filterStatus === status ? '1px solid rgba(56, 189, 248, 0.45)' : '1px solid rgba(56, 189, 248, 0.26)',
                     cursor: 'pointer',
-                    backgroundColor: filterStatus === status ? '#023E8A' : '#f1f5f9',
-                    color: filterStatus === status ? 'white' : '#64748b',
-                    transition: 'all 0.2s'
+                    background: filterStatus === status
+                      ? 'linear-gradient(135deg, #0ea5e9, #2563eb)'
+                      : 'rgba(15, 23, 42, 0.88)',
+                    color: filterStatus === status ? '#ffffff' : '#e2e8f0',
+                    transition: 'all 0.2s',
+                    letterSpacing: '0.04em',
+                    textTransform: 'uppercase',
+                    minWidth: '108px'
                   }}
                 >
                   {status}
@@ -129,7 +134,20 @@ function AdminHandovers() {
                       </td>
                       <td>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                <div style={{ fontSize: '0.65rem', padding: '2px 6px', background: '#f1f5f9', borderRadius: '4px', fontWeight: 'bold' }}>CODE: {h.verificationCode}</div>
+                                <div
+                                  style={{
+                                    fontSize: '0.65rem',
+                                    padding: '2px 8px',
+                                    background: 'rgba(15, 23, 42, 0.95)',
+                                    color: '#e2e8f0',
+                                    borderRadius: '6px',
+                                    border: '1px solid rgba(56, 189, 248, 0.28)',
+                                    fontWeight: 'bold',
+                                    letterSpacing: '0.04em'
+                                  }}
+                                >
+                                  CODE: {h.verificationCode}
+                                </div>
                                 {h.universityIdPhoto && (
                                     <button 
                                         className="view-id-btn"
@@ -137,7 +155,7 @@ function AdminHandovers() {
                                             const win = window.open();
                                             win.document.write(`<img src="${h.universityIdPhoto}" style="max-width:100%; height:auto;" />`);
                                         }}
-                                        style={{ background: 'none', border: 'none', color: '#3b82f6', fontSize: '0.65rem', fontWeight: 'bold', textDecoration: 'underline', cursor: 'pointer' }}
+                                        style={{ background: 'none', border: 'none', color: '#60a5fa', fontSize: '0.65rem', fontWeight: 'bold', textDecoration: 'underline', cursor: 'pointer' }}
                                     >
                                         VIEW ID
                                     </button>

@@ -39,7 +39,7 @@
 .testpay-title {
   margin: 0 0 8px;
   text-align: center;
-  color: var(--text-main);
+  color: #f8fafc;
   letter-spacing: 0.3px;
   font-size: 1.6rem;
   font-weight: 700;
@@ -48,7 +48,7 @@
 .testpay-subtitle {
   margin: 0 0 28px;
   text-align: center;
-  color: var(--text-muted);
+  color: #cbd5e1;
   font-size: 0.95rem;
   font-weight: 500;
 }
