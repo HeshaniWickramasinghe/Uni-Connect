@@ -80,11 +80,14 @@ function RequireLoginRoute({ component: Component }) {
   return <Component />;
 }
 
-function App() {
+function AppRoutes() {
+  const location = useLocation();
+  const backgroundLocation = location.state?.backgroundLocation;
+
   return (
-    <BrowserRouter>
+    <>
       <div className="App">
-        <Routes>
+        <Routes location={backgroundLocation || location}>
           <Route path="/" element={<Navigate to="/homepage" replace />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Registration />} />
@@ -120,6 +123,21 @@ function App() {
           <Route path="/reward-profile" element={<RewardUserProfile />} />
         </Routes>
       </div>
+      {backgroundLocation && (
+        <Routes>
+          <Route path="/payments" element={<TestPay />} />
+          <Route path="/card-payment" element={<CardPayment />} />
+          <Route path="/bank-transfer" element={<BankTransfer />} />
+        </Routes>
+      )}
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppRoutes />
     </BrowserRouter>
   );
 }

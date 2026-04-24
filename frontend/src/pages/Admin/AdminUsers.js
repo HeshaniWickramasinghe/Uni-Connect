@@ -14,6 +14,7 @@ function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
   const [usersError, setUsersError] = useState('');
+  const [deletingUserId, setDeletingUserId] = useState(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -35,6 +36,26 @@ function AdminUsers() {
 
     fetchUsers();
   }, []);
+
+  const handleDeleteUser = async (userId, userName) => {
+    if (!userId) return;
+
+    const confirmed = window.confirm(`Are you sure you want to delete ${userName || 'this user'}?`);
+    if (!confirmed) return;
+
+    setDeletingUserId(userId);
+    setUsersError('');
+
+    try {
+      await axios.delete(`${API_BASE_URL}/api/users/${userId}`);
+      setUsers((prevUsers) => prevUsers.filter((item) => item._id !== userId));
+    } catch (error) {
+      const message = error.response?.data?.message || 'Failed to delete user.';
+      setUsersError(message);
+    } finally {
+      setDeletingUserId(null);
+    }
+  };
 
   return (
     <div className="admin-layout">
@@ -65,6 +86,7 @@ function AdminUsers() {
                     <th>Email</th>
                     <th>Phone Number</th>
                     <th>Student Registration Number</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -74,6 +96,23 @@ function AdminUsers() {
                       <td>{item.email || '-'}</td>
                       <td>{item.phoneNumber || '-'}</td>
                       <td>{item.studentRegistrationNumber || '-'}</td>
+                      <td>
+                        <button
+                          type="button"
+                          className="admin-icon-btn admin-delete-icon-btn"
+                          onClick={() => handleDeleteUser(item._id, item.name)}
+                          disabled={deletingUserId === item._id}
+                          title="Delete user"
+                          aria-label="Delete user"
+                        >
+                          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+                            <path
+                              fill="currentColor"
+                              d="M9 3h6l1 2h4v2H4V5h4l1-2zm1 6h2v9h-2V9zm4 0h2v9h-2V9zM7 9h2v9H7V9z"
+                            />
+                          </svg>
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

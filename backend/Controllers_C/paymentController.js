@@ -128,7 +128,7 @@ const getPaymentProof = async (req, res) => {
 const updatePaymentStatus = async (req, res) => {
     try {
         const { paymentId } = req.params;
-        const { status } = req.body;
+        const { status, amount } = req.body;
 
         if (!paymentId || !status) {
             return res.status(400).json({
@@ -143,20 +143,46 @@ const updatePaymentStatus = async (req, res) => {
             });
         }
 
-        const updatedPayment = await Payment.findByIdAndUpdate(
-            paymentId,
-            { status },
-            { new: true, runValidators: true }
-        );
-
-        if (!updatedPayment) {
+        const existingPayment = await Payment.findById(paymentId);
+        if (!existingPayment) {
             return res.status(404).json({
                 message: "Payment not found"
             });
         }
 
-        // Keep Ghost Lec request payment state in sync using transaction code.
         const normalizedStatus = String(status).trim().toLowerCase();
+        const isBankPayment = String(existingPayment.method || "").trim().toLowerCase() === "bank";
+        const requiresAmount = isBankPayment && (normalizedStatus === "approved" || normalizedStatus === "rejected");
+
+        let normalizedAmount;
+        if (amount !== undefined && amount !== null && amount !== "") {
+            const parsedAmount = Number(amount);
+            if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
+                return res.status(400).json({
+                    message: "Amount must be a valid number greater than 0"
+                });
+            }
+            normalizedAmount = parsedAmount;
+        }
+
+        if (requiresAmount && normalizedAmount === undefined) {
+            return res.status(400).json({
+                message: "Amount is required before approving or rejecting a bank transfer payment"
+            });
+        }
+
+        const updatePayload = { status };
+        if (normalizedAmount !== undefined) {
+            updatePayload.amount = normalizedAmount;
+        }
+
+        const updatedPayment = await Payment.findByIdAndUpdate(
+            paymentId,
+            updatePayload,
+            { new: true, runValidators: true }
+        );
+
+        // Keep Ghost Lec request payment state in sync using transaction code.
         let sessionPaymentStatus = 'unknown';
         if (normalizedStatus === 'approved' || normalizedStatus === 'success') {
             sessionPaymentStatus = 'success';
@@ -198,10 +224,37 @@ const updatePaymentStatus = async (req, res) => {
     }
 };
 
+const deletePayment = async (req, res) => {
+    try {
+        const { paymentId } = req.params;
+
+        const deletedPayment = await Payment.findByIdAndDelete(paymentId);
+        if (!deletedPayment) {
+            return res.status(404).json({
+                message: "Payment not found"
+            });
+        }
+
+        return res.status(200).json({
+            message: "Payment deleted successfully"
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Failed to delete payment",
+            error: error.message
+        });
+    }
+};
+
 module.exports = {
     createPayment,
     createBankTransferPayment,
     getPayments,
+<<<<<<< Updated upstream
     getPaymentProof,
     updatePaymentStatus
+=======
+    updatePaymentStatus,
+    deletePayment
+>>>>>>> Stashed changes
 };

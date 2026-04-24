@@ -7,6 +7,7 @@ import "./BankTransfer.css";
 function BankTransfer() {
   const navigate = useNavigate();
   const location = useLocation();
+  const isModal = Boolean(location.state?.backgroundLocation);
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState("");
   const fileInputRef = useRef(null);
@@ -57,6 +58,15 @@ function BankTransfer() {
       fileInputRef.current.value = "";
     }
     setPopup({ isOpen: false, type: "success", message: "" });
+  };
+
+  const handleClose = () => {
+    if (isModal) {
+      navigate(-1);
+      return;
+    }
+
+    navigate(returnTo || "/homepage", { state: { user: currentUser } });
   };
 
   const handleDone = () => {
@@ -198,8 +208,11 @@ function BankTransfer() {
   };
 
   return (
-    <div className="bank-transfer-page">
-      <div className={`bank-transfer-card ${popup.isOpen ? "card-blur" : ""}`}>
+    <div className={isModal ? "bank-transfer-overlay" : "bank-transfer-page"}>
+      <div className={`bank-transfer-card ${isModal ? "bank-transfer-modal" : ""} ${popup.isOpen ? "card-blur" : ""}`}>
+        <button type="button" className="bank-transfer-close-btn" onClick={handleClose} aria-label="Close bank transfer">
+          ×
+        </button>
         <h2 className="bank-title">🏦 Bank Transfer Details</h2>
         <p className="bank-subtitle">Complete your payment using bank transfer</p>
 

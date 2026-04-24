@@ -7,6 +7,7 @@ import "./CardPayment.css";
 function CardPayment() {
   const navigate = useNavigate();
   const location = useLocation();
+  const isModal = Boolean(location.state?.backgroundLocation);
 
   const [form, setForm] = useState({
     cardName: "",
@@ -123,6 +124,15 @@ function CardPayment() {
         registrationDraft
       }
     });
+  };
+
+  const handleClose = () => {
+    if (isModal) {
+      navigate(-1);
+      return;
+    }
+
+    navigate(returnTo || "/homepage", { state: { user: currentUser } });
   };
 
   const handlePrintSummary = () => {
@@ -407,8 +417,11 @@ function CardPayment() {
   };
 
 return (
-  <div className="page">
-    <div className={`card ${popup.isOpen ? "card-blur" : ""}`}>
+  <div className={isModal ? "card-payment-overlay" : "page"}>
+    <div className={`card ${isModal ? "card-modal" : ""} ${popup.isOpen ? "card-blur" : ""}`}>
+      <button type="button" className="card-payment-close-btn" onClick={handleClose} aria-label="Close card payment">
+        ×
+      </button>
       <h2 className="title">💳 Card Payment</h2>
 
       <form onSubmit={handleSubmit} className="form">

@@ -25,6 +25,22 @@
   font-family: "Segoe UI", "Trebuchet MS", sans-serif;
 }
 
+.card-payment-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(2, 6, 23, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  font-family: "Segoe UI", "Trebuchet MS", sans-serif;
+}
+
 .card {
   width: min(420px, 100%);
   padding: 28px;
@@ -34,6 +50,42 @@
   box-shadow:
     0 18px 35px rgba(7, 20, 43, 0.26),
     0 2px 8px rgba(7, 20, 43, 0.18);
+}
+
+.card-modal {
+  position: relative;
+  width: min(520px, calc(100vw - 56px));
+  max-height: min(72vh, 620px);
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  padding: 34px 32px 30px;
+  border-radius: 22px;
+  box-shadow:
+    0 24px 60px rgba(7, 20, 43, 0.34),
+    0 4px 12px rgba(7, 20, 43, 0.2);
+}
+
+.card-payment-close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.08);
+  color: var(--text-main);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.card-payment-close-btn:hover {
+  background: rgba(15, 23, 42, 0.14);
 }
 
 .title {
@@ -278,9 +330,20 @@
     padding: 14px;
   }
 
+  .card-payment-overlay {
+    padding: 14px;
+  }
+
   .card {
     padding: 20px;
     border-radius: 14px;
+  }
+
+  .card-modal {
+    width: min(100%, 100%);
+    padding: 24px 20px 20px;
+    max-height: min(76vh, 560px);
+    border-radius: 16px;
   }
 
   .title {

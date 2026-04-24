@@ -273,6 +273,47 @@
   gap: 0.75rem;
   flex-wrap: wrap;
   margin-top: 0.5rem;
+  align-items: center;
+}
+
+.krf-icon-btn {
+  border: 1px solid transparent;
+  border-radius: 12px;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.krf-icon-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+.krf-icon-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.krf-icon-btn-publish {
+  background: linear-gradient(135deg, #059669, #047857);
+  color: #ffffff;
+}
+
+.krf-icon-btn-deny {
+  background: rgba(127, 29, 29, 0.35);
+  color: #fecaca;
+  border-color: rgba(248, 113, 113, 0.3);
+}
+
+.krf-icon-btn-delete {
+  background: rgba(79, 70, 229, 0.28);
+  color: #c7d2fe;
+  border-color: rgba(99, 102, 241, 0.28);
 }
 
 .krf-btn {
@@ -373,10 +414,40 @@
   border-bottom: none;
 }
 
+<<<<<<< Updated upstream
 .krf-error {
   color: #dc2626;
   border-color: #fecaca;
   background: #fee2e2;
+=======
+.krf-actions-col {
+  text-align: center !important;
+}
+
+.krf-delete-icon-btn {
+  border: 1px solid rgba(248, 113, 113, 0.3);
+  background: rgba(127, 29, 29, 0.35);
+  color: #fecaca;
+  border-radius: 10px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.krf-delete-icon-btn:hover:not(:disabled) {
+  background: rgba(127, 29, 29, 0.55);
+  transform: translateY(-1px);
+}
+
+.krf-delete-icon-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+>>>>>>> Stashed changes
 }
 
 @media (max-width: 768px) {

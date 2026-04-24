@@ -17,12 +17,14 @@ function AdminPayments() {
   const [paymentsError, setPaymentsError] = useState('');
   const [showPendingOnly, setShowPendingOnly] = useState(false);
   const [updatingId, setUpdatingId] = useState(null);
+  const [deletingPaymentId, setDeletingPaymentId] = useState(null);
   const [filterDateFrom, setFilterDateFrom] = useState('');
   const [filterDateTo, setFilterDateTo] = useState('');
   const [filterAmountValue, setFilterAmountValue] = useState('');
   const [filterAmountOperator, setFilterAmountOperator] = useState('=');
   const [searchQuery, setSearchQuery] = useState('');
   const [filterMethod, setFilterMethod] = useState('');
+<<<<<<< Updated upstream
   const [loadingProofId, setLoadingProofId] = useState(null);
 
   const handleViewProof = async (paymentId) => {
@@ -40,6 +42,9 @@ function AdminPayments() {
       setLoadingProofId(null);
     }
   };
+=======
+  const [bankAmounts, setBankAmounts] = useState({});
+>>>>>>> Stashed changes
 
   const getStatusClass = (status) => {
     const normalizedStatus = String(status || '').trim().toLowerCase();
@@ -55,7 +60,19 @@ function AdminPayments() {
 
     try {
       const response = await axios.get(`${API_BASE_URL}/api/payments`);
-      setPayments(Array.isArray(response.data) ? response.data : []);
+      const paymentList = Array.isArray(response.data) ? response.data : [];
+      setPayments(paymentList);
+
+      const nextBankAmounts = {};
+      paymentList.forEach((payment) => {
+        const isBank = String(payment?.method || '').toLowerCase() === 'bank';
+        if (!isBank || !payment?._id) return;
+
+        if (payment.amount !== null && payment.amount !== undefined && payment.amount !== '') {
+          nextBankAmounts[payment._id] = String(payment.amount);
+        }
+      });
+      setBankAmounts(nextBankAmounts);
     } catch (error) {
       const message =
         error.response?.data?.message ||
@@ -70,14 +87,55 @@ function AdminPayments() {
     fetchPayments();
   }, []);
 
-  const handleApprove = async (paymentId) => {
+  const getNormalizedBankAmount = (paymentId) => {
+    const amountValue = String(bankAmounts[paymentId] || '').trim();
+    if (!amountValue) return null;
+
+    const numericAmount = Number(amountValue);
+    if (!Number.isFinite(numericAmount) || numericAmount <= 0) return null;
+    return numericAmount;
+  };
+
+  const isBankPayment = (payment) => String(payment?.method || '').trim().toLowerCase() === 'bank';
+
+  const handleBankAmountChange = (paymentId, value) => {
+    if (!/^\d*(\.\d{0,2})?$/.test(value)) return;
+
+    setBankAmounts((prev) => ({
+      ...prev,
+      [paymentId]: value,
+    }));
+  };
+
+  const handleApprove = async (payment) => {
+    const paymentId = payment?._id;
+    if (!paymentId) return;
+
+    const isBank = isBankPayment(payment);
+    const approvedAmount = isBank ? getNormalizedBankAmount(paymentId) : null;
+
+    if (isBank && approvedAmount === null) {
+      alert('Enter a valid amount before approving this bank payment.');
+      return;
+    }
+
     setUpdatingId(paymentId);
     try {
+<<<<<<< Updated upstream
       const response = await axios.put(`${API_BASE_URL}/api/payments/${paymentId}`, {
         status: 'approved'
       });
 
       setPayments(payments.map(p =>
+=======
+      const payload = {
+        status: 'approved',
+        ...(isBank ? { amount: approvedAmount } : {}),
+      };
+      const response = await axios.put(`${API_BASE_URL}/api/payments/${paymentId}`, payload);
+      
+      setPayments(payments.map(p => 
+>>>>>>> Stashed changes
         p._id === paymentId ? response.data.data : p
       ));
       alert('Payment approved successfully');
@@ -89,14 +147,35 @@ function AdminPayments() {
     }
   };
 
-  const handleReject = async (paymentId) => {
+  const handleReject = async (payment) => {
+    const paymentId = payment?._id;
+    if (!paymentId) return;
+
+    const isBank = isBankPayment(payment);
+    const enteredAmount = isBank ? getNormalizedBankAmount(paymentId) : null;
+
+    if (isBank && enteredAmount === null) {
+      alert('Enter a valid amount before rejecting this bank payment.');
+      return;
+    }
+
     setUpdatingId(paymentId);
     try {
+<<<<<<< Updated upstream
       const response = await axios.put(`${API_BASE_URL}/api/payments/${paymentId}`, {
         status: 'rejected'
       });
 
       setPayments(payments.map(p =>
+=======
+      const payload = {
+        status: 'rejected',
+        ...(isBank ? { amount: enteredAmount } : {}),
+      };
+      const response = await axios.put(`${API_BASE_URL}/api/payments/${paymentId}`, payload);
+      
+      setPayments(payments.map(p => 
+>>>>>>> Stashed changes
         p._id === paymentId ? response.data.data : p
       ));
       alert('Payment rejected successfully');
@@ -105,6 +184,30 @@ function AdminPayments() {
       alert(message);
     } finally {
       setUpdatingId(null);
+    }
+  };
+
+  const handleDeletePayment = async (payment) => {
+    const paymentId = payment?._id;
+    if (!paymentId) return;
+
+    const confirmed = window.confirm('Are you sure you want to delete this payment record?');
+    if (!confirmed) return;
+
+    setDeletingPaymentId(paymentId);
+    try {
+      await axios.delete(`${API_BASE_URL}/api/payments/${paymentId}`);
+      setPayments((prev) => prev.filter((item) => item._id !== paymentId));
+      setBankAmounts((prev) => {
+        const next = { ...prev };
+        delete next[paymentId];
+        return next;
+      });
+    } catch (error) {
+      const message = error.response?.data?.message || 'Failed to delete payment';
+      alert(message);
+    } finally {
+      setDeletingPaymentId(null);
     }
   };
 
@@ -217,7 +320,90 @@ function AdminPayments() {
     window.open(pdfUrl, '_blank');
   };
 
+<<<<<<< Updated upstream
   const pendingPayments = payments.filter(p =>
+=======
+  const getReceiptUrl = (payment) => {
+    const rawReceipt = String(payment?.proofFileData || '').trim();
+    if (!rawReceipt) return '';
+
+    if (
+      rawReceipt.startsWith('data:') ||
+      rawReceipt.startsWith('http://') ||
+      rawReceipt.startsWith('https://') ||
+      rawReceipt.startsWith('/')
+    ) {
+      return rawReceipt;
+    }
+
+    const mimeType =
+      typeof payment?.proofFileType === 'string' && payment.proofFileType.includes('/')
+        ? payment.proofFileType
+        : 'application/octet-stream';
+
+    return `data:${mimeType};base64,${rawReceipt}`;
+  };
+
+  const dataUrlToBlob = (dataUrl) => {
+    const parts = String(dataUrl || '').split(',');
+    if (parts.length < 2) return null;
+
+    const header = parts[0];
+    const payload = parts.slice(1).join(',');
+    const mimeMatch = header.match(/data:([^;]+)/i);
+    const mimeType = mimeMatch ? mimeMatch[1] : 'application/octet-stream';
+    const isBase64 = header.toLowerCase().includes(';base64');
+
+    let binaryString = '';
+    try {
+      binaryString = isBase64 ? atob(payload) : decodeURIComponent(payload);
+    } catch (_error) {
+      return null;
+    }
+
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i += 1) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+
+    return new Blob([bytes], { type: mimeType });
+  };
+
+  const handleViewReceipt = (payment) => {
+    const receiptUrl = getReceiptUrl(payment);
+    if (!receiptUrl) {
+      alert('Receipt file is not available for this payment.');
+      return;
+    }
+
+    if (receiptUrl.startsWith('http://') || receiptUrl.startsWith('https://') || receiptUrl.startsWith('/')) {
+      const externalWindow = window.open(receiptUrl, '_blank', 'noopener,noreferrer');
+      if (!externalWindow) {
+        console.warn('Receipt tab could not be opened because popup was blocked.');
+      }
+      return;
+    }
+
+    const receiptBlob = receiptUrl.startsWith('data:') ? dataUrlToBlob(receiptUrl) : null;
+    if (!receiptBlob) {
+      alert('Unable to display this receipt file.');
+      return;
+    }
+
+    const blobUrl = URL.createObjectURL(receiptBlob);
+    const receiptWindow = window.open(blobUrl, '_blank', 'noopener,noreferrer');
+
+    if (!receiptWindow) {
+      console.warn('Receipt tab could not be opened because popup was blocked.');
+      URL.revokeObjectURL(blobUrl);
+      return;
+    }
+
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+  };
+
+  const pendingPayments = payments.filter(p => 
+>>>>>>> Stashed changes
     String(p.status || '').trim().toLowerCase() === 'pending'
   );
 
@@ -424,16 +610,35 @@ function AdminPayments() {
                           second: '2-digit',
                         })
                         : '-';
+                      const bankPayment = isBankPayment(item);
+                      const enteredBankAmount = getNormalizedBankAmount(item._id);
+                      const canProcessBankPayment = !bankPayment || enteredBankAmount !== null;
 
                       return (
                         <tr key={item._id}>
                           <td>{item.transactionId || '-'}</td>
                           <td>{item.studentRegistrationNumber || '-'}</td>
                           <td>{item.method || '-'}</td>
-                          <td>{item.amount ?? '-'}</td>
+                          <td>
+                            {bankPayment ? (
+                              <input
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                className="filter-input"
+                                style={{ width: '110px' }}
+                                placeholder="Amount"
+                                value={bankAmounts[item._id] || ''}
+                                onChange={(e) => handleBankAmountChange(item._id, e.target.value)}
+                              />
+                            ) : (
+                              item.amount ?? '-'
+                            )}
+                          </td>
                           <td>{date}</td>
                           <td>{time}</td>
                           <td>
+<<<<<<< Updated upstream
                             {item.hasProofFile ? (
                               <button
                                 className="admin-receipt-link"
@@ -441,6 +646,14 @@ function AdminPayments() {
                                 disabled={loadingProofId === item._id}
                               >
                                 {loadingProofId === item._id ? 'Loading...' : 'Open'}
+=======
+                            {item.proofFileData ? (
+                              <button
+                                className="admin-view-pdf-btn"
+                                onClick={() => handleViewReceipt(item)}
+                              >
+                                View
+>>>>>>> Stashed changes
                               </button>
                             ) : (
                               '-'
@@ -450,15 +663,15 @@ function AdminPayments() {
                             <div className="action-buttons">
                               <button
                                 className="btn-approve"
-                                onClick={() => handleApprove(item._id)}
-                                disabled={updatingId === item._id}
+                                onClick={() => handleApprove(item)}
+                                disabled={updatingId === item._id || !canProcessBankPayment}
                               >
                                 {updatingId === item._id ? 'Approving...' : 'Approve'}
                               </button>
                               <button
                                 className="btn-reject"
-                                onClick={() => handleReject(item._id)}
-                                disabled={updatingId === item._id}
+                                onClick={() => handleReject(item)}
+                                disabled={updatingId === item._id || !canProcessBankPayment}
                               >
                                 {updatingId === item._id ? 'Rejecting...' : 'Reject'}
                               </button>
@@ -489,6 +702,7 @@ function AdminPayments() {
                     <th>Date</th>
                     <th>Time</th>
                     <th>Receipt</th>
+                    <th className="admin-actions-col">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -523,6 +737,7 @@ function AdminPayments() {
                               >
                                 View
                               </button>
+<<<<<<< Updated upstream
                             ) : item.hasProofFile ? (
                               <button
                                 className="admin-receipt-link"
@@ -530,17 +745,42 @@ function AdminPayments() {
                                 disabled={loadingProofId === item._id}
                               >
                                 {loadingProofId === item._id ? 'Loading...' : 'Open'}
+=======
+                            ) : item.proofFileData ? (
+                              <button
+                                className="admin-view-pdf-btn"
+                                onClick={() => handleViewReceipt(item)}
+                              >
+                                View
+>>>>>>> Stashed changes
                               </button>
                             ) : (
                               '-'
                             )}
+                          </td>
+                          <td className="admin-actions-col">
+                            <button
+                              type="button"
+                              className="admin-icon-btn admin-delete-icon-btn"
+                              onClick={() => handleDeletePayment(item)}
+                              disabled={deletingPaymentId === item._id}
+                              title="Delete payment"
+                              aria-label="Delete payment"
+                            >
+                              <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+                                <path
+                                  fill="currentColor"
+                                  d="M9 3h6l1 2h4v2H4V5h4l1-2zm1 6h2v9h-2V9zm4 0h2v9h-2V9zM7 9h2v9H7V9z"
+                                />
+                              </svg>
+                            </button>
                           </td>
                         </tr>
                       );
                     })
                   ) : (
                     <tr>
-                      <td colSpan="9">No payment data found.</td>
+                      <td colSpan="10">No payment data found.</td>
                     </tr>
                   )}
                 </tbody>

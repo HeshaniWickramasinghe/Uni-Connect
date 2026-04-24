@@ -137,6 +137,10 @@
   font-size: 0.9rem;
 }
 
+.admin-actions-col {
+  text-align: center !important;
+}
+
 .admin-table th {
   color: #375a7f;
   background: #fbfdff;
@@ -301,6 +305,38 @@
   color: #6b7280;
   cursor: not-allowed;
   opacity: 0.6;
+}
+
+.admin-icon-btn {
+  border: 1px solid transparent;
+  border-radius: 8px;
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-delete-icon-btn {
+  background: rgba(127, 29, 29, 0.35);
+  color: #fecaca;
+  border-color: rgba(239, 68, 68, 0.28);
+}
+
+.admin-delete-icon-btn:hover {
+  background: rgba(127, 29, 29, 0.55);
+  transform: translateY(-1px);
+}
+
+.admin-icon-btn:disabled {
+  background: rgba(148, 163, 184, 0.2);
+  color: #94a3b8;
+  border-color: rgba(148, 163, 184, 0.18);
+  cursor: not-allowed;
+  transform: none;
+  opacity: 0.8;
 }
 
 .filter-section {

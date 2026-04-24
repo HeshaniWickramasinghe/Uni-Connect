@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './Header.css';
 
 function getCartItems() {
@@ -17,6 +17,7 @@ function Header({ user }) {
     const [cartOpen, setCartOpen] = useState(false);
     const [notificationOpen, setNotificationOpen] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
     const isLoggedIn = Boolean(user?.id);
     const userEmail = user?.email?.trim().toLowerCase();
     const isAdmin = userEmail === 'it23722040@my.sliit.lk';
@@ -50,13 +51,13 @@ function Header({ user }) {
         setProfileOpen(false);
     };
 
-    const navigateWithUser = (path) => {
+    const navigateWithUser = (path, extraState = {}) => {
         if (isLoggedIn) {
-            navigate(path, { state: { user } });
+            navigate(path, { state: { user, ...extraState } });
             return;
         }
 
-        navigate(path);
+        navigate(path, { state: extraState });
     };
 
     const socialLinks = [
@@ -205,7 +206,8 @@ function Header({ user }) {
                                                                 user,
                                                                 returnTo: '/kuppi',
                                                                 paymentAmount: Number(cartTotal.toFixed(2)),
-                                                                cartItems
+                                                                cartItems,
+                                                                backgroundLocation: location
                                                             }
                                                         });
                                                     }}

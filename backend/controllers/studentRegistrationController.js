@@ -117,10 +117,27 @@ const updateRegistrationPaymentStatus = async (req, res) => {
     }
 };
 
+const deleteRegistration = async (req, res) => {
+    try {
+        const { registrationId } = req.params;
+
+        const deletedRegistration = await StudentRegistration.findByIdAndDelete(registrationId);
+        if (!deletedRegistration) {
+            return res.status(404).json({ message: 'Student registration not found' });
+        }
+
+        return res.status(200).json({ message: 'Student registration deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting student registration:', error);
+        return res.status(500).json({ message: 'Failed to delete student registration' });
+    }
+};
+
 module.exports = {
     registerStudent,
     getRegistrationsBySession,
     getRegistrationsByStudentEmail,
     getAllRegistrations,
-    updateRegistrationPaymentStatus
+    updateRegistrationPaymentStatus,
+    deleteRegistration
 };

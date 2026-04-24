@@ -53,6 +53,7 @@ function KuppiRequestForm() {
     const [enrollmentError, setEnrollmentError] = useState('');
     const [actionLoading, setActionLoading] = useState(null);
     const [activeView, setActiveView] = useState('session-requests');
+    const [deletingEnrollmentId, setDeletingEnrollmentId] = useState(null);
 
     const isAdmin = user?.email?.trim().toLowerCase() === ADMIN_EMAIL;
 
@@ -119,6 +120,24 @@ function KuppiRequestForm() {
             alert(err.response?.data?.message || 'Failed to delete session');
         } finally {
             setActionLoading(null);
+        }
+    };
+
+    const deleteEnrollment = async (registrationId) => {
+        if (!registrationId) return;
+
+        if (!window.confirm('Are you sure you want to delete this enrollment? This action cannot be undone.')) {
+            return;
+        }
+
+        try {
+            setDeletingEnrollmentId(registrationId);
+            await axios.delete(`http://localhost:5000/api/student-registrations/${registrationId}`);
+            setEnrollments((prev) => prev.filter((entry) => entry._id !== registrationId));
+        } catch (err) {
+            alert(err.response?.data?.message || 'Failed to delete enrollment');
+        } finally {
+            setDeletingEnrollmentId(null);
         }
     };
 
@@ -226,28 +245,69 @@ function KuppiRequestForm() {
                                         <div className="krf-actions">
                                             <button
                                                 type="button"
-                                                className="krf-btn krf-btn-publish"
+                                                className="krf-icon-btn krf-icon-btn-publish"
                                                 onClick={() => updateStatus(session._id, 'Approved')}
+<<<<<<< Updated upstream
                                                 disabled={(session.status || 'Pending') !== 'Pending' || isBusy}
+=======
+                                                disabled={!canPublish}
+                                                title={
+                                                    actionLoading === `${session._id}-Approved`
+                                                        ? 'Publishing...'
+                                                        : paymentIsSuccess
+                                                            ? 'Publish'
+                                                            : 'Payment must be Success before publishing'
+                                                }
+                                                aria-label="Publish session"
+>>>>>>> Stashed changes
                                             >
-                                                {actionLoading === `${session._id}-Approved` ? 'Publishing...' : 'Publish'}
+                                                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+                                                    <path
+                                                        fill="currentColor"
+                                                        d="M9 16.2l-3.5-3.5L4 14.2 9 19l11-11-1.5-1.5z"
+                                                    />
+                                                </svg>
                                             </button>
                                             <button
                                                 type="button"
-                                                className="krf-btn krf-btn-deny"
+                                                className="krf-icon-btn krf-icon-btn-deny"
                                                 onClick={() => updateStatus(session._id, 'Rejected')}
+<<<<<<< Updated upstream
                                                 disabled={(session.status || 'Pending') !== 'Pending' || isBusy}
+=======
+                                                disabled={!canDeny}
+                                                title={
+                                                    actionLoading === `${session._id}-Rejected`
+                                                        ? 'Denying...'
+                                                        : paymentIsSuccess || paymentIsFailed
+                                                            ? 'Deny'
+                                                            : 'Payment must be Success or Failed before denying'
+                                                }
+                                                aria-label="Deny session"
+>>>>>>> Stashed changes
                                             >
-                                                {actionLoading === `${session._id}-Rejected` ? 'Denying...' : 'Deny'}
+                                                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+                                                    <path
+                                                        fill="currentColor"
+                                                        d="M19 6.4L17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6 6.4 19 12 13.4 17.6 19 19 17.6 13.4 12z"
+                                                    />
+                                                </svg>
                                             </button>
                                             {isAdmin && (
                                                 <button
                                                     type="button"
-                                                    className="krf-btn krf-btn-delete"
+                                                    className="krf-icon-btn krf-icon-btn-delete"
                                                     onClick={() => deleteSession(session._id)}
                                                     disabled={isBusy}
+                                                    title={actionLoading === `${session._id}-delete` ? 'Deleting...' : 'Delete'}
+                                                    aria-label="Delete session"
                                                 >
-                                                    {actionLoading === `${session._id}-delete` ? 'Deleting...' : 'Delete'}
+                                                    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+                                                        <path
+                                                            fill="currentColor"
+                                                            d="M9 3h6l1 2h4v2H4V5h4l1-2zm1 6h2v9h-2V9zm4 0h2v9h-2V9zM7 9h2v9H7V9z"
+                                                        />
+                                                    </svg>
                                                 </button>
                                             )}
                                         </div>
@@ -277,6 +337,7 @@ function KuppiRequestForm() {
                                             <th>Tutor</th>
                                             <th>Payment Status</th>
                                             <th>Transaction ID</th>
+                                            <th className="krf-actions-col">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -294,6 +355,23 @@ function KuppiRequestForm() {
                                                     </span>
                                                 </td>
                                                 <td className="krf-transaction-code">{item.paymentTransactionId || '-'}</td>
+                                                <td className="krf-actions-col">
+                                                    <button
+                                                        type="button"
+                                                        className="krf-delete-icon-btn"
+                                                        onClick={() => deleteEnrollment(item._id)}
+                                                        disabled={deletingEnrollmentId === item._id}
+                                                        title="Delete enrollment"
+                                                        aria-label="Delete enrollment"
+                                                    >
+                                                        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
+                                                            <path
+                                                                fill="currentColor"
+                                                                d="M9 3h6l1 2h4v2H4V5h4l1-2zm1 6h2v9h-2V9zm4 0h2v9h-2V9zM7 9h2v9H7V9z"
+                                                            />
+                                                        </svg>
+                                                    </button>
+                                                </td>
                                             </tr>
                                         ))}
                                     </tbody>

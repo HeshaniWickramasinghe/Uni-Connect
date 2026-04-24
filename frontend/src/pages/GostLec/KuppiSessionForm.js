@@ -170,7 +170,8 @@ const KuppiSessionForm = () => {
                 sessionDraft: {
                     formData,
                     files
-                }
+                },
+                backgroundLocation: location
             }
         });
     };
