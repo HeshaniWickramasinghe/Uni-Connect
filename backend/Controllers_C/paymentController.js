@@ -250,11 +250,7 @@ module.exports = {
     createPayment,
     createBankTransferPayment,
     getPayments,
-<<<<<<< Updated upstream
     getPaymentProof,
-    updatePaymentStatus
-=======
     updatePaymentStatus,
     deletePayment
->>>>>>> Stashed changes
 };

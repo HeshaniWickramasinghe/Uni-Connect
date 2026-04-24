@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -31,8 +31,10 @@ function BankTransfer() {
   const returnTo = location.state?.returnTo || "/homepage";
   const sessionDraft = location.state?.sessionDraft;
   const registrationDraft = location.state?.registrationDraft;
+  const isSingleCheckout = Boolean(sessionDraft || registrationDraft);
   const cartItems = Array.isArray(location.state?.cartItems) ? location.state.cartItems : [];
   const effectiveCartItems = (() => {
+    if (isSingleCheckout) return [];
     if (cartItems.length > 0) return cartItems;
     try {
       const raw = sessionStorage.getItem("cartItems");
@@ -42,7 +44,50 @@ function BankTransfer() {
       return [];
     }
   })();
+  const paymentAmount = location.state?.paymentAmount;
   const [paymentResult, setPaymentResult] = useState(null);
+  const [totalAmount, setTotalAmount] = useState("");
+  const [singleItemName, setSingleItemName] = useState("");
+
+  useEffect(() => {
+    if (sessionDraft?.formData?.moduleName) {
+      setSingleItemName(sessionDraft.formData.moduleName);
+    }
+
+    if (paymentAmount !== undefined && paymentAmount !== null && paymentAmount !== "") {
+      setTotalAmount(String(paymentAmount));
+    }
+
+    const sessionAmount = sessionDraft?.formData?.price || sessionDraft?.formData?.amount;
+    if (sessionAmount) {
+      setTotalAmount(String(sessionAmount));
+    }
+
+    const loadRegistrationAmount = async () => {
+      const sessionId = registrationDraft?.sessionId;
+      if (!sessionId) return;
+
+      try {
+        const response = await axios.get("http://localhost:5000/api/kuppi-sessions");
+        const session = Array.isArray(response.data)
+          ? response.data.find((item) => item._id === sessionId)
+          : null;
+
+        if (session) {
+          if (session.price !== undefined && session.price !== null) {
+            setTotalAmount(String(session.price));
+          }
+          if (session.moduleName) {
+            setSingleItemName(session.moduleName);
+          }
+        }
+      } catch (_error) {
+        // Leave amount empty if the session lookup fails.
+      }
+    };
+
+    loadRegistrationAmount();
+  }, [paymentAmount, sessionDraft, registrationDraft]);
 
   const allowedFileTypes = ["application/pdf", "image/jpeg", "image/png", "image/gif"];
   const maxFileSize = 5 * 1024 * 1024;
@@ -238,6 +283,38 @@ function BankTransfer() {
             <div className="detail-row">
               <label className="detail-label">Branch</label>
               <div className="detail-value">Main Branch - City Center</div>
+            </div>
+          </div>
+
+          <div className="payment-summary-section details-section">
+            <h3 className="section-title">Payment Summary</h3>
+            <div className="summary-content">
+              <div className="summary-items">
+                {effectiveCartItems.length > 0 ? (
+                  <>
+                    {effectiveCartItems.map((item, index) => (
+                      <div className="summary-item" key={index}>
+                        <span className="item-name">{item.moduleName || item.sessionName || `Session ${index + 1}`}</span>
+                        <span className="item-price">LKR {item.price || "-"}</span>
+                      </div>
+                    ))}
+                    <div className="summary-divider"></div>
+                    <div className="summary-total">
+                      <span className="total-label">Total Amount</span>
+                      <span className="total-amount">LKR {totalAmount || "0.00"}</span>
+                    </div>
+                  </>
+                ) : (
+                  <div className="summary-single">
+                    <span className="single-label">
+                      {sessionDraft ? "Registration Fee" : (singleItemName || "Session Payment")}
+                    </span>
+                    <span className="single-amount">
+                      {sessionDraft ? "Rs. 1000" : `LKR ${totalAmount || "0.00"}`}
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 

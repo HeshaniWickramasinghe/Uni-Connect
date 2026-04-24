@@ -247,19 +247,7 @@ function KuppiRequestForm() {
                                                 type="button"
                                                 className="krf-icon-btn krf-icon-btn-publish"
                                                 onClick={() => updateStatus(session._id, 'Approved')}
-<<<<<<< Updated upstream
                                                 disabled={(session.status || 'Pending') !== 'Pending' || isBusy}
-=======
-                                                disabled={!canPublish}
-                                                title={
-                                                    actionLoading === `${session._id}-Approved`
-                                                        ? 'Publishing...'
-                                                        : paymentIsSuccess
-                                                            ? 'Publish'
-                                                            : 'Payment must be Success before publishing'
-                                                }
-                                                aria-label="Publish session"
->>>>>>> Stashed changes
                                             >
                                                 <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
                                                     <path
@@ -272,19 +260,7 @@ function KuppiRequestForm() {
                                                 type="button"
                                                 className="krf-icon-btn krf-icon-btn-deny"
                                                 onClick={() => updateStatus(session._id, 'Rejected')}
-<<<<<<< Updated upstream
                                                 disabled={(session.status || 'Pending') !== 'Pending' || isBusy}
-=======
-                                                disabled={!canDeny}
-                                                title={
-                                                    actionLoading === `${session._id}-Rejected`
-                                                        ? 'Denying...'
-                                                        : paymentIsSuccess || paymentIsFailed
-                                                            ? 'Deny'
-                                                            : 'Payment must be Success or Failed before denying'
-                                                }
-                                                aria-label="Deny session"
->>>>>>> Stashed changes
                                             >
                                                 <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false">
                                                     <path

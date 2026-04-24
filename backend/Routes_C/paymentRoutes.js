@@ -5,13 +5,9 @@ const {
     createPayment,
     createBankTransferPayment,
     getPayments,
-<<<<<<< Updated upstream
     getPaymentProof,
-    updatePaymentStatus
-=======
     updatePaymentStatus,
     deletePayment
->>>>>>> Stashed changes
 } = require("../Controllers_C/paymentController");
 
 router.post("/", createPayment);

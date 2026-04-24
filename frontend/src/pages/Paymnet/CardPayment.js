@@ -40,7 +40,9 @@ function CardPayment() {
   const registrationDraft = location.state?.registrationDraft;
   const paymentAmount = location.state?.paymentAmount;
   const cartItems = Array.isArray(location.state?.cartItems) ? location.state.cartItems : [];
+  const isSingleCheckout = Boolean(sessionDraft || registrationDraft);
   const effectiveCartItems = (() => {
+    if (isSingleCheckout) return [];
     if (cartItems.length > 0) return cartItems;
     try {
       const raw = sessionStorage.getItem("cartItems");

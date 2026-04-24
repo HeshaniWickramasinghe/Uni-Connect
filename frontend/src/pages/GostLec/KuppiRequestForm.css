@@ -414,12 +414,12 @@
   border-bottom: none;
 }
 
-<<<<<<< Updated upstream
 .krf-error {
   color: #dc2626;
   border-color: #fecaca;
   background: #fee2e2;
-=======
+}
+
 .krf-actions-col {
   text-align: center !important;
 }
@@ -447,7 +447,6 @@
   opacity: 0.55;
   cursor: not-allowed;
   transform: none;
->>>>>>> Stashed changes
 }
 
 @media (max-width: 768px) {

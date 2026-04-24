@@ -24,15 +24,35 @@ function AdminPayments() {
   const [filterAmountOperator, setFilterAmountOperator] = useState('=');
   const [searchQuery, setSearchQuery] = useState('');
   const [filterMethod, setFilterMethod] = useState('');
-<<<<<<< Updated upstream
   const [loadingProofId, setLoadingProofId] = useState(null);
+  const [bankAmounts, setBankAmounts] = useState({});
+
+  const dataUrlToBlob = (dataUrl) => {
+    const arr = dataUrl.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
+  };
 
   const handleViewProof = async (paymentId) => {
     setLoadingProofId(paymentId);
     try {
       const response = await axios.get(`${API_BASE_URL}/api/payments/${paymentId}/proof`);
       if (response.data?.proofFileData) {
-        window.open(response.data.proofFileData, '_blank');
+        const proofData = response.data.proofFileData;
+        
+        if (proofData.startsWith('data:')) {
+          const blob = dataUrlToBlob(proofData);
+          const blobUrl = URL.createObjectURL(blob);
+          window.open(blobUrl, '_blank');
+        } else {
+          window.open(proofData, '_blank');
+        }
       } else {
         alert('No proof file found for this payment.');
       }
@@ -42,9 +62,6 @@ function AdminPayments() {
       setLoadingProofId(null);
     }
   };
-=======
-  const [bankAmounts, setBankAmounts] = useState({});
->>>>>>> Stashed changes
 
   const getStatusClass = (status) => {
     const normalizedStatus = String(status || '').trim().toLowerCase();
@@ -121,13 +138,6 @@ function AdminPayments() {
 
     setUpdatingId(paymentId);
     try {
-<<<<<<< Updated upstream
-      const response = await axios.put(`${API_BASE_URL}/api/payments/${paymentId}`, {
-        status: 'approved'
-      });
-
-      setPayments(payments.map(p =>
-=======
       const payload = {
         status: 'approved',
         ...(isBank ? { amount: approvedAmount } : {}),
@@ -135,7 +145,6 @@ function AdminPayments() {
       const response = await axios.put(`${API_BASE_URL}/api/payments/${paymentId}`, payload);
       
       setPayments(payments.map(p => 
->>>>>>> Stashed changes
         p._id === paymentId ? response.data.data : p
       ));
       alert('Payment approved successfully');
@@ -161,13 +170,6 @@ function AdminPayments() {
 
     setUpdatingId(paymentId);
     try {
-<<<<<<< Updated upstream
-      const response = await axios.put(`${API_BASE_URL}/api/payments/${paymentId}`, {
-        status: 'rejected'
-      });
-
-      setPayments(payments.map(p =>
-=======
       const payload = {
         status: 'rejected',
         ...(isBank ? { amount: enteredAmount } : {}),
@@ -175,7 +177,6 @@ function AdminPayments() {
       const response = await axios.put(`${API_BASE_URL}/api/payments/${paymentId}`, payload);
       
       setPayments(payments.map(p => 
->>>>>>> Stashed changes
         p._id === paymentId ? response.data.data : p
       ));
       alert('Payment rejected successfully');
@@ -320,90 +321,7 @@ function AdminPayments() {
     window.open(pdfUrl, '_blank');
   };
 
-<<<<<<< Updated upstream
-  const pendingPayments = payments.filter(p =>
-=======
-  const getReceiptUrl = (payment) => {
-    const rawReceipt = String(payment?.proofFileData || '').trim();
-    if (!rawReceipt) return '';
-
-    if (
-      rawReceipt.startsWith('data:') ||
-      rawReceipt.startsWith('http://') ||
-      rawReceipt.startsWith('https://') ||
-      rawReceipt.startsWith('/')
-    ) {
-      return rawReceipt;
-    }
-
-    const mimeType =
-      typeof payment?.proofFileType === 'string' && payment.proofFileType.includes('/')
-        ? payment.proofFileType
-        : 'application/octet-stream';
-
-    return `data:${mimeType};base64,${rawReceipt}`;
-  };
-
-  const dataUrlToBlob = (dataUrl) => {
-    const parts = String(dataUrl || '').split(',');
-    if (parts.length < 2) return null;
-
-    const header = parts[0];
-    const payload = parts.slice(1).join(',');
-    const mimeMatch = header.match(/data:([^;]+)/i);
-    const mimeType = mimeMatch ? mimeMatch[1] : 'application/octet-stream';
-    const isBase64 = header.toLowerCase().includes(';base64');
-
-    let binaryString = '';
-    try {
-      binaryString = isBase64 ? atob(payload) : decodeURIComponent(payload);
-    } catch (_error) {
-      return null;
-    }
-
-    const bytes = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i += 1) {
-      bytes[i] = binaryString.charCodeAt(i);
-    }
-
-    return new Blob([bytes], { type: mimeType });
-  };
-
-  const handleViewReceipt = (payment) => {
-    const receiptUrl = getReceiptUrl(payment);
-    if (!receiptUrl) {
-      alert('Receipt file is not available for this payment.');
-      return;
-    }
-
-    if (receiptUrl.startsWith('http://') || receiptUrl.startsWith('https://') || receiptUrl.startsWith('/')) {
-      const externalWindow = window.open(receiptUrl, '_blank', 'noopener,noreferrer');
-      if (!externalWindow) {
-        console.warn('Receipt tab could not be opened because popup was blocked.');
-      }
-      return;
-    }
-
-    const receiptBlob = receiptUrl.startsWith('data:') ? dataUrlToBlob(receiptUrl) : null;
-    if (!receiptBlob) {
-      alert('Unable to display this receipt file.');
-      return;
-    }
-
-    const blobUrl = URL.createObjectURL(receiptBlob);
-    const receiptWindow = window.open(blobUrl, '_blank', 'noopener,noreferrer');
-
-    if (!receiptWindow) {
-      console.warn('Receipt tab could not be opened because popup was blocked.');
-      URL.revokeObjectURL(blobUrl);
-      return;
-    }
-
-    setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
-  };
-
   const pendingPayments = payments.filter(p => 
->>>>>>> Stashed changes
     String(p.status || '').trim().toLowerCase() === 'pending'
   );
 
@@ -638,7 +556,6 @@ function AdminPayments() {
                           <td>{date}</td>
                           <td>{time}</td>
                           <td>
-<<<<<<< Updated upstream
                             {item.hasProofFile ? (
                               <button
                                 className="admin-receipt-link"
@@ -646,14 +563,6 @@ function AdminPayments() {
                                 disabled={loadingProofId === item._id}
                               >
                                 {loadingProofId === item._id ? 'Loading...' : 'Open'}
-=======
-                            {item.proofFileData ? (
-                              <button
-                                className="admin-view-pdf-btn"
-                                onClick={() => handleViewReceipt(item)}
-                              >
-                                View
->>>>>>> Stashed changes
                               </button>
                             ) : (
                               '-'
@@ -737,7 +646,6 @@ function AdminPayments() {
                               >
                                 View
                               </button>
-<<<<<<< Updated upstream
                             ) : item.hasProofFile ? (
                               <button
                                 className="admin-receipt-link"
@@ -745,14 +653,6 @@ function AdminPayments() {
                                 disabled={loadingProofId === item._id}
                               >
                                 {loadingProofId === item._id ? 'Loading...' : 'Open'}
-=======
-                            ) : item.proofFileData ? (
-                              <button
-                                className="admin-view-pdf-btn"
-                                onClick={() => handleViewReceipt(item)}
-                              >
-                                View
->>>>>>> Stashed changes
                               </button>
                             ) : (
                               '-'
