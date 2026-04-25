@@ -161,3 +161,18 @@ exports.getAllHandovers = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+exports.deleteHandover = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedHandover = await Handover.findByIdAndDelete(id);
+
+        if (!deletedHandover) {
+            return res.status(404).json({ message: "Handover not found" });
+        }
+
+        res.status(200).json({ message: "Handover deleted successfully", deletedHandover });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};

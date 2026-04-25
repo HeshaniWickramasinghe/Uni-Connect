@@ -33,6 +33,16 @@ function AdminHandovers() {
     }
   };
 
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this handover record?')) return;
+    try {
+      await axios.delete(`${API_BASE_URL}/api/handovers/${id}`);
+      setHandovers(handovers.filter(h => h._id !== id));
+    } catch (err) {
+      alert('Failed to delete handover record');
+    }
+  };
+
   const filteredHandovers = handovers.filter(h => 
     filterStatus === 'All' || h.status === filterStatus
   );
@@ -103,6 +113,7 @@ function AdminHandovers() {
                     <th>Verification</th>
                     <th>Date & Time</th>
                     <th>Status</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -151,11 +162,31 @@ function AdminHandovers() {
                           color: h.status === 'COMPLETED' ? '#065f46' : '#9a3412'
                         }}>{h.status}</span>
                       </td>
+                      <td>
+                        <button 
+                          onClick={() => handleDelete(h._id)}
+                          style={{
+                            padding: '0.4rem 0.8rem',
+                            backgroundColor: '#ef4444',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            fontSize: '0.75rem',
+                            fontWeight: 'bold',
+                            transition: 'background-color 0.2s ease'
+                          }}
+                          onMouseEnter={(e) => e.target.style.backgroundColor = '#dc2626'}
+                          onMouseLeave={(e) => e.target.style.backgroundColor = '#ef4444'}
+                        >
+                          Delete
+                        </button>
+                      </td>
                     </tr>
                   ))}
                   {filteredHandovers.length === 0 && (
                     <tr>
-                      <td colSpan="6" style={{ textAlign: 'center', padding: '4rem', opacity: 0.5, fontWeight: 'bold' }}>
+                      <td colSpan="7" style={{ textAlign: 'center', padding: '4rem', opacity: 0.5, fontWeight: 'bold' }}>
                         No handover records found.
                       </td>
                     </tr>
