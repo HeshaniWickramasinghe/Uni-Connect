@@ -13,10 +13,9 @@
   position: sticky;
   top: 0;
   z-index: 120;
-  border-bottom: 1px solid rgba(56, 189, 248, 0.25);
-  background: rgba(2, 6, 23, 0.86);
+  border-bottom: 1px solid rgba(14, 165, 233, 0.15);
+  background: transparent;
   backdrop-filter: blur(12px);
-  
 }
 
 .uc-header::after {
@@ -68,7 +67,7 @@
   font-family: "Bricolage Grotesque", sans-serif;
   font-size: clamp(1.35rem, 1.3rem + 0.4vw, 1.7rem);
   letter-spacing: 0.01em;
-  color: var(--uc-white);
+  color: var(--uc-ink);
 }
 
 .uc-brand-tag {
@@ -78,7 +77,7 @@
   letter-spacing: 0.12em;
   font-size: 0.64rem;
   font-weight: 700;
-  color: #feffffae;
+  color: #64748b;
 }
 
 .uc-nav {
@@ -118,9 +117,9 @@
   width: 42px;
   height: 42px;
   border-radius: 999px;
-  border: 1px solid rgba(56, 189, 248, 0.28);
-  background: rgba(14, 165, 233, 0.1);
-  color: #e0f2fe;
+  border: none;
+  background: linear-gradient(135deg, var(--uc-deep), var(--uc-ocean));
+  color: #ffffff;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -288,8 +287,8 @@
 }
 
 .uc-profile-trigger {
-  border: 1px solid rgba(56, 189, 248, 0.3);
-  background: rgba(14, 165, 233, 0.12);
+  border: 1px solid rgba(14, 165, 233, 0.15);
+  background: transparent;
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
@@ -326,11 +325,11 @@
   font-family: "Space Grotesk", sans-serif;
   font-size: 0.86rem;
   font-weight: 700;
-  color: #e0f2fe;
+  color: var(--uc-ink);
 }
 
 .uc-chevron {
-  color: #7dd3fc;
+  color: #64748b;
   transition: transform 0.2s ease;
 }
 
@@ -371,7 +370,7 @@
 .uc-menu-email {
   margin: 0.15rem 0 0;
   font-size: 0.9rem;
-  color: var(--uc-deep);
+  color: #475569;
   font-family: "Space Grotesk", sans-serif;
   font-weight: 700;
   word-break: break-word;
@@ -381,19 +380,19 @@
   width: 100%;
   text-align: left;
   border: 0;
-  background: rgba(15, 23, 42, 0.25);
+  background: #f8fafc;
   font-family: "Space Grotesk", sans-serif;
   font-weight: 700;
   font-size: 0.88rem;
-  color: #e2e8f0;
+  color: #334155;
   border-radius: 10px;
   padding: 0.65rem 0.75rem;
   cursor: pointer;
 }
 
 .uc-menu-btn:hover {
-  background: rgba(56, 189, 248, 0.16);
-  color: #f8fafc;
+  background: #f1f5f9;
+  color: #0f172a;
 }
 
 .uc-menu-btn.logout {

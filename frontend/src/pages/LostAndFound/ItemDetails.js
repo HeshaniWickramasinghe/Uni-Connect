@@ -212,7 +212,7 @@ const ItemDetails = () => {
                         </div>
 
                         {/* Handover Action for Founder */}
-                        {isOwner && item.type === 'Found' && (
+                        {isOwner && item.type === 'Found' && item.status !== 'RESOLVED' && (
                             <div className="mt-10 p-8 bg-emerald-50 rounded-[32px] border-2 border-emerald-100 border-dashed relative overflow-hidden group">
                                 <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
                                     <div className="flex items-center gap-5">
@@ -243,7 +243,7 @@ const ItemDetails = () => {
                         )}
 
                         {/* Report Found Action for Lost Item */}
-                        {!isOwner && item.type === 'Lost' && (
+                        {!isOwner && item.type === 'Lost' && item.status !== 'RESOLVED' && (
                             <div className="mt-10 p-8 bg-blue-50 rounded-[32px] border-2 border-blue-100 border-dashed relative overflow-hidden group">
                                 <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
                                     <div className="flex items-center gap-5">
@@ -269,6 +269,17 @@ const ItemDetails = () => {
                                         Report Found
                                     </button>
                                 </div>
+                            </div>
+                        )}
+
+                        {/* Resolved State */}
+                        {item.status === 'RESOLVED' && (
+                            <div className="mt-10 p-8 bg-slate-50 rounded-[32px] border-2 border-slate-200 border-dashed flex flex-col items-center justify-center text-center relative overflow-hidden">
+                                <div className="w-16 h-16 bg-white shadow-sm border border-slate-200 rounded-2xl flex items-center justify-center text-slate-400 mb-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" /><path d="m9 12 2 2 4-4" /></svg>
+                                </div>
+                                <h4 className="text-sm font-black uppercase tracking-tight text-slate-800">Handover Completed</h4>
+                                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1 max-w-xs">This item has been successfully verified and returned. Handover is closed.</p>
                             </div>
                         )}
                     </div>

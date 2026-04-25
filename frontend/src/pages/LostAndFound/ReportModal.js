@@ -20,7 +20,6 @@ const sliitLocations = [
 ];
 
 const ReportModal = ({ type, onClose, onSuccess, currentUser, itemData }) => {
-    const isLost = type === 'Lost';
     const isEditing = !!itemData;
     const primaryBlue = '#023E8A';
     const accentBlue = '#4C6EF5';
@@ -75,6 +74,7 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser, itemData }) => {
         } else {
             handleSetNow();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [itemData]);
 
     // combined date+time and convert to YYYY-MM-DDTHH:mm
@@ -193,25 +193,25 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser, itemData }) => {
 
     return (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-            <div className="bg-white rounded-3xl shadow-2xl w-full max-w-5xl overflow-hidden animate-fade-in relative flex flex-col max-h-[95vh] border-4 border-white">
+            <div className="bg-[#ffffff] rounded-3xl shadow-2xl w-full max-w-5xl overflow-hidden animate-fade-in relative flex flex-col max-h-[95vh] border-4 border-slate-100">
 
                 {/* Header */}
-                <div className="text-white px-8 py-8 rounded-t-2xl relative shrink-0" style={{ backgroundColor: primaryBlue }}>
-                    <button onClick={onClose} className="absolute top-6 right-6 bg-white/10 hover:bg-white/20 text-white rounded-xl p-2 h-10 w-10 flex items-center justify-center transition-all font-black z-10">✕</button>
+                <div className="bg-[#ffffff] px-8 py-8 rounded-t-2xl relative shrink-0 border-b border-slate-200">
+                    <button onClick={onClose} className="absolute top-6 right-6 bg-[#f1f5f9] hover:bg-rose-500 hover:text-white text-slate-500 rounded-xl p-2 h-10 w-10 flex items-center justify-center transition-all font-black z-10">✕</button>
                     <div className="flex flex-col">
-                        <h2 className="text-3xl font-black tracking-tighter uppercase">{isEditing ? 'Edit' : 'Report'} {type} Item</h2>
-                        <p className="text-blue-200 mt-1 text-xs font-black uppercase tracking-widest">SLIIT Student Support Hub</p>
+                        <h2 className="text-3xl font-black tracking-tighter uppercase text-slate-800">{isEditing ? 'Edit' : 'Report'} {type} Item</h2>
+                        <p className="text-slate-500 mt-1 text-xs font-black uppercase tracking-widest">SLIIT Student Support Hub</p>
                     </div>
                 </div>
 
-                <div className="flex flex-col lg:flex-row flex-1 overflow-y-auto bg-slate-50">
+                <div className="flex flex-col lg:flex-row flex-1 overflow-y-auto bg-[#f8fafc]">
                     {/* Left: Interactive Map */}
                     <div className="w-full lg:w-1/2 p-8 border-r flex flex-col" style={{ borderColor: borderGray }}>
                         <div className="flex items-center justify-between mb-6">
                             <label className="text-[11px] font-black uppercase tracking-widest flex items-center gap-2" style={{ color: accentBlue }}>Select Location on Map</label>
                             <span className="text-[10px] font-black bg-blue-50 px-3 py-1.5 rounded-lg tracking-widest border border-blue-100" style={{ color: primaryBlue }}>CAMPUS GPS</span>
                         </div>
-                        <div className="flex-1 w-full bg-white rounded-3xl overflow-hidden min-h-[400px] shadow-sm relative border z-0" style={{ borderColor: borderGray }}>
+                        <div className="flex-1 w-full bg-[#ffffff] rounded-3xl overflow-hidden min-h-[400px] shadow-sm relative border z-0" style={{ borderColor: borderGray }}>
                             <MapContainer center={[6.9147, 79.9733]} zoom={17} style={{ height: '100%', width: '100%' }}>
                                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                                 {sliitLocations.map((loc, idx) => (
@@ -242,11 +242,11 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser, itemData }) => {
                             <div className="grid grid-cols-2 gap-6">
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black uppercase tracking-widest" style={{ color: accentBlue }}>Item Name</label>
-                                    <input type="text" name="name" value={formData.name} onChange={handleChange} className="w-full border rounded-2xl p-4 outline-none focus:ring-2 font-bold text-sm bg-white shadow-sm" style={{ borderColor: borderGray }} required />
+                                    <input type="text" name="name" value={formData.name} onChange={handleChange} className="w-full border rounded-2xl p-4 outline-none focus:ring-2 font-bold text-sm bg-[#ffffff] shadow-sm" style={{ borderColor: borderGray }} required />
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black uppercase tracking-widest" style={{ color: accentBlue }}>Category</label>
-                                    <select name="category" value={formData.category} onChange={handleChange} className="w-full border rounded-2xl p-4 outline-none focus:ring-2 font-bold text-sm bg-white shadow-sm" style={{ borderColor: borderGray }} required>
+                                    <select name="category" value={formData.category} onChange={handleChange} className="w-full border rounded-2xl p-4 outline-none focus:ring-2 font-bold text-sm bg-[#ffffff] shadow-sm" style={{ borderColor: borderGray }} required>
                                         <option value="Electronics">Electronics</option>
                                         <option value="Essentials">Essentials</option>
                                         <option value="Books">Books</option>
@@ -256,7 +256,7 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser, itemData }) => {
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black uppercase tracking-widest" style={{ color: accentBlue }}>Location</label>
-                                    <select name="location" value={formData.location} onChange={handleChange} className="w-full border rounded-2xl p-4 outline-none focus:ring-2 font-bold text-sm bg-white shadow-sm" style={{ borderColor: borderGray }} required>
+                                    <select name="location" value={formData.location} onChange={handleChange} className="w-full border rounded-2xl p-4 outline-none focus:ring-2 font-bold text-sm bg-[#ffffff] shadow-sm" style={{ borderColor: borderGray }} required>
                                         <option value="" disabled>Select location...</option>
                                         {sliitLocations.map(l => <option key={l.name} value={l.name}>{l.name}</option>)}
                                         <option value="Other">Other</option>
@@ -276,13 +276,13 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser, itemData }) => {
                                             value={dd}
                                             max={maxDateTime.split('T')[0]}
                                             onChange={handleChange}
-                                            className="w-full border rounded-2xl p-4 outline-none focus:ring-2 font-bold text-sm bg-white shadow-sm transition-all text-slate-900"
+                                            className="w-full border rounded-2xl p-4 outline-none focus:ring-2 font-bold text-sm bg-[#ffffff] shadow-sm transition-all text-slate-900"
                                             style={{ borderColor: borderGray }}
                                             required
                                         />
 
                                         {/* Properly Aligned & Perfectly Balanced Time Picker */}
-                                        <div className="flex items-center justify-between bg-white px-5 h-[58px] rounded-2xl border-2 border-slate-50 shadow-sm" style={{ borderColor: borderGray }}>
+                                        <div className="flex items-center justify-between bg-[#ffffff] px-5 h-[58px] rounded-2xl border-2 border-slate-50 shadow-sm" style={{ borderColor: borderGray }}>
                                             <div className="flex items-center gap-1">
                                                 <input
                                                     type="text"
@@ -339,7 +339,7 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser, itemData }) => {
 
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black uppercase tracking-widest" style={{ color: accentBlue }}>Description</label>
-                                <textarea name="description" value={formData.description} onChange={handleChange} className="w-full border rounded-2xl p-5 outline-none focus:ring-2 min-h-[120px] font-bold text-sm bg-white shadow-sm" style={{ borderColor: borderGray }} required></textarea>
+                                <textarea name="description" value={formData.description} onChange={handleChange} className="w-full border rounded-2xl p-5 outline-none focus:ring-2 min-h-[120px] font-bold text-sm bg-[#ffffff] shadow-sm" style={{ borderColor: borderGray }} required></textarea>
                             </div>
 
                             <div className="w-full border-4 border-dashed rounded-3xl p-10 text-center hover:bg-slate-100 transition relative" style={{ borderColor: borderGray }}>
@@ -353,8 +353,8 @@ const ReportModal = ({ type, onClose, onSuccess, currentUser, itemData }) => {
                                 <button
                                     type="submit"
                                     disabled={loading || isFutureTime}
-                                    className={`px-12 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all shadow-xl text-white transform active:scale-95 disabled:opacity-50 flex items-center gap-3 ${isFutureTime ? 'bg-gray-400 cursor-not-allowed shadow-none' : ''}`}
-                                    style={!isFutureTime ? { backgroundColor: primaryBlue } : {}}
+                                    className={`px-12 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all shadow-xl text-white transform active:scale-95 disabled:opacity-50 flex items-center gap-3 ${isFutureTime ? 'bg-gray-400 cursor-not-allowed shadow-none' : 'bg-gradient-to-br from-[#0d3b66] to-[#0ea5e9]'}`}
+                                    style={!isFutureTime ? { color: '#ffffff' } : {}}
                                 >
                                     {loading ? 'Processing...' : isFutureTime ? 'Invalid Time' : 'Submit Post'}
                                     {!loading && !isFutureTime && <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>}

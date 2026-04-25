@@ -77,26 +77,26 @@ function ChatComponent({ itemId, senderName, receiverName, itemName, onClose }) 
     };
 
     return (
-        <div className="fixed bottom-6 right-6 w-[400px] h-[580px] bg-white rounded-[40px] shadow-2xl flex flex-col overflow-hidden z-[1000] border-8 border-white animate-in slide-in-from-bottom-5 duration-300">
+        <div className="fixed bottom-6 right-6 w-[400px] h-[580px] bg-[#f8fafc] rounded-[40px] shadow-2xl flex flex-col overflow-hidden z-[1000] border-8 border-slate-100 animate-in slide-in-from-bottom-5 duration-300">
             {/* Header */}
-            <div className="p-8 bg-[#023E8A] text-white flex justify-between items-center shadow-lg relative overflow-hidden">
+            <div className="p-8 bg-[#ffffff] flex justify-between items-center shadow-sm relative overflow-hidden border-b border-slate-200">
                 <div className="flex items-center gap-4 relative z-10">
-                    <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center font-black text-2xl backdrop-blur-xl border border-white/20 shadow-inner">
+                    <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center font-black text-2xl border border-blue-100 shadow-inner text-blue-600">
                         {itemName?.charAt(0) || 'C'}
                     </div>
                     <div>
-                        <h3 className="font-black text-base uppercase tracking-widest leading-none mb-1">{itemName}</h3>
-                        <p className="text-[9px] font-black text-blue-200/60 uppercase tracking-[0.2em]">Private chat with {receiverName}</p>
+                        <h3 className="font-black text-base text-slate-800 uppercase tracking-widest leading-none mb-1">{itemName}</h3>
+                        <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.2em]">Private chat with {receiverName}</p>
                     </div>
                 </div>
                 <button
                     onClick={onClose}
-                    className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center hover:bg-rose-500/80 transition-all font-black relative z-10"
+                    className="w-10 h-10 rounded-xl bg-[#f1f5f9] text-slate-500 flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all font-black relative z-10"
                 >
                     ✕
                 </button>
                 {/* Decorative blob */}
-                <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-400/20 rounded-full blur-3xl"></div>
+                <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-100/50 rounded-full blur-3xl"></div>
             </div>
 
             {/* Messages Body */}
@@ -117,9 +117,10 @@ function ChatComponent({ itemId, senderName, receiverName, itemName, onClose }) 
                     >
                         <div
                             className={`max-w-[85%] p-4 rounded-3xl shadow-sm text-sm font-medium leading-relaxed ${msg.senderName === senderName
-                                ? 'bg-[#023E8A] text-white rounded-tr-none'
-                                : 'bg-white text-gray-700 border border-slate-100 rounded-tl-none'
+                                ? 'bg-gradient-to-br from-[#0d3b66] to-[#0ea5e9] text-[#ffffff] rounded-tr-none'
+                                : 'bg-[#ffffff] text-slate-800 border border-slate-200 rounded-tl-none'
                                 }`}
+                            style={msg.senderName === senderName ? { color: '#ffffff' } : {}}
                         >
                             {msg.text}
                         </div>
@@ -132,7 +133,7 @@ function ChatComponent({ itemId, senderName, receiverName, itemName, onClose }) 
             </div>
 
             {/* Input Footer */}
-            <div className="p-6 bg-white border-t border-slate-50 flex items-center gap-4">
+            <div className="p-6 bg-[#f1f5f9] border-t border-slate-200 flex items-center gap-4">
                 <input
                     type="text"
                     value={currentMessage}
@@ -144,7 +145,8 @@ function ChatComponent({ itemId, senderName, receiverName, itemName, onClose }) 
                 <button
                     onClick={sendMessage}
                     disabled={!currentMessage.trim()}
-                    className="w-14 h-14 bg-[#023E8A] text-white rounded-2xl flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 disabled:opacity-30 disabled:scale-100 transition-all group"
+                    className="w-14 h-14 bg-gradient-to-br from-[#0d3b66] to-[#0ea5e9] rounded-2xl flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 disabled:opacity-30 disabled:scale-100 transition-all group"
+                    style={{ color: '#ffffff' }}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"><path d="M22 2L11 13" /><path d="M22 2l-7 20-4-9-9-4 20-7z" /></svg>
                 </button>

@@ -73,26 +73,19 @@ function AdminHandovers() {
         <section className="admin-panel" style={{ marginTop: '2rem' }}>
           <header className="admin-panel-head" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h3>Handover History</h3>
-            <div className="filter-group" style={{ display: 'flex', gap: '0.5rem' }}>
-              {['All', 'PENDING', 'COMPLETED'].map(status => (
-                <button 
-                  key={status}
-                  onClick={() => setFilterStatus(status)}
-                  style={{
-                    padding: '0.5rem 1rem',
-                    borderRadius: '8px',
-                    fontSize: '0.7rem',
-                    fontWeight: '800',
-                    border: 'none',
-                    cursor: 'pointer',
-                    backgroundColor: filterStatus === status ? '#023E8A' : '#f1f5f9',
-                    color: filterStatus === status ? 'white' : '#64748b',
-                    transition: 'all 0.2s'
-                  }}
-                >
-                  {status}
-                </button>
-              ))}
+            <div className="filter-group relative">
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="bg-[#ffffff] border border-slate-200 text-slate-800 cursor-pointer px-5 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 font-bold text-xs appearance-none pr-10 shadow-sm"
+              >
+                <option value="All">All Statuses</option>
+                <option value="PENDING">Pending</option>
+                <option value="COMPLETED">Completed</option>
+              </select>
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+              </div>
             </div>
           </header>
 

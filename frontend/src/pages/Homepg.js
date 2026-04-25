@@ -47,17 +47,9 @@ function Homepg() {
               Connect. Learn. <span className="gradient-text">Excel.</span>
             </h1>
             <p className="hero-subtitle">
-              Your all-in-one destination for university life. Manage your sessions, 
+              Your all-in-one destination for university life. Manage your sessions,
               find lost items, and connect with your campus community.
             </p>
-            <div className="hero-cta">
-              <button className="cta-primary" onClick={() => navigateTo('/lost-and-found')}>
-                Explore Community
-              </button>
-              <button className="cta-secondary" onClick={() => navigateTo('/ghost-lec')}>
-                Ghost-Lec Access
-              </button>
-            </div>
           </div>
         </section>
 
