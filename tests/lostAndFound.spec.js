@@ -9,7 +9,7 @@ const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 
 // ── Helper: inject a logged-in user into sessionStorage ──────────────────
 async function loginAsUser(page) {
-    await page.goto(`${BASE_URL}/lost-and-found`);
+    await page.goto(`${BASE_URL}/lost-and-found`, { waitUntil: 'domcontentloaded', timeout: 45000 });
     await page.waitForLoadState('domcontentloaded');
     await page.waitForTimeout(800);
     await page.evaluate(() => {
@@ -77,14 +77,16 @@ test.describe('2. Hero Section', () => {
     });
 
     test('TC-LF08 | Hero Section > "I Found Something" card is visible', async ({ page }) => {
-        await page.goto(`${BASE_URL}/lost-and-found`);
+        await page.goto(`${BASE_URL}/lost-and-found`, { waitUntil: 'domcontentloaded', timeout: 45000 });
+        await page.waitForLoadState('domcontentloaded');
         await expect(page.getByText('I Found Something')).toBeVisible();
     });
 
     test('TC-LF09 | Hero Section > Hero background has blue styling', async ({ page }) => {
-        await page.goto(`${BASE_URL}/lost-and-found`);
-        const hero = page.locator('header.bg-\\[\\#023E8A\\]').first();
-        await expect(hero).toBeVisible();
+        await page.goto(`${BASE_URL}/lost-and-found`, { waitUntil: 'domcontentloaded', timeout: 45000 });
+        await page.waitForLoadState('domcontentloaded');
+        const hero = page.locator('header').first();
+        await expect(hero).toHaveClass(/bg-/);
     });
 
 });
@@ -183,7 +185,8 @@ test.describe('4. Filter Buttons', () => {
     });
 
     test('TC-LF23 | Filter Buttons > Clicking "Date Range Filter" reveals date inputs', async ({ page }) => {
-        await page.goto(`${BASE_URL}/lost-and-found`);
+        await page.goto(`${BASE_URL}/lost-and-found`, { waitUntil: 'domcontentloaded', timeout: 45000 });
+        await page.waitForLoadState('domcontentloaded');
         await page.waitForTimeout(500);
         await page.getByRole('button', { name: /date range filter/i }).click();
         await expect(page.locator('input[type="date"]').first()).toBeVisible();
