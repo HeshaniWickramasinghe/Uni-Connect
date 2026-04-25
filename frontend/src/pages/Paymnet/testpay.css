@@ -62,7 +62,7 @@
     0 4px 12px rgba(7, 20, 43, 0.2);
 }
 
-.testpay-close-btn {
+.testpay-close-icon {
   position: absolute;
   top: 14px;
   right: 14px;
@@ -81,7 +81,7 @@
   transition: all 0.2s ease;
 }
 
-.testpay-close-btn:hover {
+.testpay-close-icon:hover {
   background: rgba(15, 23, 42, 0.14);
 }
 
@@ -108,7 +108,7 @@
   gap: 16px;
 }
 
-.payment-button {
+.payment-option {
   height: 100px;
   border: 2px solid var(--line);
   border-radius: 12px;
@@ -123,44 +123,44 @@
   text-align: left;
 }
 
-.payment-button:hover {
+.payment-option:hover {
   border-color: var(--brand);
   background: linear-gradient(135deg, #f5f9ff, #fafbff);
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(31, 122, 224, 0.18);
 }
 
-.payment-button:active {
+.payment-option:active {
   transform: translateY(0);
 }
 
-.payment-button.bank-transfer:hover {
+.payment-option.bank-transfer:hover {
   border-color: #2563eb;
 }
 
-.payment-button.online-pay:hover {
+.payment-option.online-pay:hover {
   border-color: var(--brand);
 }
 
-.button-icon {
+.payment-icon {
   font-size: 32px;
   line-height: 1;
   flex-shrink: 0;
 }
 
-.payment-button > div:last-child {
+.payment-option > div:last-child {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-.button-label {
+.payment-label {
   font-size: 1.05rem;
   font-weight: 700;
   color: var(--text-main);
 }
 
-.button-desc {
+.payment-desc {
   font-size: 0.85rem;
   color: var(--text-muted);
   margin-top: 2px;
@@ -193,16 +193,16 @@
     gap: 12px;
   }
 
-  .payment-button {
+  .payment-option {
     height: 88px;
     padding: 12px 16px;
   }
 
-  .button-icon {
+  .payment-icon {
     font-size: 28px;
   }
 
-  .button-label {
+  .payment-label {
     font-size: 1rem;
   }
 }

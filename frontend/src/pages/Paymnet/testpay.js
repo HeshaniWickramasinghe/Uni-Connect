@@ -34,28 +34,28 @@ function TestPay() {
   return (
     <div className={isModal ? "testpay-overlay" : "testpay-page"}>
       <div className={isModal ? "testpay-modal" : "testpay-card"}>
-        <button type="button" className="testpay-close-btn" onClick={handleClose} aria-label="Close payment selector">
+        <div className="testpay-close-icon" onClick={handleClose} aria-label="Close payment selector" role="button" tabIndex={0}>
           ×
-        </button>
+        </div>
         <h2 className="testpay-title">💳 Select Payment Method</h2>
         <p className="testpay-subtitle">Choose how you want to pay</p>
 
         <div className="payment-methods">
-          <button className="payment-button bank-transfer" onClick={handleBankTransfer}>
-            <div className="button-icon">🏦</div>
+          <div className="payment-option bank-transfer" onClick={handleBankTransfer} role="button" tabIndex={0}>
+            <div className="payment-icon">🏦</div>
             <div>
-              <div className="button-label">Bank Transfer</div>
-              <div className="button-desc">Direct bank payment</div>
+              <div className="payment-label">Bank Transfer</div>
+              <div className="payment-desc">Direct bank payment</div>
             </div>
-          </button>
+          </div>
 
-          <button className="payment-button online-pay" onClick={handleOnlinePay}>
-            <div className="button-icon">💳</div>
+          <div className="payment-option online-pay" onClick={handleOnlinePay} role="button" tabIndex={0}>
+            <div className="payment-icon">💳</div>
             <div>
-              <div className="button-label">Online Pay</div>
-              <div className="button-desc">Card payment</div>
+              <div className="payment-label">Online Pay</div>
+              <div className="payment-desc">Card payment</div>
             </div>
-          </button>
+          </div>
         </div>
       </div>
     </div>
