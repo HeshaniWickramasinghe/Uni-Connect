@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import Header from "../common/Header";
-import Footer from "../common/Footer";
+import { useLocation } from "react-router-dom";
+import Header from "../../pages/Header";
+import Footer from "../../pages/Footer";
+import "../../pages/Admin/AdminDashboard.css";
 
 const API_BASE = "http://localhost:5000/api";
 
@@ -28,6 +30,8 @@ const TRIGGER_FIELDS = [
 ];
 
 const BadgeManagement = () => {
+    const location = useLocation();
+    const user = location.state?.user;
     const [badges, setBadges] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
@@ -195,106 +199,130 @@ const BadgeManagement = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
-                <div className="flex flex-col items-center gap-3">
-                    <div className="animate-spin rounded-full h-12 w-12 border-[3px] border-blue-200 border-t-[#023E8A]"></div>
-                    <p className="text-sm text-gray-500 animate-pulse">Loading badges...</p>
-                </div>
+            <div className="admin-layout">
+                <Header user={user} />
+                <main className="admin-page" style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh" }}>
+                    <div className="flex flex-col items-center gap-3">
+                        <div className="animate-spin rounded-full h-12 w-12 border-[3px] border-sky-200 border-t-sky-500"></div>
+                        <p className="text-sm" style={{ color: "var(--uc-text-muted)" }}>Loading badges...</p>
+                    </div>
+                </main>
+                <Footer />
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-            <Header />
-            <div className="max-w-6xl mx-auto px-4 py-8 mt-16">
-                {/* Hero Header */}
-                <div className="relative rounded-3xl bg-gradient-to-br from-[#023E8A] via-[#0353A4] to-[#4C6EF5] overflow-hidden mb-8 p-8">
-                    {/* Decorative elements */}
-                    <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/4"></div>
-                    <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/4"></div>
+        <div className="admin-layout">
+            <Header user={user} />
+            <main className="admin-page">
+                {/* Hero */}
+                <section className="admin-hero">
+                    <p className="admin-badge">Uni-Connect Admin</p>
+                    <h1>Badge Management</h1>
+                    <p className="admin-subtitle">Create and manage reward badges for the platform.</p>
+                    <button
+                        onClick={openCreateModal}
+                        className="admin-action-btn"
+                        style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem" }}
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+                        </svg>
+                        Create Badge
+                    </button>
+                </section>
 
-                    <div className="relative flex items-center justify-between">
-                        <div>
-                            <div className="flex items-center gap-3 mb-1">
-                                <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center text-xl">
-                                    🎖️
-                                </div>
-                                <h1 className="text-2xl font-extrabold text-white tracking-tight">Badge Management</h1>
-                            </div>
-                            <p className="text-blue-200 text-sm ml-[52px]">Create and manage reward badges for the platform</p>
-                        </div>
-                        <button
-                            onClick={openCreateModal}
-                            className="px-5 py-2.5 bg-white text-[#023E8A] rounded-xl font-semibold hover:bg-blue-50 transition-all duration-200 flex items-center gap-2 shadow-lg shadow-black/10"
-                        >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
-                            </svg>
-                            Create Badge
-                        </button>
-                    </div>
-                </div>
+                <section className="admin-panel" style={{ padding: "1.5rem" }}>
 
                 {/* Stats Cards */}
-                <div className="grid grid-cols-3 gap-4 mb-8">
-                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-white/60 p-5 flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center text-2xl shadow-sm">
-                            🏅
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem", marginBottom: "1.5rem" }}>
+                    {[
+                        { icon: "🏅", value: badges.length, label: "Total Badges", color: "#0d3b66", bg: "linear-gradient(135deg, #dbeafe, #e0e7ff)" },
+                        { icon: "✅", value: activeBadges.length, label: "Active", color: "#059669", bg: "linear-gradient(135deg, #d1fae5, #a7f3d0)" },
+                        { icon: "⏸️", value: inactiveBadges.length, label: "Inactive", color: "#64748b", bg: "linear-gradient(135deg, #f1f5f9, #e2e8f0)" },
+                    ].map((stat, i) => (
+                        <div key={i} style={{
+                            background: "#ffffff",
+                            border: "1px solid rgba(13, 59, 102, 0.16)",
+                            borderRadius: "14px",
+                            padding: "1rem 1.25rem",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.85rem",
+                            boxShadow: "0 4px 12px rgba(13, 59, 102, 0.06)",
+                        }}>
+                            <div style={{
+                                width: "48px",
+                                height: "48px",
+                                borderRadius: "12px",
+                                background: stat.bg,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                fontSize: "1.4rem",
+                            }}>
+                                {stat.icon}
+                            </div>
+                            <div>
+                                <p style={{ margin: 0, fontSize: "1.6rem", fontWeight: 800, color: stat.color, lineHeight: 1 }}>{stat.value}</p>
+                                <p style={{ margin: "2px 0 0", fontSize: "0.7rem", fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.06em" }}>{stat.label}</p>
+                            </div>
                         </div>
-                        <div>
-                            <p className="text-2xl font-extrabold text-gray-900">{badges.length}</p>
-                            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Total Badges</p>
-                        </div>
-                    </div>
-                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-white/60 p-5 flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-100 to-emerald-100 flex items-center justify-center text-2xl shadow-sm">
-                            ✅
-                        </div>
-                        <div>
-                            <p className="text-2xl font-extrabold text-emerald-600">{activeBadges.length}</p>
-                            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Active</p>
-                        </div>
-                    </div>
-                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-white/60 p-5 flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gray-100 to-slate-100 flex items-center justify-center text-2xl shadow-sm">
-                            ⏸️
-                        </div>
-                        <div>
-                            <p className="text-2xl font-extrabold text-gray-400">{inactiveBadges.length}</p>
-                            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Inactive</p>
-                        </div>
-                    </div>
+                    ))}
                 </div>
 
                 {/* Status Filter */}
-                <div className="flex gap-1 bg-white/80 backdrop-blur-sm rounded-2xl border border-white/60 p-1.5 mb-6 max-w-md">
+                <div style={{
+                    display: "flex",
+                    gap: "0.25rem",
+                    background: "#ffffff",
+                    border: "1px solid rgba(13, 59, 102, 0.16)",
+                    borderRadius: "14px",
+                    padding: "0.35rem",
+                    marginBottom: "1.5rem",
+                    width: "fit-content",
+                    boxShadow: "0 4px 12px rgba(13, 59, 102, 0.04)",
+                }}>
                     {[
                         { key: "all", label: "All Badges", count: badges.length },
                         { key: "active", label: "Active", count: activeBadges.length },
                         { key: "inactive", label: "Inactive", count: inactiveBadges.length },
-                    ].map((tab) => (
-                        <button
-                            key={tab.key}
-                            onClick={() => setStatusFilter(tab.key)}
-                            className={`flex-1 py-2 px-4 rounded-xl text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${
-                                statusFilter === tab.key
-                                    ? "bg-[#023E8A] text-white shadow-lg shadow-blue-200"
-                                    : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
-                            }`}
-                        >
-                            {tab.label}
-                            <span
-                                className={`text-xs px-1.5 py-0.5 rounded-full font-bold ${
-                                    statusFilter === tab.key
-                                        ? "bg-white/20 text-white"
-                                        : "bg-gray-100 text-gray-500"
-                                }`}
+                    ].map((tab) => {
+                        const active = statusFilter === tab.key;
+                        return (
+                            <button
+                                key={tab.key}
+                                onClick={() => setStatusFilter(tab.key)}
+                                style={{
+                                    padding: "0.55rem 1.1rem",
+                                    borderRadius: "10px",
+                                    fontSize: "0.85rem",
+                                    fontWeight: 700,
+                                    border: "none",
+                                    cursor: "pointer",
+                                    background: active ? "#0d3b66" : "transparent",
+                                    color: active ? "#ffffff" : "#475569",
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    gap: "0.5rem",
+                                    transition: "all 0.2s",
+                                }}
                             >
-                                {tab.count}
-                            </span>
-                        </button>
-                    ))}
+                                {tab.label}
+                                <span style={{
+                                    fontSize: "0.7rem",
+                                    padding: "0.1rem 0.5rem",
+                                    borderRadius: "999px",
+                                    fontWeight: 800,
+                                    background: active ? "rgba(255,255,255,0.25)" : "#e2e8f0",
+                                    color: active ? "#ffffff" : "#64748b",
+                                }}>
+                                    {tab.count}
+                                </span>
+                            </button>
+                        );
+                    })}
                 </div>
 
                 {/* (Toast is rendered as a fixed overlay below) */}
@@ -303,92 +331,173 @@ const BadgeManagement = () => {
                 {(() => {
                     const filteredBadges = statusFilter === "active" ? activeBadges : statusFilter === "inactive" ? inactiveBadges : badges;
                     return filteredBadges.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "1rem" }}>
                         {filteredBadges.map((badge) => (
                             <div
                                 key={badge._id}
-                                className={`group relative bg-white/80 backdrop-blur-sm rounded-2xl border border-white/60 overflow-hidden transition-all duration-300 hover:shadow-lg ${
-                                    badge.isActive ? "" : "opacity-60"
-                                }`}
+                                style={{
+                                    background: "#ffffff",
+                                    border: "1px solid rgba(13, 59, 102, 0.14)",
+                                    borderRadius: "16px",
+                                    overflow: "hidden",
+                                    boxShadow: "0 6px 16px rgba(13, 59, 102, 0.08)",
+                                    opacity: badge.isActive ? 1 : 0.78,
+                                    transition: "transform 0.2s, box-shadow 0.2s",
+                                }}
                             >
                                 {/* Color accent bar */}
-                                <div
-                                    className="h-1.5 w-full"
-                                    style={{ backgroundColor: badge.isActive ? badge.color : "#D1D5DB" }}
-                                ></div>
+                                <div style={{ height: "5px", width: "100%", background: badge.isActive ? badge.color : "#cbd5e1" }}></div>
 
-                                <div className="p-6">
-                                    {/* Badge Header */}
-                                    <div className="flex items-start justify-between mb-4">
-                                        <div className="flex items-center gap-3">
-                                            <div
-                                                className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-sm group-hover:scale-105 transition-transform duration-300"
-                                                style={{
-                                                    backgroundColor: `${badge.color}12`,
-                                                    border: `2px solid ${badge.color}25`,
-                                                }}
-                                            >
+                                <div style={{ padding: "1.25rem" }}>
+                                    {/* Header: Emoji + Name + Status Toggle */}
+                                    <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "0.75rem", marginBottom: "0.85rem" }}>
+                                        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flex: 1, minWidth: 0 }}>
+                                            <div style={{
+                                                width: "56px",
+                                                height: "56px",
+                                                borderRadius: "14px",
+                                                background: `${badge.color}15`,
+                                                border: `2px solid ${badge.color}30`,
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                fontSize: "1.6rem",
+                                                flexShrink: 0,
+                                            }}>
                                                 {badge.emoji}
                                             </div>
-                                            <div>
-                                                <h3 className="font-bold text-gray-900">{badge.name}</h3>
-                                                <span
-                                                    className={`inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-0.5 rounded-full ${
-                                                        badge.isActive
-                                                            ? "bg-emerald-100 text-emerald-700"
-                                                            : "bg-gray-100 text-gray-500"
-                                                    }`}
-                                                >
-                                                    <span className={`w-1.5 h-1.5 rounded-full ${badge.isActive ? "bg-emerald-500" : "bg-gray-400"}`}></span>
+                                            <div style={{ minWidth: 0, flex: 1 }}>
+                                                <h3 style={{ margin: 0, fontSize: "1.05rem", fontWeight: 800, color: "#0f172a", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                                                    {badge.name}
+                                                </h3>
+                                                <span style={{
+                                                    display: "inline-flex",
+                                                    alignItems: "center",
+                                                    gap: "0.35rem",
+                                                    fontSize: "0.7rem",
+                                                    fontWeight: 700,
+                                                    padding: "0.2rem 0.6rem",
+                                                    borderRadius: "999px",
+                                                    marginTop: "0.25rem",
+                                                    background: badge.isActive ? "#d1fae5" : "#e2e8f0",
+                                                    color: badge.isActive ? "#065f46" : "#475569",
+                                                }}>
+                                                    <span style={{
+                                                        width: "6px",
+                                                        height: "6px",
+                                                        borderRadius: "999px",
+                                                        background: badge.isActive ? "#10b981" : "#94a3b8",
+                                                    }}></span>
                                                     {badge.isActive ? "Active" : "Inactive"}
                                                 </span>
                                             </div>
                                         </div>
+
+                                        {/* Toggle switch */}
+                                        <button
+                                            onClick={() => setToggleConfirm(badge)}
+                                            title={badge.isActive ? "Click to deactivate" : "Click to activate"}
+                                            style={{
+                                                position: "relative",
+                                                width: "44px",
+                                                height: "24px",
+                                                borderRadius: "999px",
+                                                border: "none",
+                                                cursor: "pointer",
+                                                background: badge.isActive ? "#10b981" : "#cbd5e1",
+                                                transition: "background 0.2s",
+                                                flexShrink: 0,
+                                                padding: 0,
+                                            }}
+                                        >
+                                            <span style={{
+                                                position: "absolute",
+                                                top: "2px",
+                                                left: badge.isActive ? "22px" : "2px",
+                                                width: "20px",
+                                                height: "20px",
+                                                borderRadius: "999px",
+                                                background: "#ffffff",
+                                                boxShadow: "0 2px 6px rgba(0, 0, 0, 0.15)",
+                                                transition: "left 0.2s",
+                                            }}></span>
+                                        </button>
                                     </div>
 
                                     {/* Description */}
-                                    <p className="text-sm text-gray-600 mb-4 leading-relaxed">{badge.description}</p>
+                                    <p style={{
+                                        margin: "0 0 0.85rem",
+                                        fontSize: "0.85rem",
+                                        color: "#475569",
+                                        lineHeight: 1.5,
+                                        display: "-webkit-box",
+                                        WebkitLineClamp: 2,
+                                        WebkitBoxOrient: "vertical",
+                                        overflow: "hidden",
+                                        minHeight: "2.55em",
+                                    }}>
+                                        {badge.description}
+                                    </p>
 
                                     {/* Trigger Rule */}
-                                    <div className="bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl px-4 py-3 mb-5 border border-gray-100/80">
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Trigger Rule</p>
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-sm">{TRIGGER_FIELDS.find(f => f.value === badge.triggerField)?.icon || "📦"}</span>
-                                            <p className="text-sm font-semibold text-gray-700">
+                                    <div style={{
+                                        background: "#f8fafc",
+                                        border: "1px solid #e2e8f0",
+                                        borderRadius: "10px",
+                                        padding: "0.65rem 0.85rem",
+                                        marginBottom: "1rem",
+                                    }}>
+                                        <p style={{ margin: 0, fontSize: "0.65rem", fontWeight: 700, color: "#94a3b8", textTransform: "uppercase", letterSpacing: "0.06em" }}>Trigger Rule</p>
+                                        <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginTop: "0.15rem" }}>
+                                            <span>{TRIGGER_FIELDS.find(f => f.value === badge.triggerField)?.icon || "📦"}</span>
+                                            <p style={{ margin: 0, fontSize: "0.85rem", fontWeight: 700, color: "#1e293b" }}>
                                                 {getTriggerLabel(badge.triggerField)} ≥ {badge.triggerValue}
                                             </p>
                                         </div>
                                     </div>
 
                                     {/* Actions */}
-                                    <div className="flex items-center gap-2">
-                                        <button
-                                            onClick={() => setToggleConfirm(badge)}
-                                            className={`flex-1 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200 ${
-                                                badge.isActive
-                                                    ? "bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200/60"
-                                                    : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200/60"
-                                            }`}
-                                        >
-                                            {badge.isActive ? "Deactivate" : "Activate"}
-                                        </button>
+                                    <div style={{ display: "flex", gap: "0.5rem" }}>
                                         <button
                                             onClick={() => handleEdit(badge)}
-                                            className="flex-1 py-2.5 bg-blue-50 text-blue-700 rounded-xl text-xs font-semibold hover:bg-blue-100 transition-all duration-200 border border-blue-200/60"
+                                            style={{
+                                                flex: 1,
+                                                padding: "0.6rem",
+                                                borderRadius: "10px",
+                                                fontSize: "0.8rem",
+                                                fontWeight: 700,
+                                                border: "1px solid #bfdbfe",
+                                                background: "#eff6ff",
+                                                color: "#1d4ed8",
+                                                cursor: "pointer",
+                                                display: "inline-flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                gap: "0.35rem",
+                                            }}
                                         >
+                                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            </svg>
                                             Edit
                                         </button>
                                         <button
                                             onClick={() => setDeleteConfirm(badge._id)}
-                                            className="py-2.5 px-3 bg-red-50 text-red-600 rounded-xl text-sm hover:bg-red-100 transition-all duration-200 border border-red-200/60"
+                                            title="Delete badge"
+                                            style={{
+                                                padding: "0.6rem 0.85rem",
+                                                borderRadius: "10px",
+                                                border: "1px solid #fecaca",
+                                                background: "#fef2f2",
+                                                color: "#dc2626",
+                                                cursor: "pointer",
+                                                display: "inline-flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                            }}
                                         >
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={2}
-                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                                                />
+                                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                             </svg>
                                         </button>
                                     </div>
@@ -397,14 +506,30 @@ const BadgeManagement = () => {
                         ))}
                     </div>
                 ) : (
-                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-white/60 p-16 text-center">
-                        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center text-4xl mx-auto mb-5 shadow-sm">
+                    <div style={{
+                        background: "#ffffff",
+                        border: "1px solid rgba(13, 59, 102, 0.16)",
+                        borderRadius: "16px",
+                        padding: "3rem 2rem",
+                        textAlign: "center",
+                    }}>
+                        <div style={{
+                            width: "80px",
+                            height: "80px",
+                            borderRadius: "999px",
+                            background: "linear-gradient(135deg, #dbeafe, #e0e7ff)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: "2.5rem",
+                            margin: "0 auto 1rem",
+                        }}>
                             {statusFilter === "all" ? "🏅" : statusFilter === "active" ? "✅" : "⏸️"}
                         </div>
-                        <h3 className="text-xl font-bold text-gray-900">
+                        <h3 style={{ margin: 0, color: "#0f172a", fontSize: "1.2rem", fontWeight: 700 }}>
                             {statusFilter === "all" ? "No Badges Created Yet" : `No ${statusFilter === "active" ? "Active" : "Inactive"} Badges`}
                         </h3>
-                        <p className="text-gray-500 mt-2 max-w-sm mx-auto">
+                        <p style={{ margin: "0.5rem auto 0", color: "#64748b", fontSize: "0.9rem", maxWidth: "30rem" }}>
                             {statusFilter === "all"
                                 ? "Create your first badge to start rewarding students for their contributions"
                                 : statusFilter === "active"
@@ -414,7 +539,16 @@ const BadgeManagement = () => {
                         {statusFilter === "all" && (
                             <button
                                 onClick={openCreateModal}
-                                className="mt-6 px-6 py-2.5 bg-[#023E8A] text-white rounded-xl font-semibold hover:bg-[#022e6a] transition-all duration-200 shadow-lg shadow-blue-200/50"
+                                style={{
+                                    marginTop: "1.25rem",
+                                    padding: "0.65rem 1.5rem",
+                                    background: "#0d3b66",
+                                    color: "#ffffff",
+                                    border: "none",
+                                    borderRadius: "10px",
+                                    fontWeight: 700,
+                                    cursor: "pointer",
+                                }}
                             >
                                 Create First Badge
                             </button>
@@ -422,7 +556,8 @@ const BadgeManagement = () => {
                     </div>
                 );
                 })()}
-            </div>
+                </section>
+            </main>
 
             {/* Create/Edit Modal */}
             {showModal && (

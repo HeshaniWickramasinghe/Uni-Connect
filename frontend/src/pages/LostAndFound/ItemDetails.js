@@ -3,6 +3,7 @@ import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import Header from '../Header';
 import Footer from '../Footer';
 import RewardSuggestionPopup from '../../components/Rewards/RewardSuggestionPopup';
+import BadgeCelebration from '../../components/Rewards/BadgeCelebration';
 import io from 'socket.io-client';
 import HandoverModal from './HandoverModal';
 //The UI is split into two main columns using Tailwind's
@@ -20,6 +21,7 @@ const ItemDetails = () => {
     const [viewMode, setViewMode] = useState('list'); // 'list' or 'chat'
     const [showRewardPopup, setShowRewardPopup] = useState(false);
     const [showHandoverModal, setShowHandoverModal] = useState(false);
+    const [celebrationBadges, setCelebrationBadges] = useState([]);
     const messagesEndRef = useRef(null);
 
     const getStoredUser = () => {
@@ -223,7 +225,14 @@ const ItemDetails = () => {
                                         </div>
                                     </div>
                                     <button
-                                        onClick={() => setShowHandoverModal(true)}
+                                        onClick={() => {
+                                            if (!currentUser?.id) {
+                                                alert("Please log in to initiate a handover.");
+                                                navigate('/login', { state: { from: location.pathname } });
+                                                return;
+                                            }
+                                            setShowHandoverModal(true);
+                                        }}
                                         className="w-full md:w-auto px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-lg active:scale-95"
                                     >
                                         Start Handover
@@ -247,7 +256,14 @@ const ItemDetails = () => {
                                         </div>
                                     </div>
                                     <button
-                                        onClick={() => setShowHandoverModal(true)}
+                                        onClick={() => {
+                                            if (!currentUser?.id) {
+                                                alert("Please log in to initiate a handover.");
+                                                navigate('/login', { state: { from: location.pathname } });
+                                                return;
+                                            }
+                                            setShowHandoverModal(true);
+                                        }}
                                         className="w-full md:w-auto px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-lg active:scale-95"
                                     >
                                         Report Found
@@ -393,12 +409,10 @@ const ItemDetails = () => {
             </main>
             {showRewardPopup && (
                 <RewardSuggestionPopup
-                    finderName={selectedPartner || item.userName}
+                    finderName={currentUserName}
                     onProceed={() => {
                         setShowRewardPopup(false);
-                        const userId = currentUser?.id || 'user123';
-                        const partnerName = selectedPartner || item.userName;
-                        navigate(`/rate-reward/${id}?finderId=${userId}&finderName=${encodeURIComponent(partnerName)}`);
+                        navigate(`/rate-reward/${id}?finderId=${currentUser?.id || ''}&finderName=${encodeURIComponent(currentUserName)}`);
                     }}
                     onClose={() => setShowRewardPopup(false)}
                 />
@@ -408,15 +422,25 @@ const ItemDetails = () => {
                 <HandoverModal
                     itemId={id}
                     itemName={item.name}
-                    finderName={item.type === 'Found' ? item.userName : currentUserName}
+                    finderId={currentUser?.id}
+                    finderName={currentUserName}
                     receiverName={item.type === 'Found' ? selectedPartner : item.userName}
                     onClose={() => setShowHandoverModal(false)}
-                    onSuccess={() => {
+                    onSuccess={(data) => {
                         setShowHandoverModal(false);
                         fetchItemDetails();
-                        // Trigger reward popup after successful handover
+                        if (data?.newBadges?.length > 0) {
+                            setCelebrationBadges(data.newBadges);
+                        }
                         setShowRewardPopup(true);
                     }}
+                />
+            )}
+
+            {celebrationBadges.length > 0 && (
+                <BadgeCelebration
+                    badge={celebrationBadges[0]}
+                    onClose={() => setCelebrationBadges((prev) => prev.slice(1))}
                 />
             )}
 

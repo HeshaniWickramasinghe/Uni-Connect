@@ -68,26 +68,27 @@
 
 .admin-stat-card {
   border-radius: 14px;
-  border: 1px solid rgba(13, 59, 102, 0.16);
-  background: #ffffff;
-  padding: 0.9rem;
-  box-shadow: 0 10px 20px rgba(13, 59, 102, 0.06);
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+  background: linear-gradient(165deg, rgba(15, 23, 42, 0.82), rgba(2, 6, 23, 0.82)) !important;
+  padding: 1rem 1.1rem;
+  box-shadow: 0 10px 20px rgba(2, 6, 23, 0.4);
   width: 100%;
   text-align: left;
   cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .admin-stat-card h2 {
   margin: 0;
   font-size: 1.35rem;
-  color: #0b4a7c;
+  color: #ffffff !important;
 }
 
 .admin-stat-card p {
   margin: 0;
-  color: #35506a;
+  color: #f0f9ff !important;
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .admin-stat-card:hover {

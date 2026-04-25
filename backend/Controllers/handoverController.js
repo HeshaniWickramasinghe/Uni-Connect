@@ -1,6 +1,8 @@
 const Handover = require("../Model/handoverModel");
 const Item = require("../Model/itemModel");
 const User = require("../Model_Logging/loggingModel");
+const UserProfile = require("../Model/userProfileModel");
+const Badge = require("../Model/badgeModel");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 
@@ -46,10 +48,10 @@ const sendVerificationEmail = async (email, verificationCode, itemName, phoneNum
 
 exports.initiateHandover = async (req, res) => {
     try {
-        const { itemId, finderName, registrationNo, faculty, contactNumber, universityIdPhoto, email } = req.body;
+        const { itemId, finderId, finderName, registrationNo, faculty, contactNumber, universityIdPhoto, email } = req.body;
 
-        if (!itemId || !finderName || !registrationNo || !faculty || !contactNumber || !universityIdPhoto || !email) {
-            return res.status(400).json({ message: "All fields are required. Please ensure all fields are filled and a photo is uploaded." });
+        if (!itemId || !finderId || !finderName || !registrationNo || !faculty || !contactNumber || !universityIdPhoto || !email) {
+            return res.status(400).json({ message: "All fields are required. Please log in and ensure all fields are filled and a photo is uploaded." });
         }
 
         const item = await Item.findById(itemId);
@@ -71,6 +73,7 @@ exports.initiateHandover = async (req, res) => {
 
         const handover = new Handover({
             itemId,
+            finderId,
             finderName,
             receiverName: officialReceiverName,
             email,
@@ -116,7 +119,35 @@ exports.confirmHandover = async (req, res) => {
         // Update item status to RESOLVED
         await Item.findByIdAndUpdate(handover.itemId, { status: "RESOLVED" });
 
-        res.status(200).json({ message: "Handover confirmed successfully!" });
+        // Credit the finder: +1 itemsReturned + auto-award badges
+        const newBadges = [];
+        if (handover.finderId) {
+            let finderProfile = await UserProfile.findOne({ tempUserId: handover.finderId });
+            if (!finderProfile) {
+                finderProfile = await UserProfile.create({
+                    tempUserId: handover.finderId,
+                    name: handover.finderName || `User_${handover.finderId.slice(0, 6)}`,
+                });
+            }
+
+            finderProfile.itemsReturned = (finderProfile.itemsReturned || 0) + 1;
+
+            const earnedBadgeIds = finderProfile.badges.map((b) => b.badgeId.toString());
+            const returnBadges = await Badge.find({ isActive: true, triggerField: "itemsReturned" });
+            for (const badge of returnBadges) {
+                if (!earnedBadgeIds.includes(badge._id.toString()) && finderProfile.itemsReturned >= badge.triggerValue) {
+                    finderProfile.badges.push({ badgeId: badge._id, earnedAt: new Date() });
+                    newBadges.push(badge);
+                }
+            }
+
+            await finderProfile.save();
+        }
+
+        res.status(200).json({
+            message: "Handover confirmed successfully!",
+            newBadges,
+        });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

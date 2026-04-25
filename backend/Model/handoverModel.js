@@ -9,6 +9,10 @@ const handoverSchema = new Schema(
             ref: 'Item',
             required: true
         },
+        finderId: {
+            type: String,
+            required: true
+        },
         finderName: {
             type: String,
             required: true

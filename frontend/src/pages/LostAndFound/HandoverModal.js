@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './HandoverModal.css';
 
-const HandoverModal = ({ itemId, itemName, finderName, receiverName, onClose, onSuccess }) => {
+const HandoverModal = ({ itemId, itemName, finderId, finderName, receiverName, onClose, onSuccess }) => {
     const [step, setStep] = useState(1); // 1: Form, 2: Verification Code Entry
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -90,6 +90,7 @@ const HandoverModal = ({ itemId, itemName, finderName, receiverName, onClose, on
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     itemId,
+                    finderId,
                     finderName,
                     receiverName,
                     ...formData
@@ -130,7 +131,7 @@ const HandoverModal = ({ itemId, itemName, finderName, receiverName, onClose, on
 
             const data = await response.json();
             if (response.ok) {
-                onSuccess();
+                onSuccess(data);
                 onClose();
             } else {
                 setError(data.message || 'Invalid verification code');
