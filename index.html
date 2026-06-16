@@ -22,84 +22,199 @@
     </script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Leaflet Map Assets -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         :root {
-            --uc-bg: #020617;
-            --uc-glass: rgba(15, 23, 42, 0.45);
-            --uc-border: rgba(14, 165, 233, 0.2);
-            --uc-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
             --uc-gradient: linear-gradient(135deg, #0ea5e9, #2563eb, #1d4ed8);
         }
 
         body {
             font-family: "Space Grotesk", sans-serif;
-            background-color: var(--uc-bg);
-            color: #f0f9ff;
             min-height: 100vh;
             overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        body.theme-dark {
+            background-color: #020617;
+            color: #f0f9ff;
+        }
+
+        body.theme-light {
+            background: linear-gradient(135deg, #e0f7fa 0%, #e0e7ff 100%) !important;
+            background-attachment: fixed !important;
+            color: #0f172a;
         }
 
         /* Frosted Glassmorphism */
         .glass-card {
-            background: var(--uc-glass);
             backdrop-filter: blur(16px) saturate(180%);
             -webkit-backdrop-filter: blur(16px) saturate(180%);
-            border: 1px solid var(--uc-border);
-            box-shadow: var(--uc-shadow);
             border-radius: 24px;
+            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        body.theme-dark .glass-card {
+            background: rgba(14, 165, 233, 0.08) !important;
+            border: 1px solid rgba(14, 165, 233, 0.2) !important;
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.4) !important;
+            color: #f0f9ff !important;
+        }
+
+        body.theme-light .glass-card {
+            background: rgba(255, 255, 255, 0.85) !important;
+            border: 1px solid rgba(15, 23, 42, 0.08) !important;
+            box-shadow: 0 10px 40px -10px rgba(15, 23, 42, 0.08) !important;
+            color: #0f172a !important;
         }
 
         .glass-header {
-            background: rgba(15, 23, 42, 0.7);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        body.theme-dark .glass-header {
+            background: transparent !important;
+            border-bottom: 1px solid rgba(14, 165, 233, 0.15) !important;
+        }
+
+        body.theme-light .glass-header {
+            background: rgba(255, 255, 255, 0.8) !important;
+            border-bottom: 1px solid rgba(15, 23, 42, 0.08) !important;
+        }
+
+        /* Nav tabs styling */
+        body.theme-dark .nav-tab {
+            color: #cbd5e1;
+        }
+        body.theme-dark .nav-tab.text-sky-300 {
+            color: #e0f2fe !important;
+            background: rgba(14, 165, 233, 0.14) !important;
+            border: 1px solid rgba(56, 189, 248, 0.36) !important;
+        }
+
+        body.theme-light .nav-tab {
+            color: #475569 !important;
+        }
+        body.theme-light .nav-tab.text-sky-300 {
+            color: #0284c7 !important;
+            background: rgba(14, 165, 233, 0.1) !important;
+        }
+
+        /* Header elements color control */
+        body.theme-dark .glass-header h1,
+        body.theme-dark .glass-header h2,
+        body.theme-dark .glass-header span,
+        body.theme-dark .glass-header button,
+        body.theme-dark .glass-header a,
+        body.theme-dark .glass-header i {
+            color: #f0f9ff;
+        }
+
+        body.theme-light .glass-header h1,
+        body.theme-light .glass-header h2,
+        body.theme-light .glass-header span,
+        body.theme-light .glass-header button,
+        body.theme-light .glass-header a,
+        body.theme-light .glass-header i {
+            color: #0f172a !important;
+        }
+
+        /* Inputs, select, and textarea styles */
+        body.theme-dark input,
+        body.theme-dark textarea,
+        body.theme-dark select {
+            background: rgba(15, 23, 42, 0.5) !important;
+            border: 1px solid rgba(14, 165, 233, 0.2) !important;
+            color: #f0f9ff !important;
+        }
+
+        body.theme-light input,
+        body.theme-light textarea,
+        body.theme-light select {
+            background: rgba(255, 255, 255, 0.7) !important;
+            border: 1px solid rgba(15, 23, 42, 0.08) !important;
+            color: #0f172a !important;
+        }
+        body.theme-light input::placeholder,
+        body.theme-light textarea::placeholder {
+            color: #64748b !important;
+        }
+        body.theme-light input:focus,
+        body.theme-light textarea:focus,
+        body.theme-light select:focus {
+            background: #ffffff !important;
+            border-color: #0284c7 !important;
         }
 
         /* Floating Blobs animation */
         .blob {
             position: absolute;
             border-radius: 50%;
-            filter: blur(120px);
+            filter: blur(100px);
             z-index: 0;
             pointer-events: none;
-            opacity: 0.35;
+            transition: all 0.5s ease-in-out;
+        }
+        body.theme-light .blob {
+            display: none !important;
         }
         .blob-1 {
-            width: 450px;
-            height: 450px;
+            width: 500px;
+            height: 500px;
             background: #1e3a8a;
-            top: -10%;
-            right: -5%;
-            animation: floatBlob1 25s infinite alternate;
+            top: -100px;
+            right: -100px;
+            opacity: 0.6;
+            animation: move-blob-1 20s infinite alternate;
         }
         .blob-2 {
             width: 500px;
             height: 500px;
             background: #0891b2;
-            bottom: -10%;
-            left: -5%;
-            animation: floatBlob2 30s infinite alternate-reverse;
+            bottom: -150px;
+            left: -100px;
+            opacity: 0.5;
+            animation: move-blob-2 25s infinite alternate-reverse;
         }
         .blob-3 {
-            width: 350px;
-            height: 350px;
+            width: 400px;
+            height: 400px;
             background: #3b82f6;
             top: 40%;
             left: 20%;
-            animation: floatBlob1 20s infinite alternate-reverse;
+            opacity: 0.25;
+            animation: move-blob-3 15s infinite alternate;
+        }
+        .blob-4 {
+            width: 600px;
+            height: 600px;
+            background: #1e40af;
+            top: 20%;
+            right: 15%;
+            opacity: 0.3;
+            animation: move-blob-1 22s infinite reverse;
         }
 
-        @keyframes floatBlob1 {
+        @keyframes move-blob-1 {
             0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(80px, 120px) scale(1.1); }
-            100% { transform: translate(-30px, 180px) scale(0.9); }
+            50% { transform: translate(100px, 150px) scale(1.1); }
+            100% { transform: translate(-50px, 200px) scale(0.9); }
         }
 
-        @keyframes floatBlob2 {
+        @keyframes move-blob-2 {
             0% { transform: translate(0, 0) rotate(0deg); }
-            50% { transform: translate(120px, -80px) rotate(90deg); }
-            100% { transform: translate(-60px, 100px) rotate(180deg); }
+            50% { transform: translate(200px, -100px) rotate(90deg); }
+            100% { transform: translate(-100px, 150px) rotate(180deg); }
+        }
+
+        @keyframes move-blob-3 {
+            0% { transform: scale(1) translate(0, 0); }
+            50% { transform: scale(1.3) translate(-200px, 100px); }
+            100% { transform: scale(1) translate(100px, -50px); }
         }
 
         /* Hide Scrollbar */
@@ -119,19 +234,21 @@
 
         /* Gradient Text */
         .gradient-text {
-            background: linear-gradient(135deg, #38bdf8, #60a5fa, #818cf8);
+            background: var(--uc-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
     </style>
 </head>
-<body class="relative">
+<body class="relative theme-dark">
 
     <!-- Background Blobs -->
     <div class="fixed inset-0 overflow-hidden z-0">
         <div class="blob blob-1"></div>
         <div class="blob blob-2"></div>
         <div class="blob blob-3"></div>
+        <div class="blob blob-4"></div>
     </div>
 
     <!-- MAIN CONTAINER -->
@@ -244,8 +361,8 @@
                         Your all-in-one destination for university life at SLIIT. Manage your peer study sessions, claim lost items, configure your profile, and receive rewards.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                        <button onclick="navigateTo('kuppi')" class="px-6 py-3 bg-white text-slate-900 font-bold rounded-xl shadow-lg hover:-translate-y-0.5 hover:shadow-sky-500/20 transition-all">Explore Kuppi Sessions</button>
-                        <button onclick="navigateTo('lost-and-found')" class="px-6 py-3 bg-sky-500/10 border border-sky-500/30 text-sky-400 font-bold rounded-xl hover:bg-sky-500/20 transition-all">Lost & Found Hub</button>
+                        <button onclick="navigateTo('kuppi')" class="px-6 py-3 bg-white text-[#020617] font-bold rounded-xl shadow-lg hover:-translate-y-0.5 hover:shadow-sky-500/20 transition-all border-none">Explore Kuppi Sessions</button>
+                        <button onclick="navigateTo('lost-and-found')" class="px-6 py-3 bg-[#0ea5e9]/10 border border-[#0ea5e9]/30 text-[#38bdf8] font-bold rounded-xl hover:bg-[#0ea5e9]/20 transition-all backdrop-blur-md">Lost & Found Hub</button>
                     </div>
                 </section>
 
@@ -303,45 +420,233 @@
                 </div>
             </div>
 
-            <!-- 3. LOST AND FOUND VIEW -->
-            <div id="view-lost-and-found" class="page-view hidden animate-fade-in">
-                <!-- Sub Banner -->
-                <div class="p-8 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 border border-slate-700/30 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                    <div>
-                        <h2 class="font-outfit font-bold text-2xl text-white">🔍 Lost & Found Hub</h2>
-                        <p class="text-slate-400 text-xs mt-1">Submit reports and help return items back to their owners</p>
+            <!-- 3. LOST AND FOUND VIEW (LIGHT THEME MATCHING PROJECT UI) -->
+            <div id="view-lost-and-found" class="page-view hidden animate-fade-in text-slate-800">
+                <!-- Hero Section -->
+                <header class="text-slate-800 pt-10 pb-20 px-6 text-center relative overflow-hidden border-b border-slate-700/10">
+                    <div class="max-w-4xl mx-auto relative z-10">
+                        <h1 class="text-3xl md:text-5xl font-bold mb-4 tracking-tight text-slate-900 font-serif" style="font-family: Georgia, serif;">
+                            Find what was lost.
+                        </h1>
+                        <p class="text-slate-600 text-base md:text-lg max-w-xl mx-auto mb-10 leading-relaxed">
+                            The most trusted community platform for recovering lost belongings and returning found treasures.
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+                            <!-- I Lost Something Card -->
+                            <div onclick="openReportModal('Lost')" class="group cursor-pointer bg-white border border-slate-200 p-6 rounded-[32px] hover:bg-slate-50 transition-all duration-500 text-left relative overflow-hidden shadow-xl">
+                                <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#EF4444" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+                                </div>
+                                <h3 class="text-xl font-bold mb-2 tracking-tight text-slate-800">I Lost Something</h3>
+                                <p class="text-slate-500 text-[11px] leading-relaxed font-medium">Post a detailed report of your missing item.</p>
+                            </div>
+
+                            <!-- I Found Something Card -->
+                            <div onclick="openReportModal('Found')" class="group cursor-pointer bg-white border border-slate-200 p-6 rounded-[32px] hover:bg-slate-50 transition-all duration-500 text-left relative overflow-hidden shadow-xl">
+                                <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14" /></svg>
+                                </div>
+                                <h3 class="text-xl font-bold mb-2 tracking-tight text-slate-800">I Found Something</h3>
+                                <p class="text-slate-500 text-[11px] leading-relaxed font-medium">Report a found item to the community.</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex gap-3">
-                        <button onclick="openReportModal('Lost')" class="px-4 py-2.5 bg-red-500/20 border border-red-500/30 text-red-400 rounded-xl text-xs font-bold hover:bg-red-500/30 transition-all">I Lost Something</button>
-                        <button onclick="openReportModal('Found')" class="px-4 py-2.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-xl text-xs font-bold hover:bg-emerald-500/30 transition-all">I Found Something</button>
+                </header>
+
+                <main class="max-w-7xl mx-auto px-8 w-full -mt-8 relative z-20">
+                    <!-- Combined Search & Filter Bar -->
+                    <div class="mb-12">
+                        <div class="relative flex flex-col lg:flex-row items-center gap-4 bg-white/90 backdrop-blur-md p-3 rounded-[32px] shadow-md border border-slate-200">
+                            <!-- Search Input -->
+                            <div class="flex-grow relative group w-full">
+                                <div class="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+                                </div>
+                                <input
+                                    type="text"
+                                    id="lf-search"
+                                    oninput="filterLFItems()"
+                                    placeholder="Search for items (e.g. Blue Wallet, iPhone 13)..."
+                                    class="w-full bg-white border border-slate-200 text-slate-800 placeholder:text-slate-400 pl-16 pr-8 py-4 rounded-[20px] focus:outline-none focus:ring-1 focus:ring-blue-500 font-medium transition-all text-xs"
+                                />
+                            </div>
+
+                            <!-- Dropdowns Group -->
+                            <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+                                <!-- Categories Dropdown -->
+                                <div class="relative min-w-[200px] flex-1">
+                                    <select
+                                        id="lf-filter-category"
+                                        onchange="filterLFItems()"
+                                        class="w-full bg-white border border-slate-200 text-slate-800 cursor-pointer px-6 py-4 rounded-[20px] focus:outline-none focus:ring-1 focus:ring-blue-500 font-bold text-xs appearance-none pr-12 transition-all hover:bg-slate-50"
+                                    >
+                                        <option value="All" class="bg-white text-slate-800">All Categories</option>
+                                        <option value="Electronics" class="bg-white text-slate-800">Electronics</option>
+                                        <option value="Books" class="bg-white text-slate-800">Books</option>
+                                        <option value="Keys" class="bg-white text-slate-800">Keys</option>
+                                        <option value="Essentials" class="bg-white text-slate-800">Essentials</option>
+                                    </select>
+                                    <div class="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+                                    </div>
+                                </div>
+
+                                <!-- Types Dropdown -->
+                                <div class="relative min-w-[200px] flex-1">
+                                    <select
+                                        id="lf-filter-type"
+                                        onchange="filterLFItems()"
+                                        class="w-full bg-white border border-slate-200 text-slate-800 cursor-pointer px-6 py-4 rounded-[20px] focus:outline-none focus:ring-1 focus:ring-blue-500 font-bold text-xs appearance-none pr-12 transition-all hover:bg-slate-50"
+                                    >
+                                        <option value="All" class="bg-white text-slate-800">All Types</option>
+                                        <option value="Lost" class="bg-white text-slate-800">Lost Reports</option>
+                                        <option value="Found" class="bg-white text-slate-800">Found Reports</option>
+                                    </select>
+                                    <div class="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Items Grid -->
+                    <div id="lf-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <!-- LF items dynamically populated in light theme -->
+                    </div>
+                </main>
+            </div>
+
+            <!-- 7. ITEM DETAILS VIEW (LIGHT THEME MATCHING PROJECT UI) -->
+            <div id="view-item-details" class="page-view hidden animate-fade-in text-slate-800">
+                <!-- Back to L&F Hub Button -->
+                <button onclick="navigateTo('lost-and-found')" class="mb-6 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-bold flex items-center gap-2">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Lost & Found Hub
+                </button>
+
+                <div class="flex flex-col lg:flex-row gap-8">
+                    <!-- Left Column: Item Information -->
+                    <div class="w-full lg:w-3/5 space-y-6">
+                        <div class="w-full h-96 bg-gray-200 rounded-[40px] overflow-hidden shadow-2xl relative border-8 border-white">
+                            <span id="detail-item-photo" class="absolute inset-0 flex items-center justify-center text-8xl">📦</span>
+                            <div class="absolute top-6 left-6">
+                                <span id="detail-item-type" class="px-6 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest text-white shadow-xl bg-rose-600">
+                                    LOST
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-[40px] p-10 shadow-xl border border-gray-100 text-slate-800">
+                            <div class="flex justify-between items-start mb-8">
+                                <div>
+                                    <h2 id="detail-item-name" class="text-3xl font-black text-slate-900 mb-1 leading-tight uppercase tracking-tight">Item Name</h2>
+                                    <span id="detail-item-category" class="px-3 py-1 bg-slate-100 rounded-lg text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none inline-block">Category</span>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Posted By</p>
+                                    <p id="detail-item-owner" class="text-xs font-black text-blue-600 uppercase tracking-widest">Owner</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4 mb-8">
+                                <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100">
+                                    <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2">Location</p>
+                                    <p id="detail-item-location" class="text-sm font-black text-slate-800">Location Details</p>
+                                </div>
+                                <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100">
+                                    <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-2">Date</p>
+                                    <p id="detail-item-date" class="text-sm font-black text-slate-800">Date</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1">Description</p>
+                                <div id="detail-item-desc" class="text-slate-600 bg-slate-50/50 p-6 rounded-3xl text-sm leading-relaxed border border-dashed border-slate-200 mb-8">
+                                    Item description text...
+                                </div>
+                            </div>
+
+                            <!-- Action panel trigger -->
+                            <div id="detail-action-panel"></div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Interactive Chat Column -->
+                    <div class="w-full lg:w-2/5">
+                        <div class="bg-white rounded-[40px] shadow-2xl border border-slate-100 flex flex-col h-[600px] overflow-hidden relative text-slate-800" id="detail-chat-panel">
+                            <!-- Loaded via JS -->
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Search & Filters -->
-                <div class="flex flex-col md:flex-row gap-4 mb-6">
-                    <div class="flex-grow relative">
-                        <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-                        <input type="text" id="lf-search" oninput="filterLFItems()" placeholder="Search by name, description or location..." class="w-full bg-slate-900/50 border border-slate-700/50 text-white pl-11 pr-4 py-3 rounded-xl text-xs focus:ring-1 focus:ring-sky-500 focus:outline-none">
+            <!-- 8. RATING & REWARD VIEW (LIGHT THEME MATCHING PROJECT UI) -->
+            <div id="view-rate-reward" class="page-view hidden animate-fade-in text-slate-800">
+                <div class="max-w-2xl mx-auto glass-card bg-white rounded-[40px] border border-gray-100 overflow-hidden shadow-2xl p-8 space-y-6">
+                    <div class="border-b border-gray-100 pb-4 text-center">
+                        <div class="w-16 h-16 rounded-2xl bg-amber-500/10 text-amber-500 border border-amber-500/20 flex items-center justify-center text-3xl mx-auto mb-3">⭐</div>
+                        <h2 class="font-outfit font-extrabold text-xl text-slate-900">Rate and Reward Finder</h2>
+                        <p class="text-slate-500 text-xs mt-1" id="rate-reward-subtitle">Review experience with the finder</p>
                     </div>
-                    <div class="flex gap-2">
-                        <select id="lf-filter-category" onchange="filterLFItems()" class="bg-slate-900/50 border border-slate-700/50 text-slate-200 px-4 py-3 rounded-xl text-xs focus:outline-none">
-                            <option value="All">All Categories</option>
-                            <option value="Electronics">Electronics</option>
-                            <option value="Books">Books</option>
-                            <option value="Keys">Keys</option>
-                            <option value="Essentials">Essentials</option>
-                        </select>
-                        <select id="lf-filter-type" onchange="filterLFItems()" class="bg-slate-900/50 border border-slate-700/50 text-slate-200 px-4 py-3 rounded-xl text-xs focus:outline-none">
-                            <option value="All">All Types</option>
-                            <option value="Lost">Lost Reports</option>
-                            <option value="Found">Found Reports</option>
-                        </select>
-                    </div>
-                </div>
 
-                <!-- LF Items Grid -->
-                <div id="lf-grid" class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <!-- LF items dynamic -->
+                    <!-- Rating Step -->
+                    <div id="rr-step-rating" class="space-y-6">
+                        <div class="text-center">
+                            <p class="text-xs text-slate-500 uppercase tracking-wider mb-2 font-bold">Your Rating</p>
+                            <div class="flex justify-center gap-2" id="star-rating-buttons">
+                                <button onclick="setStarRating(1)" class="star-btn text-4xl text-slate-300 hover:scale-110 transition-transform">★</button>
+                                <button onclick="setStarRating(2)" class="star-btn text-4xl text-slate-300 hover:scale-110 transition-transform">★</button>
+                                <button onclick="setStarRating(3)" class="star-btn text-4xl text-slate-300 hover:scale-110 transition-transform">★</button>
+                                <button onclick="setStarRating(4)" class="star-btn text-4xl text-slate-300 hover:scale-110 transition-transform">★</button>
+                                <button onclick="setStarRating(5)" class="star-btn text-4xl text-slate-300 hover:scale-110 transition-transform">★</button>
+                            </div>
+                            <p id="star-rating-label" class="text-xs text-amber-600 mt-2 font-bold uppercase"></p>
+                        </div>
+
+                        <!-- Labels -->
+                        <div>
+                            <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-2 font-bold">What stood out?</p>
+                            <div class="flex flex-wrap gap-2" id="quick-labels-box">
+                                <button onclick="toggleRRLabel(this, 'Delivered with care')" class="label-btn px-4 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 hover:bg-slate-50 text-slate-600">📦 Delivered with care</button>
+                                <button onclick="toggleRRLabel(this, 'Easy to retrieve')" class="label-btn px-4 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 hover:bg-slate-50 text-slate-600">🤝 Easy to retrieve</button>
+                                <button onclick="toggleRRLabel(this, 'Trustworthy')" class="label-btn px-4 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 hover:bg-slate-50 text-slate-600">🛡️ Trustworthy</button>
+                                <button onclick="toggleRRLabel(this, 'Quick response')" class="label-btn px-4 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 hover:bg-slate-50 text-slate-600">⚡ Quick response</button>
+                                <button onclick="toggleRRLabel(this, 'Friendly')" class="label-btn px-4 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 hover:bg-slate-50 text-slate-600">😊 Friendly</button>
+                            </div>
+                        </div>
+
+                        <!-- Comment -->
+                        <div>
+                            <label class="block text-[10px] text-slate-500 uppercase tracking-widest mb-1.5 font-bold">Feedback Comments</label>
+                            <textarea id="rr-comment" rows="2" placeholder="Write details about the collection..." class="w-full bg-white border border-slate-200 text-slate-700 px-3 py-2 rounded-xl text-xs focus:outline-none resize-none"></textarea>
+                        </div>
+
+                        <!-- Send points toggle -->
+                        <div class="flex justify-between items-center p-4 bg-amber-50 border border-amber-100 rounded-xl">
+                            <div>
+                                <p class="text-xs font-bold text-slate-900">Send Points Reward?</p>
+                                <p class="text-[9px] text-slate-500">Optionally transfer points to the finder</p>
+                            </div>
+                            <input type="checkbox" id="rr-points-toggle" onchange="toggleRRPointsSlider()" class="w-4 h-4 accent-sky-500">
+                        </div>
+
+                        <!-- Points Slider -->
+                        <div id="rr-points-slider-sec" class="hidden space-y-2 animate-fade-in">
+                            <label class="block text-[10px] text-slate-500 uppercase tracking-widest font-bold">Points Count (1-100)</label>
+                            <input type="range" id="rr-points-range" min="1" max="100" value="10" oninput="updateRRPointsVal()" class="w-full accent-sky-500">
+                            <div class="flex justify-between items-center text-xs font-bold">
+                                <span>1 pt</span>
+                                <span id="rr-points-val" class="text-sky-500 text-sm">10 pts</span>
+                                <span>100 pts</span>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-3 pt-4 border-t border-gray-100">
+                            <button onclick="navigateTo('lost-and-found')" class="flex-1 py-2.5 bg-slate-200 text-slate-600 rounded-xl text-xs font-bold hover:bg-slate-300">Cancel</button>
+                            <button onclick="submitRROverall()" class="flex-1 py-2.5 bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-xl text-xs font-bold hover:brightness-110">Confirm & Complete</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -611,49 +916,156 @@
     </div>
 
     <!-- MODAL: REPORT LOST/FOUND ITEM -->
-    <div id="report-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
-        <div class="w-full max-w-lg glass-card p-6 text-slate-200">
-            <div class="flex justify-between items-center border-b border-slate-700/50 pb-3 mb-4">
-                <h3 class="font-outfit font-bold text-lg text-white" id="report-modal-title">Report Item</h3>
-                <button onclick="closeModal('report-modal')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+    <div id="report-modal" class="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-[#ffffff] rounded-3xl shadow-2xl w-full max-w-5xl overflow-hidden animate-fade-in relative flex flex-col max-h-[95vh] border-4 border-slate-100 text-slate-800">
+            <!-- Header -->
+            <div class="bg-[#ffffff] px-8 py-8 rounded-t-2xl relative shrink-0 border-b border-slate-200">
+                <button onclick="closeModal('report-modal')" class="absolute top-6 right-6 bg-[#f1f5f9] hover:bg-rose-500 hover:text-white text-slate-500 rounded-xl p-2 h-10 w-10 flex items-center justify-center transition-all font-black z-10">✕</button>
+                <div class="flex flex-col">
+                    <h2 class="text-3xl font-black tracking-tighter uppercase text-slate-800" id="report-modal-title">Report Item</h2>
+                    <p class="text-slate-500 mt-1 text-xs font-black uppercase tracking-widest">SLIIT Student Support Hub</p>
+                </div>
             </div>
-            <form onsubmit="submitLFReport(event)" class="space-y-3">
-                <input type="hidden" id="report-type">
-                <div>
-                    <label class="block text-[10px] text-slate-400 mb-1">Item Name</label>
-                    <input type="text" id="report-name" required placeholder="e.g. Apple Watch Series 7" class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none">
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[10px] text-slate-400 mb-1">Category</label>
-                        <select id="report-category" required class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none">
-                            <option value="Electronics">Electronics</option>
-                            <option value="Books">Books</option>
-                            <option value="Keys">Keys</option>
-                            <option value="Essentials">Essentials</option>
-                        </select>
+
+            <div class="flex flex-col lg:flex-row flex-1 overflow-y-auto bg-[#f8fafc]">
+                <!-- Left: Interactive Map -->
+                <div class="w-full lg:w-1/2 p-8 border-r flex flex-col border-slate-200">
+                    <div class="flex items-center justify-between mb-6">
+                        <label class="text-[11px] font-black uppercase tracking-widest flex items-center gap-2 text-[#4C6EF5]">Select Location on Map</label>
+                        <span class="text-[10px] font-black bg-blue-50 px-3 py-1.5 rounded-lg tracking-widest border border-blue-100 text-[#023E8A]">CAMPUS GPS</span>
                     </div>
-                    <div>
-                        <label class="block text-[10px] text-slate-400 mb-1">Location</label>
-                        <input type="text" id="report-location" required placeholder="e.g. Malabe Main Library" class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none">
+                    <div class="flex-1 w-full bg-[#ffffff] rounded-3xl overflow-hidden min-h-[400px] shadow-sm relative border border-slate-200 z-0">
+                        <div id="report-map" class="w-full h-full"></div>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-[10px] text-slate-400 mb-1">Date</label>
-                        <input type="date" id="report-date" required class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] text-slate-400 mb-1">Representative Photo (Emoji/Text)</label>
-                        <input type="text" id="report-photo" required placeholder="e.g. ⌚" class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none">
-                    </div>
+
+                <!-- Right: Form Details -->
+                <div class="w-full lg:w-1/2">
+                    <form onsubmit="submitLFReport(event)" class="p-8 space-y-6">
+                        <input type="hidden" id="report-type">
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="space-y-2 col-span-2 sm:col-span-1">
+                                <label class="text-[10px] font-black uppercase tracking-widest text-[#4C6EF5]">Item Name</label>
+                                <input type="text" id="report-name" required placeholder="e.g. Apple Watch Series 7" class="w-full border border-slate-200 rounded-2xl p-4 outline-none focus:ring-2 font-bold text-sm bg-[#ffffff] shadow-sm text-slate-900" />
+                            </div>
+                            <div class="space-y-2 col-span-2 sm:col-span-1">
+                                <label class="text-[10px] font-black uppercase tracking-widest text-[#4C6EF5]">Category</label>
+                                <select id="report-category" required class="w-full border border-slate-200 rounded-2xl p-4 outline-none focus:ring-2 font-bold text-sm bg-[#ffffff] shadow-sm text-slate-900">
+                                    <option value="Electronics">Electronics</option>
+                                    <option value="Essentials">Essentials</option>
+                                    <option value="Books">Books</option>
+                                    <option value="Keys">Keys</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2 col-span-2 sm:col-span-1">
+                                <label class="text-[10px] font-black uppercase tracking-widest text-[#4C6EF5]">Location</label>
+                                <select id="report-location" onchange="syncLocationFromDropdown(this.value)" required class="w-full border border-slate-200 rounded-2xl p-4 outline-none focus:ring-2 font-bold text-sm bg-[#ffffff] shadow-sm text-slate-900">
+                                    <option value="" disabled selected>Select location...</option>
+                                    <option value="Faculty of Computing">Faculty of Computing</option>
+                                    <option value="Faculty of Engineering">Faculty of Engineering</option>
+                                    <option value="Faculty of Humanities & Sciences">Faculty of Humanities & Sciences</option>
+                                    <option value="SLIIT Business School">SLIIT Business School</option>
+                                    <option value="School of Architecture">School of Architecture</option>
+                                    <option value="Library">Library</option>
+                                    <option value="Auditorium">Auditorium</option>
+                                    <option value="Main Entrance">Main Entrance</option>
+                                    <option value="Reception">Reception</option>
+                                    <option value="Play Ground">Play Ground</option>
+                                    <option value="Basketball Court">Basketball Court</option>
+                                    <option value="Quadrangle">Quadrangle</option>
+                                    <option value="Greenhouse">Greenhouse</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="space-y-3 col-span-2 sm:col-span-1">
+                                <div class="flex items-center justify-between">
+                                    <label class="text-[10px] font-black uppercase tracking-widest text-[#4C6EF5]">Date / Time</label>
+                                    <button type="button" onclick="setReportTimeToNow()" class="text-[9px] font-black bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-all border border-blue-100 uppercase tracking-widest text-[#023E8A]">SET TO NOW</button>
+                                </div>
+                                <div class="flex flex-col gap-3">
+                                    <input
+                                        type="date"
+                                        id="report-date"
+                                        onchange="validateReportDateTime()"
+                                        class="w-full border border-slate-200 rounded-2xl p-4 outline-none focus:ring-2 font-bold text-sm bg-[#ffffff] shadow-sm transition-all text-slate-900"
+                                        required
+                                    />
+
+                                    <div class="flex items-center justify-between bg-[#ffffff] px-5 h-[58px] rounded-2xl border border-slate-200 shadow-sm">
+                                        <div class="flex items-center gap-1">
+                                            <input
+                                                type="text"
+                                                id="report-time-hh"
+                                                maxLength="2"
+                                                value="12"
+                                                oninput="validateHour(this)"
+                                                onblur="padHour(this)"
+                                                placeholder="12"
+                                                class="w-10 h-10 bg-slate-50/50 hover:bg-slate-100 rounded-xl font-bold text-sm outline-none transition-all text-center border-none text-slate-900"
+                                            />
+                                            <span class="font-bold text-slate-300 px-1">:</span>
+                                            <input
+                                                type="text"
+                                                id="report-time-mm"
+                                                maxLength="2"
+                                                value="00"
+                                                oninput="validateMinute(this)"
+                                                onblur="padMinute(this)"
+                                                placeholder="00"
+                                                class="w-10 h-10 bg-slate-50/50 hover:bg-slate-100 rounded-xl font-bold text-sm outline-none transition-all text-center border-none text-slate-900"
+                                            />
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            id="report-time-pp"
+                                            onclick="toggleAmPm()"
+                                            class="bg-slate-50 hover:bg-slate-100 px-4 py-2 rounded-xl text-sm font-bold transition-all border border-slate-100 shadow-sm flex items-center gap-2 group text-slate-900"
+                                        >
+                                            <span id="report-time-pp-text" class="group-hover:scale-105 transition-transform uppercase">PM</span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" class="text-slate-400 group-hover:text-slate-600 transition-colors"><path d="m7 15 5 5 5-5" /><path d="m7 9 5-5 5 5" /></svg>
+                                        </button>
+                                    </div>
+
+                                    <!-- Future Time Error Message -->
+                                    <div id="future-time-error" class="hidden flex items-center gap-2 px-4 py-3 bg-red-50 border border-red-100 rounded-2xl animate-pulse">
+                                        <div class="bg-red-500 text-white rounded-full p-1 shadow-sm flex items-center justify-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
+                                        </div>
+                                        <span class="text-[10px] font-black text-red-600 uppercase tracking-[0.05em]">Invalid Entry: Future time selected</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-[#4C6EF5]">Description</label>
+                            <textarea id="report-desc" required rows="3" placeholder="Identify marks, color, casing detail..." class="w-full border border-slate-200 rounded-2xl p-5 outline-none focus:ring-2 min-h-[120px] font-bold text-sm bg-[#ffffff] shadow-sm text-slate-900"></textarea>
+                        </div>
+
+                        <div class="w-full border-4 border-dashed rounded-3xl p-10 text-center hover:bg-slate-100 border-slate-200 transition relative">
+                            <input type="file" id="report-file-input" accept="image/*" onchange="handleReportPhotoUpload(this)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                            <p class="font-black text-xs uppercase tracking-widest mb-1 text-[#023E8A]" id="report-photo-status">Upload Item Photo</p>
+                            <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">JPG, PNG up to 5MB</p>
+                            <input type="hidden" id="report-photo-data">
+                        </div>
+
+                        <div class="flex justify-between items-center pt-4">
+                            <button type="button" onclick="closeModal('report-modal')" class="px-8 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all hover:bg-slate-200 text-[#4A5568]">Cancel</button>
+                            <button
+                                type="submit"
+                                id="report-submit-btn"
+                                class="px-12 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all shadow-xl text-white transform active:scale-95 flex items-center gap-3 bg-gradient-to-br from-[#0d3b66] to-[#0ea5e9]"
+                            >
+                                <span id="report-submit-text">Submit Report</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <div>
-                    <label class="block text-[10px] text-slate-400 mb-1">Description Details</label>
-                    <textarea id="report-desc" required rows="3" placeholder="Identify marks, color, casing detail..." class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none resize-none"></textarea>
-                </div>
-                <button type="submit" class="w-full mt-4 py-2.5 bg-gradient-to-r from-sky-500 to-blue-600 rounded-xl text-xs font-bold text-white shadow-lg hover:brightness-110 transition-all">Submit Report</button>
-            </form>
+            </div>
         </div>
     </div>
 
@@ -791,27 +1203,6 @@
         </div>
     </div>
 
-    <!-- MODAL: CHAT SIMULATOR (LOST AND FOUND) -->
-    <div id="chat-simulator" class="fixed bottom-6 right-20 z-40 w-80 glass-card text-slate-200 overflow-hidden hidden flex-col shadow-2xl h-[400px]">
-        <div class="p-3 bg-slate-900/80 border-b border-slate-700/50 flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                <div>
-                    <p id="chat-header-name" class="font-bold text-xs text-white">Chat with Owner</p>
-                    <span id="chat-header-item" class="text-[9px] text-slate-400">Apple Watch claim</span>
-                </div>
-            </div>
-            <button onclick="closeChat()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
-        </div>
-        <div id="chat-messages" class="flex-grow p-3 space-y-2 overflow-y-auto text-xs bg-slate-950/20">
-            <!-- chats -->
-        </div>
-        <form onsubmit="sendChatMessage(event)" class="p-2 border-t border-slate-700/50 flex gap-2 bg-slate-900/50">
-            <input type="text" id="chat-input" placeholder="Type a message..." class="flex-grow bg-slate-900 border border-slate-700 text-white px-3 py-1.5 rounded-lg text-xs focus:outline-none">
-            <button type="submit" class="px-3 py-1.5 bg-sky-500 rounded-lg text-xs font-bold text-white hover:bg-sky-600"><i data-lucide="send" class="w-3.5 h-3.5"></i></button>
-        </form>
-    </div>
-
     <!-- CHATBOT SIMULATOR BUTTON & PANEL -->
     <div class="fixed bottom-6 right-6 z-50">
         <button onclick="toggleChatbot()" class="w-12 h-12 bg-gradient-to-r from-sky-500 to-blue-600 rounded-full flex items-center justify-center text-white shadow-xl hover:scale-110 hover:shadow-sky-500/30 transition-all">
@@ -880,8 +1271,6 @@
         };
 
         let activeTab = 'homepage';
-
-        // Cart items
         let cartItems = [];
 
         // Sessions DB
@@ -948,7 +1337,7 @@
                 photo: "🪪",
                 type: "Found",
                 status: "ACTIVE",
-                userName: "Heshani Wickramasinghe"
+                userName: "Ruwan Nayanajith"
             },
             {
                 id: "lf-2",
@@ -1027,9 +1416,21 @@
             { id: "TXN-20260615-102938", name: "Kavindu Silva", method: "bank", amount: 500, status: "pending" }
         ];
 
-        // Chat Simulator State
+        // Chat database mapping
         let activeChatSession = null;
-        let chatMessages = {};
+        let chatMessages = {
+            "lf-1-Heshani Wickramasinghe": [
+                { senderName: "Heshani Wickramasinghe", text: "Hey! I think that belongs to my friend Ruwan Perera." },
+                { senderName: "Ruwan Nayanajith", text: "Great, tell him to meet me or initiate the handover validation." }
+            ]
+        };
+
+        let selectedDetailsItemId = null;
+        let activeDetailsChatPartner = null;
+
+        // Rating and Reward Temp State
+        let rrSelectedStars = 0;
+        let rrSelectedLabels = [];
 
         // Helper functions
         function showToast(text, type = 'success') {
@@ -1067,30 +1468,25 @@
             });
         }
 
-        // Close dropdowns on outside click
-        window.addEventListener('click', function(e) {
-            if (!e.target.closest('#header-profile-btn') && !e.target.closest('#profile-menu')) {
-                document.getElementById('profile-menu').classList.add('hidden');
-            }
-            if (!e.target.closest('.relative')) {
-                // simple fallbacks
-            }
-        });
-
         // View Navigations
         function navigateTo(viewId) {
-            // Hide all views
             document.querySelectorAll('.page-view').forEach(view => view.classList.add('hidden'));
-            // Show target
             document.getElementById(`view-${viewId}`).classList.remove('hidden');
             
-            // Adjust active tab highlighting
+            // Toggle Light/Dark Theme based on page view
+            if (viewId === 'homepage') {
+                document.body.classList.remove('theme-light');
+                document.body.classList.add('theme-dark');
+            } else {
+                document.body.classList.remove('theme-dark');
+                document.body.classList.add('theme-light');
+            }
+            
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.classList.remove('text-sky-300', 'bg-white/5');
                 tab.classList.add('text-slate-300');
             });
             
-            // Highlight matching nav tab
             const tabMap = {
                 'homepage': 0,
                 'kuppi': 1,
@@ -1109,7 +1505,6 @@
 
             activeTab = viewId;
 
-            // Load data views
             if (viewId === 'kuppi') renderKuppiSessions();
             if (viewId === 'lost-and-found') renderLFItems();
             if (viewId === 'leaderboard') renderLeaderboard();
@@ -1119,16 +1514,14 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Switch Role (Admin/Student)
+        // Switch Role
         function toggleRole() {
             if (currentUser.role === 'Admin') {
                 currentUser.role = 'Student';
-                currentUser.email = 'it23722040@my.sliit.lk';
                 document.getElementById('admin-nav-btn').classList.add('hidden');
                 showToast("Switched to Student Role. Admin panel hidden.", "success");
             } else {
                 currentUser.role = 'Admin';
-                currentUser.email = 'it23722040@my.sliit.lk';
                 document.getElementById('admin-nav-btn').classList.remove('hidden');
                 showToast("Switched to Administrator Mode.", "success");
             }
@@ -1138,7 +1531,7 @@
         }
 
         function logout() {
-            showToast("Logged out successfully (Mock refresh)", "success");
+            showToast("Logged out successfully", "success");
             setTimeout(() => window.location.reload(), 1000);
         }
 
@@ -1154,7 +1547,6 @@
             }
         }
 
-        // Modals Management
         function openModal(id) {
             document.getElementById(id).classList.remove('hidden');
             document.getElementById(id).classList.add('flex');
@@ -1188,7 +1580,7 @@
                 time: document.getElementById('host-time').value,
                 skills: document.getElementById('host-skills').value.split(',').map(s => s.trim()),
                 coverImage: "📖",
-                status: "Pending" // Sent to Admin
+                status: "Pending"
             };
             kuppiSessions.push(newSession);
             closeModal('host-modal');
@@ -1363,7 +1755,6 @@
             closeModal('checkout-modal');
             showToast(`Card Payment successful! Transaction ID: ${txnId}`, "success");
             
-            // Add enrolled sessions to profile
             cartItems = [];
             updateCartUI();
             renderKuppiSessions();
@@ -1379,7 +1770,7 @@
                 name: currentUser.name,
                 method: "bank",
                 amount: total,
-                status: "pending" // Admin must approve
+                status: "pending"
             });
 
             closeModal('checkout-modal');
@@ -1390,23 +1781,237 @@
             renderKuppiSessions();
         }
 
+        // SLIIT Campus GPS Locations
+        const sliitLocations = [
+            { name: 'Faculty of Computing', position: [6.9149, 79.9731] },
+            { name: 'Faculty of Engineering', position: [6.9145, 79.9715] },
+            { name: 'Faculty of Humanities & Sciences', position: [6.9155, 79.9719] },
+            { name: 'SLIIT Business School', position: [6.9156, 79.9742] },
+            { name: 'School of Architecture', position: [6.9151, 79.9705] },
+            { name: 'Library', position: [6.9146, 79.9735] },
+            { name: 'Auditorium', position: [6.9143, 79.9739] },
+            { name: 'Main Entrance', position: [6.9138, 79.9745] },
+            { name: 'Reception', position: [6.9144, 79.9726] },
+            { name: 'Play Ground', position: [6.9158, 79.9738] },
+            { name: 'Basketball Court', position: [6.9142, 79.9718] },
+            { name: 'Quadrangle', position: [6.9140, 79.9732] },
+            { name: 'Greenhouse', position: [6.9160, 79.9725] }
+        ];
+
+        let reportMap;
+        let reportMapMarkers = [];
+
+        function initReportMap() {
+            if (reportMap) {
+                reportMap.remove();
+            }
+            reportMap = L.map('report-map').setView([6.9147, 79.9733], 17);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(reportMap);
+            
+            reportMapMarkers = [];
+            sliitLocations.forEach(loc => {
+                let marker = L.circleMarker(loc.position, {
+                    radius: 9,
+                    color: '#4C6EF5',
+                    fillColor: '#4C6EF5',
+                    fillOpacity: 0.6,
+                    weight: 2
+                }).addTo(reportMap);
+                
+                marker.bindTooltip(`<span class="font-bold text-[10px] uppercase tracking-tighter text-[#023E8A]">${loc.name}</span>`, {
+                    direction: 'top',
+                    offset: [0, -10],
+                    permanent: false
+                });
+                
+                marker.on('click', () => {
+                    selectMapLocation(loc.name, marker);
+                });
+                
+                reportMapMarkers.push({ name: loc.name, marker: marker });
+            });
+        }
+
+        function selectMapLocation(locName, clickedMarker) {
+            document.getElementById('report-location').value = locName;
+            
+            reportMapMarkers.forEach(m => {
+                if (m.name === locName) {
+                    m.marker.setStyle({
+                        color: '#023E8A',
+                        fillColor: '#023E8A',
+                        fillOpacity: 1,
+                        weight: 5
+                    });
+                } else {
+                    m.marker.setStyle({
+                        color: '#4C6EF5',
+                        fillColor: '#4C6EF5',
+                        fillOpacity: 0.6,
+                        weight: 2
+                    });
+                }
+            });
+        }
+
+        function syncLocationFromDropdown(locName) {
+            const found = reportMapMarkers.find(m => m.name === locName);
+            if (found) {
+                selectMapLocation(locName, found.marker);
+                reportMap.setView(found.marker.getLatLng(), 17);
+            }
+        }
+
+        // Date/Time picker helper functions
+        function setReportTimeToNow() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            document.getElementById('report-date').value = `${year}-${month}-${day}`;
+            
+            let hours = now.getHours();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; 
+            
+            document.getElementById('report-time-hh').value = String(hours).padStart(2, '0');
+            document.getElementById('report-time-mm').value = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('report-time-pp-text').innerText = ampm;
+            
+            validateReportDateTime();
+        }
+
+        function toggleAmPm() {
+            const el = document.getElementById('report-time-pp-text');
+            el.innerText = el.innerText === 'AM' ? 'PM' : 'AM';
+            validateReportDateTime();
+        }
+
+        function validateHour(input) {
+            let val = input.value.replace(/\D/g, '');
+            if (val && parseInt(val) > 12) val = '12';
+            input.value = val;
+            validateReportDateTime();
+        }
+
+        function padHour(input) {
+            let val = input.value;
+            if (val) {
+                val = val.padStart(2, '0');
+                if (val === '00') val = '12';
+                input.value = val;
+            }
+            validateReportDateTime();
+        }
+
+        function validateMinute(input) {
+            let val = input.value.replace(/\D/g, '');
+            if (val && parseInt(val) > 59) val = '59';
+            input.value = val;
+            validateReportDateTime();
+        }
+
+        function padMinute(input) {
+            let val = input.value;
+            if (val) {
+                input.value = val.padStart(2, '0');
+            }
+            validateReportDateTime();
+        }
+
+        function getSelectedReportDateTime() {
+            const dd = document.getElementById('report-date').value;
+            const hh = document.getElementById('report-time-hh').value;
+            const mm = document.getElementById('report-time-mm').value;
+            const pp = document.getElementById('report-time-pp-text').innerText;
+            if (!dd || !hh || !mm) return null;
+            
+            let hInt = parseInt(hh) || 12;
+            let milH = hInt;
+            if (pp === 'PM' && hInt < 12) milH += 12;
+            if (pp === 'AM' && hInt === 12) milH = 0;
+            
+            return new Date(`${dd}T${String(milH).padStart(2, '0')}:${mm.padStart(2, '0')}`);
+        }
+
+        function validateReportDateTime() {
+            const selected = getSelectedReportDateTime();
+            const errorEl = document.getElementById('future-time-error');
+            const submitBtn = document.getElementById('report-submit-btn');
+            
+            if (selected && selected > new Date()) {
+                errorEl.classList.remove('hidden');
+                submitBtn.disabled = true;
+                submitBtn.classList.remove('bg-gradient-to-br', 'from-[#0d3b66]', 'to-[#0ea5e9]');
+                submitBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
+                return false;
+            } else {
+                errorEl.classList.add('hidden');
+                submitBtn.disabled = false;
+                submitBtn.classList.add('bg-gradient-to-br', 'from-[#0d3b66]', 'to-[#0ea5e9]');
+                submitBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                return true;
+            }
+        }
+
+        function handleReportPhotoUpload(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    document.getElementById('report-photo-data').value = reader.result;
+                    document.getElementById('report-photo-status').innerText = '✓ Photo Ready';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
         // LOST AND FOUND LOGIC
         function openReportModal(type) {
             document.getElementById('report-type').value = type;
             document.getElementById('report-modal-title').innerText = `Report ${type} Item`;
+            
+            // Clear fields
+            document.getElementById('report-name').value = '';
+            document.getElementById('report-category').value = 'Electronics';
+            document.getElementById('report-location').value = '';
+            document.getElementById('report-desc').value = '';
+            document.getElementById('report-photo-data').value = '';
+            document.getElementById('report-photo-status').innerText = 'Upload Item Photo';
+            
+            setReportTimeToNow();
             openModal('report-modal');
+            
+            // Initialize map after modal is shown to ensure correct dimensions
+            setTimeout(() => {
+                initReportMap();
+            }, 200);
         }
 
         function submitLFReport(event) {
             event.preventDefault();
+            
+            const selectedDateTime = getSelectedReportDateTime();
+            const dateStr = selectedDateTime ? selectedDateTime.toISOString().slice(0, 16).replace('T', ' ') : document.getElementById('report-date').value;
+            
+            const photoInput = document.getElementById('report-photo-data').value;
+            let defaultEmoji = "📦";
+            const cat = document.getElementById('report-category').value;
+            if (cat === 'Keys') defaultEmoji = "🔑";
+            else if (cat === 'Books') defaultEmoji = "📖";
+            else if (cat === 'Electronics') defaultEmoji = "🎧";
+            else if (cat === 'Essentials') defaultEmoji = "🪪";
+            const finalPhoto = photoInput || defaultEmoji;
+
             const newReport = {
                 id: `lf-${Date.now()}`,
                 name: document.getElementById('report-name').value,
                 category: document.getElementById('report-category').value,
-                location: document.getElementById('report-location').value,
-                date: document.getElementById('report-date').value,
+                location: document.getElementById('report-location').value || "Library",
+                date: dateStr,
                 description: document.getElementById('report-desc').value,
-                photo: document.getElementById('report-photo').value || "📦",
+                photo: finalPhoto,
                 type: document.getElementById('report-type').value,
                 status: "ACTIVE",
                 userName: currentUser.name
@@ -1448,44 +2053,66 @@
 
             filtered.forEach(item => {
                 const isMyPost = item.userName === currentUser.name;
+                
+                // Set tag colors
+                const tagColorClass = "bg-sky-500/10 text-sky-400";
+                
+                // Status colors matching react code
+                let typeColor = "#10B981"; // Found
+                if (item.status === 'CLAIMING') typeColor = "#F59E0B";
+                else if (item.type === 'Lost') typeColor = "#EF4444";
+
                 grid.innerHTML += `
-                    <div class="glass-card overflow-hidden hover:border-sky-500/40 hover:shadow-sky-500/5 transition-all duration-300 flex flex-col justify-between">
+                    <div class="bg-white rounded-[32px] border border-slate-200 overflow-hidden flex flex-col justify-between hover:shadow-2xl transition-all duration-500 group shadow-md text-slate-800">
                         <div>
-                            <div class="h-44 bg-slate-800/40 flex items-center justify-center text-6xl border-b border-slate-700/50 relative">
+                            <div class="relative h-56 bg-slate-100 overflow-hidden flex items-center justify-center text-7xl">
                                 ${item.photo}
-                                <span class="absolute top-3 left-3 px-2 py-0.5 rounded text-[9px] font-bold text-white shadow ${
-                                    item.type === 'Lost' ? 'bg-red-500' : 'bg-emerald-500'
-                                }">${item.type}</span>
-                                <span class="absolute bottom-3 right-3 px-2 py-0.5 bg-slate-900/80 rounded text-[9px] font-bold text-slate-300 uppercase">${item.status}</span>
+                                <div class="absolute top-4 left-4 flex gap-2">
+                                    <span class="px-3 py-1 text-[10px] font-black uppercase rounded-lg tracking-wider text-white shadow-lg" style="background-color: ${typeColor}">
+                                        ${item.status === 'CLAIMING' ? 'CLAIMING' : item.type}
+                                    </span>
+                                </div>
+                                <div class="absolute bottom-4 right-4 bg-white/80 backdrop-blur px-3 py-1 text-[10px] font-bold text-slate-800 uppercase rounded-lg shadow-sm border border-slate-200">
+                                    ${item.status}
+                                </div>
                             </div>
-                            <div class="p-5 space-y-2">
-                                <span class="px-2 py-0.5 bg-sky-500/10 text-sky-400 rounded-md text-[9px] font-bold uppercase">${item.category}</span>
-                                <h3 class="font-outfit font-bold text-sm text-white leading-tight uppercase tracking-tight">${item.name}</h3>
-                                <p class="text-[10px] text-slate-400 line-clamp-2">${item.description}</p>
-                                <p class="text-[9px] text-slate-400 font-semibold mt-2">📍 ${item.location}</p>
-                                <p class="text-[9px] text-slate-500 font-semibold">📅 Reported: ${item.date}</p>
+                            <div class="p-6 space-y-3">
+                                <h3 class="font-black text-lg break-words line-clamp-2 leading-tight uppercase tracking-tight" style="color: #0EA5E9">
+                                    ${item.name}
+                                </h3>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-widest bg-sky-100 text-sky-500">
+                                        ${item.category}
+                                    </span>
+                                </div>
+                                <div class="flex flex-col gap-1.5 text-xs font-semibold text-slate-600 mt-2">
+                                    <div class="flex items-center gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
+                                        ${item.location}
+                                    </div>
+                                    <div class="flex items-center gap-2 text-[10px] text-slate-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" class="opacity-60"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
+                                        ${item.date}
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="p-5 pt-0">
+                        <div class="p-6 pt-0 flex gap-2">
+                            <button onclick="openItemDetails('${item.id}')" class="flex-grow py-3 bg-[#1E293B] text-white rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-1 shadow-md hover:shadow-lg active:scale-95">
+                                Details
+                            </button>
                             ${isMyPost ? `
-                                <button onclick="deleteLFItem('${item.id}')" class="w-full py-2 bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl text-[10px] font-bold uppercase tracking-wider hover:bg-red-500/30 transition-all">Delete Post</button>
+                                <button onclick="deleteLFItem('${item.id}')" class="px-3 bg-red-100 text-red-600 rounded-2xl font-bold uppercase text-[10px] shadow hover:bg-red-200 transition-all" title="Delete Post"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                             ` : `
-                                <div class="flex gap-2">
-                                    <button onclick="startSimulatedChat('${item.id}', '${item.name}', '${item.userName}')" class="flex-1 py-2 bg-sky-500 text-white rounded-xl text-[10px] font-bold uppercase tracking-wider hover:brightness-110 transition-all flex items-center justify-center gap-1"><i data-lucide="message-square" class="w-3 h-3"></i> Chat</button>
-                                    ${item.status === 'ACTIVE' ? `
-                                        <button onclick="requestHandover('${item.id}', '${item.userName}')" class="flex-1 py-2 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-xl text-[10px] font-bold uppercase tracking-wider hover:bg-emerald-500/30 transition-all">Claim</button>
-                                    ` : ''}
-                                </div>
+                                <button onclick="openItemDetails('${item.id}')" class="flex-grow py-3 bg-[#0EA5E9] text-white rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl active:scale-95">
+                                    Chat
+                                </button>
                             `}
                         </div>
                     </div>
                 `;
             });
             lucide.createIcons();
-        }
-
-        function filterLFItems() {
-            renderLFItems();
         }
 
         function deleteLFItem(id) {
@@ -1496,113 +2123,333 @@
             }
         }
 
-        // CHAT SIMULATOR
-        function startSimulatedChat(itemId, itemName, ownerName) {
-            activeChatSession = { itemId, itemName, ownerName };
-            document.getElementById('chat-header-name').innerText = `Chat with ${ownerName}`;
-            document.getElementById('chat-header-item').innerText = itemName;
+        // ITEM DETAILS SUB-PAGE LOGIC
+        function openItemDetails(itemId) {
+            const item = lfItems.find(i => i.id === itemId);
+            if (!item) return;
+
+            selectedDetailsItemId = itemId;
             
-            document.getElementById('chat-simulator').classList.remove('hidden');
-            document.getElementById('chat-simulator').classList.add('flex');
+            document.getElementById('detail-item-photo').innerText = item.photo;
+            document.getElementById('detail-item-type').innerText = item.type;
+            document.getElementById('detail-item-type').className = `px-6 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest text-white shadow-xl ${item.type === 'Lost' ? 'bg-rose-600' : 'bg-emerald-600'}`;
+            document.getElementById('detail-item-name').innerText = item.name;
+            document.getElementById('detail-item-category').innerText = item.category;
+            document.getElementById('detail-item-owner').innerText = item.userName;
+            document.getElementById('detail-item-location').innerText = item.location;
+            document.getElementById('detail-item-date').innerText = item.date;
+            document.getElementById('detail-item-desc').innerText = item.description || "No description details provided.";
+
+            const actionPanel = document.getElementById('detail-action-panel');
+            actionPanel.innerHTML = '';
             
-            const messagesBox = document.getElementById('chat-messages');
-            messagesBox.innerHTML = '';
+            const isOwner = item.userName === currentUser.name;
+            if (item.status === 'RESOLVED') {
+                actionPanel.innerHTML = `
+                    <div class="mt-10 p-8 bg-slate-50 rounded-[32px] border-2 border-slate-200 border-dashed flex flex-col items-center justify-center text-center relative overflow-hidden">
+                        <div class="w-16 h-16 bg-white shadow-sm border border-slate-200 rounded-2xl flex items-center justify-center text-slate-400 mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" /><path d="m9 12 2 2 4-4" /></svg>
+                        </div>
+                        <h4 class="text-sm font-black uppercase tracking-tight text-slate-800">Handover Completed</h4>
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-1 max-w-xs">This item has been successfully verified and returned. Handover is closed.</p>
+                    </div>
+                `;
+            } else if (isOwner && item.type === 'Found') {
+                actionPanel.innerHTML = `
+                    <div class="mt-10 p-8 bg-emerald-50 rounded-[32px] border-2 border-emerald-100 border-dashed relative overflow-hidden group text-slate-800">
+                        <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div class="flex items-center gap-5">
+                                <div class="w-16 h-16 bg-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-xl">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" /><path d="m9 12 2 2 4-4" /></svg>
+                                </div>
+                                <div class="text-left">
+                                    <h4 class="text-sm font-black uppercase tracking-tight text-emerald-900">Initiate Secure Handover</h4>
+                                    <p class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest mt-1">Found something? Verify the owner now.</p>
+                                </div>
+                            </div>
+                            <button onclick="requestHandover('${item.id}')" class="w-full md:w-auto px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-lg active:scale-95">Start Handover</button>
+                        </div>
+                    </div>
+                `;
+            } else if (!isOwner && item.type === 'Lost') {
+                actionPanel.innerHTML = `
+                    <div class="mt-10 p-8 bg-blue-55 rounded-[32px] border-2 border-blue-100 border-dashed relative overflow-hidden group text-slate-800" style="background-color: #f0f7ff">
+                        <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div class="flex items-center gap-5">
+                                <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-xl">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" /><path d="m9 12 2 2 4-4" /></svg>
+                                </div>
+                                <div class="text-left">
+                                    <h4 class="text-sm font-black uppercase tracking-tight text-blue-900">Found this item?</h4>
+                                    <p class="text-[10px] font-bold text-blue-600 uppercase tracking-widest mt-1">Start the verification process to return it.</p>
+                                </div>
+                            </div>
+                            <button onclick="requestHandover('${item.id}')" class="w-full md:w-auto px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-lg active:scale-95">Report Found</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderDetailsChatPanel(item);
+            navigateTo('item-details');
+        }
+
+        function renderDetailsChatPanel(item) {
+            const panel = document.getElementById('detail-chat-panel');
+            panel.innerHTML = '';
             
-            // Prefill mock dialogue
-            const defaultKey = `${itemId}-${ownerName}`;
-            if (!chatMessages[defaultKey]) {
-                chatMessages[defaultKey] = [
-                    { sender: ownerName, text: `Hello! Thanks for reaching out regarding the "${itemName}".` },
-                    { sender: ownerName, text: "Let's coordinate a secure handover on campus." }
+            const isOwner = item.userName === currentUser.name;
+            
+            if (isOwner) {
+                const activePartners = Object.keys(chatMessages)
+                    .filter(key => key.startsWith(item.id + "-"))
+                    .map(key => key.substring(item.id.length + 1));
+                
+                panel.className = "bg-white rounded-[40px] shadow-2xl border border-slate-100 p-8 h-[600px] flex flex-col";
+                panel.innerHTML = `
+                    <div class="flex items-center gap-3 mb-8">
+                        <div class="h-8 w-1.5 bg-[#023E8A] rounded-full"></div>
+                        <h3 class="text-xs font-black uppercase tracking-widest text-slate-800">Direct Inquiries</h3>
+                    </div>
+                    <div class="flex-grow overflow-y-auto space-y-3" id="details-owner-conversations-list">
+                        <!-- Loaded dynamically -->
+                    </div>
+                `;
+
+                const list = document.getElementById('details-owner-conversations-list');
+                if (activePartners.length === 0) {
+                    list.innerHTML = `
+                        <div class="h-full flex flex-col items-center justify-center text-center opacity-30 py-20">
+                            <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+                                <i data-lucide="message-square" class="text-slate-400"></i>
+                            </div>
+                            <p class="text-[10px] font-black uppercase tracking-widest">No conversations yet</p>
+                        </div>
+                    `;
+                } else {
+                    activePartners.forEach(partner => {
+                        list.innerHTML += `
+                            <div onclick="selectDetailsChatPartner('${partner}')" class="flex items-center gap-4 p-4 rounded-3xl hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-all cursor-pointer">
+                                <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl flex items-center justify-center text-white font-black text-lg">
+                                    ${partner.charAt(0).toUpperCase()}
+                                </div>
+                                <div class="flex-grow text-left">
+                                    <h4 class="font-black text-sm uppercase tracking-tight text-slate-800">${partner}</h4>
+                                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Tap to view private chat</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+            } else {
+                activeDetailsChatPartner = item.userName;
+                panel.innerHTML = `
+                    <!-- Chat Header -->
+                    <div class="p-8 border-b border-slate-50 bg-gradient-to-r from-white to-slate-50/30 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-[#023E8A] rounded-2xl flex items-center justify-center text-white font-black text-lg shadow-inner">
+                                ${item.userName.charAt(0).toUpperCase()}
+                            </div>
+                            <div class="text-left">
+                                <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Private chat with</p>
+                                <h3 class="font-black text-slate-800 text-base uppercase tracking-tight">${item.userName}</h3>
+                            </div>
+                        </div>
+                        <button onclick="openRateReward('${item.id}', '${item.userName}')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-[8px] font-black uppercase tracking-widest transition-all border border-slate-200">Reward</button>
+                    </div>
+
+                    <!-- Message Scroller -->
+                    <div class="flex-grow p-8 overflow-y-auto bg-slate-50/30 flex flex-col gap-6" id="details-chat-scroller">
+                        <!-- Loaded dynamically -->
+                    </div>
+
+                    <!-- Input Area -->
+                    <div class="p-6 bg-white border-t border-slate-50">
+                        <form onsubmit="submitDetailsChatMessage(event)" class="flex gap-3 bg-slate-50 border-2 border-slate-100 rounded-[28px] p-2">
+                            <input type="text" id="details-chat-input" placeholder="Type your private message..." class="flex-grow bg-transparent px-4 py-3 text-sm font-bold outline-none text-slate-700">
+                            <button type="submit" class="w-12 h-12 bg-[#023E8A] text-white rounded-2xl hover:bg-blue-700 flex items-center justify-center transition-all"><i data-lucide="send" class="w-4 h-4"></i></button>
+                        </form>
+                    </div>
+                `;
+                loadDetailsMessages();
+            }
+            lucide.createIcons();
+        }
+
+        function selectDetailsChatPartner(partner) {
+            activeDetailsChatPartner = partner;
+            const item = lfItems.find(i => i.id === selectedDetailsItemId);
+            
+            const panel = document.getElementById('detail-chat-panel');
+            panel.innerHTML = `
+                <!-- Chat Header -->
+                <div class="p-8 border-b border-slate-50 bg-gradient-to-r from-white to-slate-50/30 flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-[#023E8A] rounded-2xl flex items-center justify-center text-white font-black text-lg shadow-inner">
+                            ${partner.charAt(0).toUpperCase()}
+                        </div>
+                        <div class="text-left">
+                            <p class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Private chat with</p>
+                            <h3 class="font-black text-slate-800 text-base uppercase tracking-tight">${partner}</h3>
+                        </div>
+                    </div>
+                    <button onclick="renderDetailsChatPanel(lfItems.find(i=>i.id==='${selectedDetailsItemId}'))" class="px-4 py-2 bg-slate-100 rounded-xl text-[8px] font-black uppercase tracking-widest text-slate-600 hover:bg-slate-200 transition-all border border-slate-200">Back</button>
+                </div>
+
+                <!-- Message Scroller -->
+                <div class="flex-grow p-8 overflow-y-auto bg-slate-50/30 flex flex-col gap-6" id="details-chat-scroller">
+                    <!-- Loaded dynamically -->
+                </div>
+
+                <!-- Input Area -->
+                <div class="p-6 bg-white border-t border-slate-50">
+                    <form onsubmit="submitDetailsChatMessage(event)" class="flex gap-3 bg-slate-50 border-2 border-slate-100 rounded-[28px] p-2">
+                        <input type="text" id="details-chat-input" placeholder="Type your private message..." class="flex-grow bg-transparent px-4 py-3 text-sm font-bold outline-none text-slate-700">
+                        <button type="submit" class="w-12 h-12 bg-[#023E8A] text-white rounded-2xl hover:bg-blue-700 flex items-center justify-center transition-all"><i data-lucide="send" class="w-4 h-4"></i></button>
+                    </form>
+                </div>
+            `;
+            loadDetailsMessages();
+            lucide.createIcons();
+        }
+
+        function loadDetailsMessages() {
+            const scroller = document.getElementById('details-chat-scroller');
+            scroller.innerHTML = '';
+            
+            const chatKey = `${selectedDetailsItemId}-${activeDetailsChatPartner}`;
+            if (!chatMessages[chatKey]) {
+                chatMessages[chatKey] = [
+                    { senderName: activeDetailsChatPartner, text: "Hi, I have information regarding this item. Let's arrange verification." }
                 ];
             }
 
-            chatMessages[defaultKey].forEach(msg => {
-                appendChatMessage(msg.sender, msg.text);
+            chatMessages[chatKey].forEach(msg => {
+                const isMe = msg.senderName === currentUser.name;
+                scroller.innerHTML += `
+                    <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
+                        <span class="text-[8px] font-black text-slate-400 uppercase mb-1.5 ${isMe ? 'mr-1' : 'ml-1'}">${msg.senderName}</span>
+                        <div class="max-w-[85%] p-4 rounded-3xl text-sm font-medium shadow-sm leading-relaxed ${
+                            isMe 
+                            ? 'bg-[#023E8A] text-white rounded-tr-none' 
+                            : 'bg-white border border-slate-100 text-slate-800 rounded-tl-none'
+                        }">
+                            ${msg.text}
+                        </div>
+                    </div>
+                `;
             });
+            scroller.scrollTop = scroller.scrollHeight;
         }
 
-        function closeChat() {
-            document.getElementById('chat-simulator').classList.add('hidden');
-            document.getElementById('chat-simulator').classList.remove('flex');
-        }
-
-        function sendChatMessage(event) {
+        function submitDetailsChatMessage(event) {
             event.preventDefault();
-            const input = document.getElementById('chat-input');
+            const input = document.getElementById('details-chat-input');
             const text = input.value.trim();
-            if (!text || !activeChatSession) return;
+            if (!text) return;
             
-            const chatKey = `${activeChatSession.itemId}-${activeChatSession.ownerName}`;
-            if (!chatMessages[chatKey]) chatMessages[chatKey] = [];
+            const chatKey = `${selectedDetailsItemId}-${activeDetailsChatPartner}`;
+            chatMessages[chatKey].push({
+                senderName: currentUser.name,
+                text: text
+            });
             
-            // Push user message
-            const userMsg = { sender: currentUser.name, text };
-            chatMessages[chatKey].push(userMsg);
-            appendChatMessage(currentUser.name, text);
             input.value = '';
+            loadDetailsMessages();
 
-            // Simulated auto-reply
             setTimeout(() => {
-                const replyText = "Perfect! Please tap the 'Claim' button in the dashboard, and fill in the verification ID so we can verify details with the administrator.";
-                const replyMsg = { sender: activeChatSession.ownerName, text: replyText };
-                chatMessages[chatKey].push(replyMsg);
-                appendChatMessage(activeChatSession.ownerName, replyText);
+                let autoReply = "Understood. Let's complete the handover claiming form so the administrator can process details and credit our profiles.";
+                chatMessages[chatKey].push({
+                    senderName: activeDetailsChatPartner,
+                    text: autoReply
+                });
+                loadDetailsMessages();
             }, 1000);
         }
 
-        function appendChatMessage(sender, text) {
-            const box = document.getElementById('chat-messages');
-            const isMe = sender === currentUser.name;
-            const bubble = document.createElement('div');
-            bubble.className = `p-2.5 rounded-2xl max-w-[80%] text-[11px] leading-relaxed ${
-                isMe ? 'bg-sky-500 text-white ml-auto rounded-tr-none' : 'bg-white/10 text-slate-200 mr-auto rounded-tl-none border border-white/5'
-            }`;
-            bubble.innerHTML = `
-                <p class="font-bold text-[9px] opacity-75 mb-0.5">${sender}</p>
-                <p>${text}</p>
-            `;
-            box.appendChild(bubble);
-            box.scrollTop = box.scrollHeight;
-        }
+        // RATING & REWARD FLOW
+        let rrActiveItemId = null;
+        let rrActiveFinderName = null;
 
-        // HANDOVER INITIATION
-        function requestHandover(itemId, finderName) {
-            const code = Math.floor(1000 + Math.random()*9000);
-            document.getElementById('handover-item-id').value = itemId;
-            document.getElementById('handover-name').value = currentUser.name;
-            document.getElementById('handover-regno').value = currentUser.studentRegistrationNumber;
-            document.getElementById('handover-code').value = code;
-            openModal('handover-modal');
-        }
-
-        function submitHandover(event) {
-            event.preventDefault();
-            const itemId = document.getElementById('handover-item-id').value;
-            const item = lfItems.find(i => i.id === itemId);
-            if (item) {
-                item.status = "CLAIMING";
-            }
+        function openRateReward(itemId, finderName) {
+            rrActiveItemId = itemId;
+            rrActiveFinderName = finderName;
             
-            const newHandover = {
-                id: `hand-${Date.now()}`,
-                itemId: itemId,
-                finderId: item.userName,
-                finderName: item.userName,
-                receiverName: document.getElementById('handover-name').value,
-                email: currentUser.email,
-                registrationNo: document.getElementById('handover-regno').value,
-                contactNumber: currentUser.phoneNumber,
-                universityIdPhoto: document.getElementById('handover-id-proof').value,
-                verificationCode: document.getElementById('handover-code').value,
-                status: "PENDING"
-            };
+            document.getElementById('rate-reward-subtitle').innerText = `Review experience with ${finderName}`;
+            
+            rrSelectedStars = 0;
+            rrSelectedLabels = [];
+            document.getElementById('rr-comment').value = '';
+            document.getElementById('rr-points-toggle').checked = false;
+            document.getElementById('rr-points-slider-sec').classList.add('hidden');
+            
+            document.querySelectorAll('.star-btn').forEach(btn => {
+                btn.className = "star-btn text-4xl text-slate-350 hover:scale-110 transition-transform";
+            });
+            document.getElementById('star-rating-label').innerText = '';
 
-            handovers.push(newHandover);
-            closeModal('handover-modal');
-            showToast("Claim request submitted. Administrative code sent to email.", "success");
-            renderLFItems();
-            renderAdminView();
+            navigateTo('rate-reward');
+        }
+
+        function setStarRating(stars) {
+            rrSelectedStars = stars;
+            const labels = ["", "Poor", "Fair", "Good", "Very Good", "Excellent"];
+            document.getElementById('star-rating-label').innerText = labels[stars];
+
+            const btns = document.querySelectorAll('.star-btn');
+            btns.forEach((btn, idx) => {
+                if (idx < stars) {
+                    btn.className = "star-btn text-4xl text-yellow-450 hover:scale-110 transition-transform text-yellow-400";
+                } else {
+                    btn.className = "star-btn text-4xl text-slate-350 hover:scale-110 transition-transform";
+                }
+            });
+        }
+
+        function toggleRRLabel(btn, label) {
+            if (rrSelectedLabels.includes(label)) {
+                rrSelectedLabels = rrSelectedLabels.filter(l => l !== label);
+                btn.className = "label-btn px-4 py-2 rounded-xl text-xs font-semibold bg-white border border-slate-200 hover:bg-slate-50 text-slate-600";
+            } else {
+                rrSelectedLabels.push(label);
+                btn.className = "label-btn px-4 py-2 rounded-xl text-xs font-semibold bg-sky-100 border border-sky-400 text-sky-600";
+            }
+        }
+
+        function toggleRRPointsSlider() {
+            const toggle = document.getElementById('rr-points-toggle');
+            if (toggle.checked) {
+                document.getElementById('rr-points-slider-sec').classList.remove('hidden');
+            } else {
+                document.getElementById('rr-points-slider-sec').classList.add('hidden');
+            }
+        }
+
+        function updateRRPointsVal() {
+            const val = document.getElementById('rr-points-range').value;
+            document.getElementById('rr-points-val').innerText = `${val} pts`;
+        }
+
+        function submitRROverall() {
+            if (rrSelectedStars === 0) {
+                showToast("Please choose a star rating first.", "error");
+                return;
+            }
+
+            const pointsToggled = document.getElementById('rr-points-toggle').checked;
+            const pointsVal = pointsToggled ? parseInt(document.getElementById('rr-points-range').value) : 0;
+
+            showToast("Review submitted successfully!", "success");
+            
+            if (pointsVal > 0) {
+                currentUser.points += pointsVal;
+                showToast(`Awarded ${pointsVal} points to ${rrActiveFinderName}.`, "success");
+                checkBadgeTrigger();
+            }
+
+            setTimeout(() => {
+                navigateTo('lost-and-found');
+            }, 500);
         }
 
         // LEADERBOARD LOGIC
@@ -1621,11 +2468,9 @@
         }
 
         function renderLeaderboard() {
-            // Render list
             const list = document.getElementById('leaderboard-list');
             list.innerHTML = '';
             
-            // Mock users
             const users = [
                 { name: "Kavindu Silva", regno: "IT23020492", returned: 7, points: 230, emojiList: ["🤝", "💖"] },
                 { name: "Heshani Wickramasinghe", regno: "IT23722040", returned: 4, points: 120, emojiList: ["🤝", "💖"] },
@@ -1658,7 +2503,6 @@
                 `;
             });
 
-            // Render badges tab
             const badgesGrid = document.getElementById('leaderboard-badges-sec');
             badgesGrid.innerHTML = '';
             badges.forEach(b => {
@@ -1692,7 +2536,6 @@
             document.getElementById('profile-phone').value = currentUser.phoneNumber;
             document.getElementById('profile-regno').value = currentUser.studentRegistrationNumber;
 
-            // Render earned badges
             const badgesRow = document.getElementById('profile-badges-row');
             badgesRow.innerHTML = '';
             currentUser.badges.forEach(bn => {
@@ -1848,7 +2691,6 @@
                 
                 showToast("Handover confirmed! Reward points dispatched to finder.", "success");
                 
-                // Update points and trigger badge check
                 currentUser.points += 20;
                 checkBadgeTrigger();
                 
@@ -1902,8 +2744,6 @@
 
         // BADGE UNLOCKED CELEBRATION
         function checkBadgeTrigger() {
-            // Simulate check for points threshold or returned count (e.g. Ruwan has returned 3 items)
-            // Let's unlock "Golden Heart" badge manually for this demonstration if points exceed 140
             if (currentUser.points >= 140 && !currentUser.badges.includes("Hawk Eyes")) {
                 currentUser.badges.push("Hawk Eyes");
                 const b = badges.find(x => x.name === "Hawk Eyes");
@@ -1917,8 +2757,6 @@
             document.getElementById('celebration-badge-emoji').innerText = badge.emoji;
             document.getElementById('celebration-badge-name').innerText = badge.name;
             document.getElementById('celebration-badge-desc').innerText = badge.description;
-            
-            // Show Overlay
             openModal('celebration-overlay');
         }
 
@@ -1950,6 +2788,7 @@
             }, 800);
         }
 
+        // Ask Bot Quick Options
         function askBot(question) {
             appendBotMessage("User", question);
             setTimeout(() => {
@@ -1986,7 +2825,6 @@
             showToast("Notifications cleared", "success");
         }
 
-        // Initialize App View
         updateHeaderDetails();
         navigateTo('homepage');
     </script>
