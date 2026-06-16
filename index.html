@@ -1,0 +1,1994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uni-Connect | SLIIT Student Hub</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Space Grotesk"', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --uc-bg: #020617;
+            --uc-glass: rgba(15, 23, 42, 0.45);
+            --uc-border: rgba(14, 165, 233, 0.2);
+            --uc-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
+            --uc-gradient: linear-gradient(135deg, #0ea5e9, #2563eb, #1d4ed8);
+        }
+
+        body {
+            font-family: "Space Grotesk", sans-serif;
+            background-color: var(--uc-bg);
+            color: #f0f9ff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Frosted Glassmorphism */
+        .glass-card {
+            background: var(--uc-glass);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid var(--uc-border);
+            box-shadow: var(--uc-shadow);
+            border-radius: 24px;
+        }
+
+        .glass-header {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Floating Blobs animation */
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.35;
+        }
+        .blob-1 {
+            width: 450px;
+            height: 450px;
+            background: #1e3a8a;
+            top: -10%;
+            right: -5%;
+            animation: floatBlob1 25s infinite alternate;
+        }
+        .blob-2 {
+            width: 500px;
+            height: 500px;
+            background: #0891b2;
+            bottom: -10%;
+            left: -5%;
+            animation: floatBlob2 30s infinite alternate-reverse;
+        }
+        .blob-3 {
+            width: 350px;
+            height: 350px;
+            background: #3b82f6;
+            top: 40%;
+            left: 20%;
+            animation: floatBlob1 20s infinite alternate-reverse;
+        }
+
+        @keyframes floatBlob1 {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(80px, 120px) scale(1.1); }
+            100% { transform: translate(-30px, 180px) scale(0.9); }
+        }
+
+        @keyframes floatBlob2 {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(120px, -80px) rotate(90deg); }
+            100% { transform: translate(-60px, 100px) rotate(180deg); }
+        }
+
+        /* Hide Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(14, 165, 233, 0.4);
+            border-radius: 99px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(14, 165, 233, 0.6);
+        }
+
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #38bdf8, #60a5fa, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="relative">
+
+    <!-- Background Blobs -->
+    <div class="fixed inset-0 overflow-hidden z-0">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="relative z-10 flex flex-col min-h-screen">
+
+        <!-- HEADER -->
+        <header class="glass-header sticky top-0 z-50 w-full px-6 py-4">
+            <div class="max-w-7xl mx-auto flex items-center justify-between">
+                <!-- Logo -->
+                <button onclick="navigateTo('homepage')" class="flex items-center gap-3 text-left">
+                    <div class="w-10 h-10 rounded-xl bg-sky-500/20 border border-sky-500 flex items-center justify-center text-sky-400">
+                        <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-outfit font-extrabold text-lg tracking-tight text-white leading-none">Uni-Connect</h1>
+                        <span class="text-[10px] text-sky-400 font-semibold tracking-widest uppercase">Student Hub of SLIIT</span>
+                    </div>
+                </button>
+
+                <!-- Navigation Tabs -->
+                <nav class="hidden md:flex items-center gap-2">
+                    <button onclick="navigateTo('homepage')" class="nav-tab px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:bg-white/5 text-sky-300">Home</button>
+                    <button onclick="navigateTo('kuppi')" class="nav-tab px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:bg-white/5 text-slate-300">Kuppi Sessions</button>
+                    <button onclick="navigateTo('lost-and-found')" class="nav-tab px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:bg-white/5 text-slate-300">Lost & Found</button>
+                    <button onclick="navigateTo('leaderboard')" class="nav-tab px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:bg-white/5 text-slate-300">Leaderboard</button>
+                    <button id="admin-nav-btn" onclick="navigateTo('admin')" class="nav-tab px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:bg-white/5 text-slate-300 hidden">Admin Panel</button>
+                </nav>
+
+                <!-- Actions Group (Cart, Notifications, Profile) -->
+                <div class="flex items-center gap-3">
+                    <!-- Notifications -->
+                    <div class="relative">
+                        <button onclick="toggleDropdown('notification-menu')" class="w-10 h-10 rounded-xl bg-slate-800/60 border border-slate-700/50 flex items-center justify-center hover:bg-slate-700 transition-colors">
+                            <i data-lucide="bell" class="w-5 h-5 text-slate-300"></i>
+                            <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-sky-500 rounded-full border border-slate-900"></span>
+                        </button>
+                        <!-- Notifications Dropdown -->
+                        <div id="notification-menu" class="hidden absolute right-0 mt-3 w-80 glass-card p-4 text-slate-200 z-50">
+                            <p class="font-bold text-sm border-b border-slate-700/50 pb-2 mb-2 flex justify-between">
+                                <span>Notifications</span>
+                                <span class="text-xs text-sky-400 cursor-pointer" onclick="clearNotifications()">Clear All</span>
+                            </p>
+                            <div id="notification-list" class="space-y-3 max-h-60 overflow-y-auto text-xs">
+                                <div class="p-2 bg-white/5 rounded-lg border border-white/5">
+                                    <p class="font-semibold text-white">🏆 Badge Earned!</p>
+                                    <p class="text-slate-400 mt-0.5">You received the "Good Samaritan" badge.</p>
+                                </div>
+                                <div class="p-2 bg-white/5 rounded-lg border border-white/5">
+                                    <p class="font-semibold text-white">💰 Payout Confirmed</p>
+                                    <p class="text-slate-400 mt-0.5">Payment for your Hosted Kuppi has been processed.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cart -->
+                    <div class="relative">
+                        <button onclick="toggleDropdown('cart-menu')" class="w-10 h-10 rounded-xl bg-slate-800/60 border border-slate-700/50 flex items-center justify-center hover:bg-slate-700 transition-colors relative">
+                            <i data-lucide="shopping-cart" class="w-5 h-5 text-slate-300"></i>
+                            <span id="cart-badge" class="absolute -top-1 -right-1 bg-sky-500 text-white font-bold text-[9px] w-5 h-5 rounded-full flex items-center justify-center border border-slate-900 hidden">0</span>
+                        </button>
+                        <!-- Cart Dropdown -->
+                        <div id="cart-menu" class="hidden absolute right-0 mt-3 w-80 glass-card p-4 text-slate-200 z-50">
+                            <p class="font-bold text-sm border-b border-slate-700/50 pb-2 mb-2">Shopping Cart</p>
+                            <div id="cart-list" class="space-y-3 max-h-60 overflow-y-auto text-xs my-2">
+                                <p class="text-slate-400 text-center py-4">No items added yet.</p>
+                            </div>
+                            <div id="cart-total-row" class="hidden border-t border-slate-700/50 pt-2 mt-2">
+                                <div class="flex justify-between font-bold text-sm">
+                                    <span>Total:</span>
+                                    <span id="cart-total-val">LKR 0.00</span>
+                                </div>
+                                <button onclick="openCheckoutModal()" class="w-full mt-3 py-2 bg-gradient-to-r from-sky-500 to-blue-600 rounded-xl text-xs font-bold text-white hover:brightness-110 transition-all">Proceed to Checkout</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Profile Dropdown Trigger -->
+                    <div class="relative">
+                        <button id="header-profile-btn" onclick="toggleDropdown('profile-menu')" class="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-700/50 hover:bg-slate-800/60 transition-colors">
+                            <div class="w-7 h-7 rounded-lg bg-sky-500 flex items-center justify-center font-bold text-white text-xs" id="header-avatar">A</div>
+                            <span class="text-xs font-semibold text-slate-200 hidden sm:inline" id="header-username">Admin User</span>
+                            <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-400"></i>
+                        </button>
+                        <!-- Profile Menu -->
+                        <div id="profile-menu" class="hidden absolute right-0 mt-3 w-48 glass-card p-2 text-slate-200 z-50">
+                            <div class="px-3 py-2 border-b border-slate-700/50 mb-1">
+                                <p class="text-xs text-slate-400">Signed in as</p>
+                                <p class="text-xs font-bold text-white truncate" id="profile-menu-email">admin@sliit.lk</p>
+                            </div>
+                            <button onclick="navigateTo('profile')" class="w-full text-left px-3 py-2 rounded-lg text-xs hover:bg-white/5 transition-colors flex items-center gap-2"><i data-lucide="user" class="w-3.5 h-3.5"></i> My Profile</button>
+                            <button onclick="toggleRole()" class="w-full text-left px-3 py-2 rounded-lg text-xs hover:bg-white/5 transition-colors flex items-center gap-2"><i data-lucide="shuffle" class="w-3.5 h-3.5"></i> Switch Role</button>
+                            <button onclick="logout()" class="w-full text-left px-3 py-2 rounded-lg text-xs bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-colors flex items-center gap-2 mt-1"><i data-lucide="log-out" class="w-3.5 h-3.5"></i> Sign Out</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- PAGE CONTENT CONTAINER -->
+        <main class="flex-grow w-full max-w-7xl mx-auto px-6 py-8 relative z-10">
+            
+            <!-- 1. HOMEPAGE VIEW -->
+            <div id="view-homepage" class="page-view animate-fade-in">
+                <!-- Hero -->
+                <section class="text-center py-12 md:py-20 max-w-3xl mx-auto">
+                    <span class="inline-block px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs font-semibold text-slate-300 tracking-wider mb-6">THE CENTRAL STUDENT PORTAL</span>
+                    <h2 class="font-outfit font-extrabold text-4xl md:text-6xl tracking-tight leading-none mb-6">Connect. Learn. <span class="gradient-text">Excel.</span></h2>
+                    <p class="text-slate-400 text-sm md:text-base leading-relaxed mb-10">
+                        Your all-in-one destination for university life at SLIIT. Manage your peer study sessions, claim lost items, configure your profile, and receive rewards.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button onclick="navigateTo('kuppi')" class="px-6 py-3 bg-white text-slate-900 font-bold rounded-xl shadow-lg hover:-translate-y-0.5 hover:shadow-sky-500/20 transition-all">Explore Kuppi Sessions</button>
+                        <button onclick="navigateTo('lost-and-found')" class="px-6 py-3 bg-sky-500/10 border border-sky-500/30 text-sky-400 font-bold rounded-xl hover:bg-sky-500/20 transition-all">Lost & Found Hub</button>
+                    </div>
+                </section>
+
+                <!-- Features Grid -->
+                <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                    <div onclick="navigateTo('kuppi')" class="glass-card p-8 hover:-translate-y-2 hover:border-white/30 hover:bg-white/10 transition-all cursor-pointer group">
+                        <div class="w-12 h-12 bg-indigo-500/10 border border-indigo-500/20 rounded-xl flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">🎓</div>
+                        <h3 class="font-outfit font-bold text-xl text-white mb-2">Kuppi Sessions</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed">Join or host peer-to-peer tutoring sessions to master difficult modules together. Download course short notes and practice materials.</p>
+                    </div>
+                    <div onclick="navigateTo('lost-and-found')" class="glass-card p-8 hover:-translate-y-2 hover:border-white/30 hover:bg-white/10 transition-all cursor-pointer group">
+                        <div class="w-12 h-12 bg-sky-500/10 border border-sky-500/20 rounded-xl flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">🔍</div>
+                        <h3 class="font-outfit font-bold text-xl text-white mb-2">Lost & Found</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed">Lost something? Found something? Report details, search locations, start real-time chats, and complete secure handovers on campus.</p>
+                    </div>
+                    <div onclick="navigateTo('leaderboard')" class="glass-card p-8 hover:-translate-y-2 hover:border-white/30 hover:bg-white/10 transition-all cursor-pointer group">
+                        <div class="w-12 h-12 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">🏆</div>
+                        <h3 class="font-outfit font-bold text-xl text-white mb-2">Rewards & Badges</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed">Earn points for returns, claim customized badges, and see who are the top campus helpers on the global community leaderboard.</p>
+                    </div>
+                </section>
+            </div>
+
+            <!-- 2. KUPPI SESSIONS VIEW -->
+            <div id="view-kuppi" class="page-view hidden animate-fade-in">
+                <!-- Banner header -->
+                <div class="p-8 rounded-3xl bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-900 border border-indigo-500/20 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div>
+                        <h2 class="font-outfit font-bold text-2xl text-white">🎓 Kuppi Study Sessions</h2>
+                        <p class="text-slate-400 text-xs mt-1">Book a lecture ticket or host your own session to tutor peers</p>
+                    </div>
+                    <button onclick="openHostModal()" class="px-5 py-2.5 bg-gradient-to-r from-sky-500 to-blue-600 rounded-xl text-xs font-bold text-white shadow-lg hover:shadow-sky-500/30 transition-all">Host a Session</button>
+                </div>
+
+                <!-- Search & Filters -->
+                <div class="flex flex-col md:flex-row gap-4 mb-6">
+                    <div class="flex-grow relative">
+                        <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                        <input type="text" id="kuppi-search" oninput="filterKuppiSessions()" placeholder="Search by module code, name or tutor..." class="w-full bg-slate-900/50 border border-slate-700/50 text-white pl-11 pr-4 py-3 rounded-xl text-xs focus:ring-1 focus:ring-sky-500 focus:outline-none">
+                    </div>
+                    <div class="w-full md:w-48">
+                        <select id="kuppi-filter-faculty" onchange="filterKuppiSessions()" class="w-full bg-slate-900/50 border border-slate-700/50 text-slate-200 px-4 py-3 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-sky-500">
+                            <option value="All">All Faculties</option>
+                            <option value="Computing">Faculty of Computing</option>
+                            <option value="Business">Faculty of Business</option>
+                            <option value="Engineering">Faculty of Engineering</option>
+                            <option value="Humanities">Humanities & Sciences</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Sessions Grid -->
+                <div id="kuppi-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Session cards dynamically populated -->
+                </div>
+            </div>
+
+            <!-- 3. LOST AND FOUND VIEW -->
+            <div id="view-lost-and-found" class="page-view hidden animate-fade-in">
+                <!-- Sub Banner -->
+                <div class="p-8 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 border border-slate-700/30 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                    <div>
+                        <h2 class="font-outfit font-bold text-2xl text-white">🔍 Lost & Found Hub</h2>
+                        <p class="text-slate-400 text-xs mt-1">Submit reports and help return items back to their owners</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="openReportModal('Lost')" class="px-4 py-2.5 bg-red-500/20 border border-red-500/30 text-red-400 rounded-xl text-xs font-bold hover:bg-red-500/30 transition-all">I Lost Something</button>
+                        <button onclick="openReportModal('Found')" class="px-4 py-2.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-xl text-xs font-bold hover:bg-emerald-500/30 transition-all">I Found Something</button>
+                    </div>
+                </div>
+
+                <!-- Search & Filters -->
+                <div class="flex flex-col md:flex-row gap-4 mb-6">
+                    <div class="flex-grow relative">
+                        <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                        <input type="text" id="lf-search" oninput="filterLFItems()" placeholder="Search by name, description or location..." class="w-full bg-slate-900/50 border border-slate-700/50 text-white pl-11 pr-4 py-3 rounded-xl text-xs focus:ring-1 focus:ring-sky-500 focus:outline-none">
+                    </div>
+                    <div class="flex gap-2">
+                        <select id="lf-filter-category" onchange="filterLFItems()" class="bg-slate-900/50 border border-slate-700/50 text-slate-200 px-4 py-3 rounded-xl text-xs focus:outline-none">
+                            <option value="All">All Categories</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Books">Books</option>
+                            <option value="Keys">Keys</option>
+                            <option value="Essentials">Essentials</option>
+                        </select>
+                        <select id="lf-filter-type" onchange="filterLFItems()" class="bg-slate-900/50 border border-slate-700/50 text-slate-200 px-4 py-3 rounded-xl text-xs focus:outline-none">
+                            <option value="All">All Types</option>
+                            <option value="Lost">Lost Reports</option>
+                            <option value="Found">Found Reports</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- LF Items Grid -->
+                <div id="lf-grid" class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <!-- LF items dynamic -->
+                </div>
+            </div>
+
+            <!-- 4. LEADERBOARD VIEW -->
+            <div id="view-leaderboard" class="page-view hidden animate-fade-in">
+                <div class="max-w-4xl mx-auto">
+                    <!-- Leaderboard Banner -->
+                    <div class="text-center py-8 px-6 rounded-3xl bg-gradient-to-br from-blue-950 via-indigo-900 to-sky-950 border border-indigo-500/20 mb-8 relative overflow-hidden">
+                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-sky-500/10 rounded-full blur-2xl"></div>
+                        <h2 class="font-outfit font-extrabold text-3xl text-white mb-2">🏆 Helper Leaderboard</h2>
+                        <p class="text-sky-300 text-xs">Celebrating the students making SLIIT a more collaborative community</p>
+                    </div>
+
+                    <!-- Mode Select -->
+                    <div class="flex gap-2 bg-slate-900/50 p-1.5 rounded-2xl border border-slate-700/50 mb-8 max-w-xs mx-auto">
+                        <button onclick="toggleLeaderboardTab('board')" id="tab-btn-board" class="flex-1 py-2 rounded-xl text-xs font-bold bg-sky-600 text-white transition-all">Leaderboard</button>
+                        <button onclick="toggleLeaderboardTab('badges')" id="tab-btn-badges" class="flex-1 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-all">All Badges</button>
+                    </div>
+
+                    <!-- TAB CONTENT: Leaderboard Ranking -->
+                    <div id="leaderboard-ranking-sec" class="space-y-4">
+                        <!-- Podium (Top 3) -->
+                        <div class="grid grid-cols-3 gap-4 mb-6 items-end">
+                            <!-- #2 -->
+                            <div class="glass-card p-4 text-center pb-6 border-slate-700/30">
+                                <div class="relative w-14 h-14 mx-auto mb-2 rounded-full border-2 border-slate-400 bg-slate-800/80 flex items-center justify-center font-bold text-white text-base">HW</div>
+                                <h3 class="font-bold text-sm text-white truncate">Heshani W.</h3>
+                                <p class="text-[10px] text-slate-400">4 Returned</p>
+                                <span class="inline-block mt-2 px-2.5 py-0.5 bg-slate-500/20 text-slate-300 rounded-full text-[10px] font-bold">🥈 120 pts</span>
+                            </div>
+                            <!-- #1 -->
+                            <div class="glass-card p-5 text-center pb-8 border-yellow-500/30 relative -translate-y-2">
+                                <div class="absolute -top-5 left-1/2 -translate-x-1/2 text-2xl">👑</div>
+                                <div class="relative w-16 h-16 mx-auto mb-2 rounded-full border-2 border-yellow-500 bg-slate-800/80 flex items-center justify-center font-bold text-white text-lg">KS</div>
+                                <h3 class="font-bold text-base text-white truncate">Kavindu S.</h3>
+                                <p class="text-[10px] text-slate-400">7 Returned</p>
+                                <span class="inline-block mt-2 px-3 py-1 bg-yellow-500/20 text-yellow-300 rounded-full text-xs font-bold">🥇 230 pts</span>
+                            </div>
+                            <!-- #3 -->
+                            <div class="glass-card p-4 text-center pb-6 border-amber-600/30">
+                                <div class="relative w-14 h-14 mx-auto mb-2 rounded-full border-2 border-amber-600 bg-slate-800/80 flex items-center justify-center font-bold text-white text-base">RN</div>
+                                <h3 class="font-bold text-sm text-white truncate">Ruwan N.</h3>
+                                <p class="text-[10px] text-slate-400">3 Returned</p>
+                                <span class="inline-block mt-2 px-2.5 py-0.5 bg-amber-600/20 text-amber-400 rounded-full text-[10px] font-bold">🥉 90 pts</span>
+                            </div>
+                        </div>
+
+                        <!-- Full list -->
+                        <div class="glass-card overflow-hidden">
+                            <div class="p-4 bg-white/5 border-b border-slate-700/50 flex justify-between text-xs font-bold text-slate-400">
+                                <div class="w-16">Rank</div>
+                                <div class="flex-grow">Student</div>
+                                <div class="w-24 text-center">Returned</div>
+                                <div class="w-24 text-right">Points</div>
+                            </div>
+                            <div class="divide-y divide-slate-800" id="leaderboard-list">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB CONTENT: Available Badges -->
+                    <div id="leaderboard-badges-sec" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Badges list dynamic -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. PROFILE VIEW -->
+            <div id="view-profile" class="page-view hidden animate-fade-in">
+                <div class="max-w-2xl mx-auto glass-card p-8">
+                    <div class="flex items-center gap-4 border-b border-slate-700/50 pb-6 mb-6">
+                        <div class="w-20 h-20 bg-sky-500 rounded-2xl flex items-center justify-center text-white text-3xl font-bold relative group overflow-hidden">
+                            <span id="profile-avatar-char">A</span>
+                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer text-white text-xs">Edit</div>
+                        </div>
+                        <div>
+                            <h2 class="font-outfit font-bold text-xl text-white" id="profile-name-title">Admin User</h2>
+                            <p class="text-xs text-sky-400" id="profile-role-badge">SLIIT Administrator Account</p>
+                            <p class="text-[10px] text-slate-400 mt-1">Total Rewards Earned: <span id="profile-points-count" class="font-bold text-yellow-400">120 pts</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Form -->
+                    <form onsubmit="saveProfile(event)" class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1">Full Name</label>
+                                <input type="text" id="profile-fullname" required class="w-full bg-slate-900/50 border border-slate-700/50 text-white px-4 py-2.5 rounded-xl text-xs focus:ring-1 focus:ring-sky-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1">Student / Admin Email</label>
+                                <input type="email" id="profile-email" required class="w-full bg-slate-900/50 border border-slate-700/50 text-white px-4 py-2.5 rounded-xl text-xs focus:ring-1 focus:ring-sky-500 focus:outline-none">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1">Contact Phone</label>
+                                <input type="text" id="profile-phone" required class="w-full bg-slate-900/50 border border-slate-700/50 text-white px-4 py-2.5 rounded-xl text-xs focus:ring-1 focus:ring-sky-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-400 mb-1">Registration ID</label>
+                                <input type="text" id="profile-regno" required class="w-full bg-slate-900/50 border border-slate-700/50 text-white px-4 py-2.5 rounded-xl text-xs focus:ring-1 focus:ring-sky-500 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <!-- Badges list for user -->
+                        <div class="pt-4 border-t border-slate-700/50 mt-6">
+                            <h3 class="font-outfit font-bold text-sm text-white mb-3">Earned Badges</h3>
+                            <div class="flex gap-2 flex-wrap" id="profile-badges-row">
+                                <!-- badges dynamic -->
+                            </div>
+                        </div>
+
+                        <div class="flex gap-3 pt-6">
+                            <button type="submit" class="flex-1 py-3 bg-gradient-to-r from-sky-500 to-blue-600 rounded-xl text-xs font-bold text-white shadow-lg hover:brightness-110 transition-all">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 6. ADMIN VIEW -->
+            <div id="view-admin" class="page-view hidden animate-fade-in">
+                <h2 class="font-outfit font-extrabold text-2xl text-white mb-6">⚙️ Platform Administration</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <!-- Left Sidebar Menu -->
+                    <div class="glass-card p-4 space-y-1 h-fit">
+                        <button onclick="toggleAdminPanel('panel-kuppi')" class="admin-panel-btn w-full text-left px-3 py-2.5 rounded-xl text-xs font-bold bg-sky-600 text-white transition-all flex items-center gap-2"><i data-lucide="graduation-cap" class="w-4 h-4"></i> Kuppi Requests</button>
+                        <button onclick="toggleAdminPanel('panel-badges')" class="admin-panel-btn w-full text-left px-3 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-all flex items-center gap-2"><i data-lucide="award" class="w-4 h-4"></i> Manage Badges</button>
+                        <button onclick="toggleAdminPanel('panel-handovers')" class="admin-panel-btn w-full text-left px-3 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-all flex items-center gap-2"><i data-lucide="check-square" class="w-4 h-4"></i> Claim Approvals</button>
+                        <button onclick="toggleAdminPanel('panel-payments')" class="admin-panel-btn w-full text-left px-3 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-all flex items-center gap-2"><i data-lucide="credit-card" class="w-4 h-4"></i> Payments Log</button>
+                    </div>
+
+                    <!-- Right Content Area -->
+                    <div class="col-span-3 glass-card p-6">
+                        <!-- Sub-panel: Kuppi Requests -->
+                        <div id="admin-panel-kuppi" class="admin-sub-panel space-y-4">
+                            <h3 class="font-outfit font-bold text-base text-white border-b border-slate-700/50 pb-2 mb-4">Pending Kuppi Sessions</h3>
+                            <div class="space-y-4" id="admin-kuppi-requests">
+                                <!-- Requests populated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Sub-panel: Manage Badges -->
+                        <div id="admin-panel-badges" class="admin-sub-panel hidden space-y-4">
+                            <div class="flex justify-between items-center border-b border-slate-700/50 pb-2 mb-4">
+                                <h3 class="font-outfit font-bold text-base text-white">Configured Badges</h3>
+                                <button onclick="openCreateBadgeModal()" class="px-3 py-1.5 bg-sky-500 text-white font-bold rounded-lg text-[10px] uppercase tracking-wider hover:brightness-110">Create Badge</button>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="admin-badges-list">
+                                <!-- Badges pop dynamic -->
+                            </div>
+                        </div>
+
+                        <!-- Sub-panel: Handovers/Claims -->
+                        <div id="admin-panel-handovers" class="admin-sub-panel hidden space-y-4">
+                            <h3 class="font-outfit font-bold text-base text-white border-b border-slate-700/50 pb-2 mb-4">Item Claims and Handovers</h3>
+                            <div class="space-y-4" id="admin-handovers-list">
+                                <!-- Claim requests -->
+                            </div>
+                        </div>
+
+                        <!-- Sub-panel: Payments Log -->
+                        <div id="admin-panel-payments" class="admin-sub-panel hidden space-y-4">
+                            <h3 class="font-outfit font-bold text-base text-white border-b border-slate-700/50 pb-2 mb-4">Transactions Log</h3>
+                            <div class="overflow-x-auto">
+                                <table class="text-xs">
+                                    <thead>
+                                        <tr class="border-b border-slate-700">
+                                            <th class="text-left py-2 px-3">Txn ID</th>
+                                            <th class="text-left py-2 px-3">User</th>
+                                            <th class="text-left py-2 px-3">Method</th>
+                                            <th class="text-right py-2 px-3">Amount</th>
+                                            <th class="text-center py-2 px-3">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="admin-payments-rows" class="divide-y divide-slate-800">
+                                        <!-- txn details dynamic -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="glass-header w-full px-6 py-6 text-center mt-12 text-slate-400 text-xs">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+                <p>&copy; 2026 Uni-Connect. All rights reserved. Created for SLIIT Student Community.</p>
+                <div class="flex gap-4">
+                    <span class="hover:text-white cursor-pointer">Help Center</span>
+                    <span class="hover:text-white cursor-pointer">Privacy Policy</span>
+                    <span class="hover:text-white cursor-pointer">Terms of Service</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- MODAL: HOST KUPPI FORM -->
+    <div id="host-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="w-full max-w-lg glass-card p-6 text-slate-200">
+            <div class="flex justify-between items-center border-b border-slate-700/50 pb-3 mb-4">
+                <h3 class="font-outfit font-bold text-lg text-white">Host a Kuppi Session</h3>
+                <button onclick="closeModal('host-modal')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <form onsubmit="submitHostedKuppi(event)" class="space-y-3">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-1">Module Code</label>
+                        <input type="text" id="host-code" required placeholder="e.g. IT3020" class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-1">Module Name</label>
+                        <input type="text" id="host-name" required placeholder="e.g. Software Engineering" class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-1">Faculty</label>
+                        <select id="host-faculty" required class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none">
+                            <option value="Computing">Faculty of Computing</option>
+                            <option value="Business">Faculty of Business</option>
+                            <option value="Engineering">Faculty of Engineering</option>
+                            <option value="Humanities">Humanities & Sciences</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-1">Tutor Name</label>
+                        <input type="text" id="host-tutor" required placeholder="Tutor name" class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-1">Date</label>
+                        <input type="date" id="host-date" required class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-1">Time</label>
+                        <input type="time" id="host-time" required class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-1">Duration (mins)</label>
+                        <input type="number" id="host-duration" required min="30" max="240" placeholder="120" class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-1">Price (LKR)</label>
+                        <input type="number" id="host-price" required min="0" placeholder="500" class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">Module Skills (comma-separated)</label>
+                    <input type="text" id="host-skills" required placeholder="Architecture, UML, Design Patterns" class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">Meeting Link</label>
+                    <input type="url" id="host-link" required placeholder="https://zoom.us/j/..." class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none">
+                </div>
+                <button type="submit" class="w-full mt-4 py-2.5 bg-gradient-to-r from-sky-500 to-blue-600 rounded-xl text-xs font-bold text-white shadow-lg hover:brightness-110 transition-all">Submit for Review</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: REPORT LOST/FOUND ITEM -->
+    <div id="report-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="w-full max-w-lg glass-card p-6 text-slate-200">
+            <div class="flex justify-between items-center border-b border-slate-700/50 pb-3 mb-4">
+                <h3 class="font-outfit font-bold text-lg text-white" id="report-modal-title">Report Item</h3>
+                <button onclick="closeModal('report-modal')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <form onsubmit="submitLFReport(event)" class="space-y-3">
+                <input type="hidden" id="report-type">
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">Item Name</label>
+                    <input type="text" id="report-name" required placeholder="e.g. Apple Watch Series 7" class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-1">Category</label>
+                        <select id="report-category" required class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none">
+                            <option value="Electronics">Electronics</option>
+                            <option value="Books">Books</option>
+                            <option value="Keys">Keys</option>
+                            <option value="Essentials">Essentials</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-1">Location</label>
+                        <input type="text" id="report-location" required placeholder="e.g. Malabe Main Library" class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-1">Date</label>
+                        <input type="date" id="report-date" required class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-1">Representative Photo (Emoji/Text)</label>
+                        <input type="text" id="report-photo" required placeholder="e.g. ⌚" class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">Description Details</label>
+                    <textarea id="report-desc" required rows="3" placeholder="Identify marks, color, casing detail..." class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none resize-none"></textarea>
+                </div>
+                <button type="submit" class="w-full mt-4 py-2.5 bg-gradient-to-r from-sky-500 to-blue-600 rounded-xl text-xs font-bold text-white shadow-lg hover:brightness-110 transition-all">Submit Report</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: SECURE HANDOVER VERIFICATION -->
+    <div id="handover-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="w-full max-w-md glass-card p-6 text-slate-200">
+            <div class="flex justify-between items-center border-b border-slate-700/50 pb-3 mb-4">
+                <h3 class="font-outfit font-bold text-lg text-white">Item Handover Processing</h3>
+                <button onclick="closeModal('handover-modal')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <p class="text-xs text-slate-400 mb-4">Complete validation to secure the handover and release reward points to the finder.</p>
+            <form onsubmit="submitHandover(event)" class="space-y-4">
+                <input type="hidden" id="handover-item-id">
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">Claimant Full Name</label>
+                    <input type="text" id="handover-name" required placeholder="Claimant's Name" class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2.5 rounded-xl text-xs focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">Registration Number</label>
+                    <input type="text" id="handover-regno" required placeholder="e.g. IT23722040" class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2.5 rounded-xl text-xs focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">Mock Upload: University Student ID (Write ID emoji/slips)</label>
+                    <input type="text" id="handover-id-proof" required placeholder="e.g. 🪪 ID Photo Approved" class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2.5 rounded-xl text-xs focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">4-Digit Security Code (sent to email)</label>
+                    <input type="text" id="handover-code" required placeholder="e.g. 8421" class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2.5 rounded-xl text-xs text-center font-bold tracking-widest focus:outline-none">
+                </div>
+                <button type="submit" class="w-full mt-4 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl text-xs font-bold text-white shadow-lg hover:brightness-110 transition-all">Approve Handover & Release Rewards</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: KUPPI TICKET CHECKOUT / CARD / BANK TRANSFER -->
+    <div id="checkout-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="w-full max-w-md glass-card p-6 text-slate-200">
+            <div class="flex justify-between items-center border-b border-slate-700/50 pb-3 mb-4">
+                <h3 class="font-outfit font-bold text-lg text-white">Purchase Kuppi Ticket</h3>
+                <button onclick="closeModal('checkout-modal')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="bg-sky-500/10 p-3 rounded-xl border border-sky-500/20 mb-4 text-xs">
+                <p class="font-semibold text-sky-400">Checkout Summary:</p>
+                <div id="checkout-items-summary" class="space-y-1 mt-1 text-slate-300"></div>
+                <p class="font-bold text-white mt-2 border-t border-slate-800 pt-1 text-right" id="checkout-total-val">Total: LKR 0</p>
+            </div>
+            <!-- Method Select -->
+            <div class="flex gap-2 mb-4">
+                <button onclick="toggleCheckoutMethod('card')" id="pay-btn-card" class="flex-1 py-2 rounded-xl text-xs font-bold bg-sky-600 text-white transition-all">Credit Card</button>
+                <button onclick="toggleCheckoutMethod('bank')" id="pay-btn-bank" class="flex-1 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-all">Bank Transfer</button>
+            </div>
+
+            <!-- Card Form -->
+            <form id="checkout-card-form" onsubmit="processCardPayment(event)" class="space-y-3">
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">Cardholder Name</label>
+                    <input type="text" required placeholder="Jane Doe" class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">Card Number</label>
+                    <input type="text" required placeholder="4000 1234 5678 9010" class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-1">Expiration</label>
+                        <input type="text" required placeholder="MM/YY" class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-1">CVV</label>
+                        <input type="password" required placeholder="***" class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none">
+                    </div>
+                </div>
+                <button type="submit" class="w-full mt-4 py-2.5 bg-gradient-to-r from-sky-500 to-blue-600 rounded-xl text-xs font-bold text-white shadow-lg hover:brightness-110 transition-all">Pay with Card</button>
+            </form>
+
+            <!-- Bank Slip Form -->
+            <form id="checkout-bank-form" onsubmit="processBankPayment(event)" class="space-y-3 hidden">
+                <div class="p-3 bg-white/5 rounded-xl border border-white/5 text-[10px] space-y-1 text-slate-300">
+                    <p class="font-bold text-white">Bank: Bank of Ceylon</p>
+                    <p>Branch: Malabe Branch</p>
+                    <p>Account Name: SLIIT Uni-Connect Student Hub</p>
+                    <p>Account Number: 8421-4836-9372</p>
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">Upload Deposit Slip / Screenshot Reference</label>
+                    <input type="text" id="bank-slip-desc" required placeholder="e.g. Slip reference #BOC-4829" class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none">
+                </div>
+                <button type="submit" class="w-full mt-4 py-2.5 bg-gradient-to-r from-sky-500 to-blue-600 rounded-xl text-xs font-bold text-white shadow-lg hover:brightness-110 transition-all">Submit Transfer Proof</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: CREATE BADGE (ADMIN) -->
+    <div id="create-badge-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="w-full max-w-md glass-card p-6 text-slate-200">
+            <div class="flex justify-between items-center border-b border-slate-700/50 pb-3 mb-4">
+                <h3 class="font-outfit font-bold text-lg text-white">Create New Gamified Badge</h3>
+                <button onclick="closeModal('create-badge-modal')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <form onsubmit="submitCreateBadge(event)" class="space-y-4">
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">Badge Name</label>
+                    <input type="text" id="badge-name" required placeholder="e.g. Good Samaritan" class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2.5 rounded-xl text-xs focus:outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-1">Emoji Icon</label>
+                        <input type="text" id="badge-emoji" required placeholder="e.g. 🤝" class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2.5 rounded-xl text-xs focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-1">Accent Color Hex</label>
+                        <input type="color" id="badge-color" value="#0ea5e9" class="w-full bg-slate-900 border border-slate-700 text-white h-[42px] px-1 py-1 rounded-xl text-xs focus:outline-none">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-1">Trigger Field</label>
+                        <select id="badge-trigger-field" class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2.5 rounded-xl text-xs focus:outline-none">
+                            <option value="itemsReturned">Items Returned</option>
+                            <option value="itemsReported">Items Reported</option>
+                            <option value="rewardsEarned">Rewards Earned</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-slate-400 mb-1">Trigger Milestone Count</label>
+                        <input type="number" id="badge-trigger-val" required min="1" placeholder="5" class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2.5 rounded-xl text-xs focus:outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-400 mb-1">Badge Description</label>
+                    <input type="text" id="badge-desc" required placeholder="Earned by returning 5 verified items" class="w-full bg-slate-900 border border-slate-700 text-white px-3 py-2.5 rounded-xl text-xs focus:outline-none">
+                </div>
+                <button type="submit" class="w-full mt-4 py-2.5 bg-gradient-to-r from-sky-500 to-blue-600 rounded-xl text-xs font-bold text-white shadow-lg hover:brightness-110 transition-all">Publish Badge</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: CHAT SIMULATOR (LOST AND FOUND) -->
+    <div id="chat-simulator" class="fixed bottom-6 right-20 z-40 w-80 glass-card text-slate-200 overflow-hidden hidden flex-col shadow-2xl h-[400px]">
+        <div class="p-3 bg-slate-900/80 border-b border-slate-700/50 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                <div>
+                    <p id="chat-header-name" class="font-bold text-xs text-white">Chat with Owner</p>
+                    <span id="chat-header-item" class="text-[9px] text-slate-400">Apple Watch claim</span>
+                </div>
+            </div>
+            <button onclick="closeChat()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+        </div>
+        <div id="chat-messages" class="flex-grow p-3 space-y-2 overflow-y-auto text-xs bg-slate-950/20">
+            <!-- chats -->
+        </div>
+        <form onsubmit="sendChatMessage(event)" class="p-2 border-t border-slate-700/50 flex gap-2 bg-slate-900/50">
+            <input type="text" id="chat-input" placeholder="Type a message..." class="flex-grow bg-slate-900 border border-slate-700 text-white px-3 py-1.5 rounded-lg text-xs focus:outline-none">
+            <button type="submit" class="px-3 py-1.5 bg-sky-500 rounded-lg text-xs font-bold text-white hover:bg-sky-600"><i data-lucide="send" class="w-3.5 h-3.5"></i></button>
+        </form>
+    </div>
+
+    <!-- CHATBOT SIMULATOR BUTTON & PANEL -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <button onclick="toggleChatbot()" class="w-12 h-12 bg-gradient-to-r from-sky-500 to-blue-600 rounded-full flex items-center justify-center text-white shadow-xl hover:scale-110 hover:shadow-sky-500/30 transition-all">
+            <i data-lucide="message-square-code" class="w-6 h-6"></i>
+        </button>
+        <!-- Chatbot Panel -->
+        <div id="chatbot-panel" class="hidden absolute bottom-16 right-0 w-80 glass-card text-slate-200 overflow-hidden flex-col shadow-2xl h-[450px]">
+            <div class="p-4 bg-slate-900 border-b border-slate-700/50 flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-sky-500/20 border border-sky-500 flex items-center justify-center text-sky-400"><i data-lucide="bot" class="w-5 h-5"></i></div>
+                    <div>
+                        <p class="font-bold text-xs text-white">Uni-Connect Copilot</p>
+                        <p class="text-[9px] text-green-400">Online | AI Assistant</p>
+                    </div>
+                </div>
+                <button onclick="toggleChatbot()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+            <div id="chatbot-messages" class="flex-grow p-4 space-y-3 overflow-y-auto text-xs">
+                <div class="bg-white/5 p-3 rounded-2xl border border-white/5">
+                    <p class="font-semibold text-sky-400 mb-1">Copilot:</p>
+                    <p class="text-slate-300">Welcome to Uni-Connect! I can help you search for lost items, book Kuppi tutoring slots, or toggle administration roles. Ask me a question or try these quick options:</p>
+                    <div class="mt-3 flex flex-col gap-1.5">
+                        <button onclick="askBot('How to host a Kuppi?')" class="w-full text-left p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-200 font-medium">How to host a Kuppi session?</button>
+                        <button onclick="askBot('How to claim a lost item?')" class="w-full text-left p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-200 font-medium">How do I claim a lost item?</button>
+                        <button onclick="askBot('Show me the top helpers')" class="w-full text-left p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-200 font-medium">Who are the top helpers?</button>
+                    </div>
+                </div>
+            </div>
+            <form onsubmit="submitBotQuestion(event)" class="p-2.5 border-t border-slate-700/50 flex gap-2 bg-slate-900/50">
+                <input type="text" id="bot-input" placeholder="Ask anything about SLIIT..." class="flex-grow bg-slate-900 border border-slate-700 text-white px-3 py-2 rounded-xl text-xs focus:outline-none">
+                <button type="submit" class="px-4 bg-sky-500 rounded-xl text-xs font-bold text-white hover:bg-sky-600">Ask</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: CELEBRATION BADGE OVERLAY -->
+    <div id="celebration-overlay" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-md hidden flex-col items-center justify-center p-6 text-center animate-fade-in">
+        <div class="relative w-40 h-40 flex items-center justify-center text-7xl bg-white/5 border border-white/10 rounded-full mb-6 animate-bounce">
+            <span id="celebration-badge-emoji">🥇</span>
+            <div class="absolute -inset-2 rounded-full border border-sky-500/20 animate-ping"></div>
+        </div>
+        <h2 class="font-outfit font-extrabold text-3xl text-white mb-2">Milestone Unlocked!</h2>
+        <p class="text-sky-400 text-sm font-bold uppercase tracking-wider mb-2" id="celebration-badge-name">Good Samaritan</p>
+        <p class="text-slate-300 text-xs max-w-sm mb-8 leading-relaxed" id="celebration-badge-desc">You have unlocked this badge for returning 5 items successfully to the students community.</p>
+        <button onclick="closeModal('celebration-overlay')" class="px-6 py-2.5 bg-gradient-to-r from-sky-500 to-blue-600 rounded-xl text-xs font-bold text-white shadow-lg hover:brightness-110 transition-all">Awesome, Thanks!</button>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-container" class="fixed top-6 right-6 z-[200] space-y-3 pointer-events-none"></div>
+
+    <!-- MOCK DATABASE & LOGIC SCRIPTS -->
+    <script>
+        // Init Lucide
+        lucide.createIcons();
+
+        // Global State
+        let currentUser = {
+            id: "user-admin",
+            name: "Heshani Wickramasinghe",
+            email: "it23722040@my.sliit.lk",
+            phoneNumber: "0771234567",
+            studentRegistrationNumber: "IT23722040",
+            role: "Admin",
+            points: 120,
+            badges: ["Good Samaritan", "Golden Heart"]
+        };
+
+        let activeTab = 'homepage';
+
+        // Cart items
+        let cartItems = [];
+
+        // Sessions DB
+        let kuppiSessions = [
+            {
+                id: "sess-1",
+                kuppiSessionFormId: "KSF-482948-289",
+                moduleCode: "IT3020",
+                moduleName: "Software Engineering",
+                faculty: "Computing",
+                name: "Kamal Perera",
+                email: "kamal@my.sliit.lk",
+                price: 750,
+                duration: 120,
+                date: "2026-06-25",
+                time: "14:30",
+                skills: ["UML Diagramming", "Microservices", "Design Patterns"],
+                coverImage: "📚",
+                status: "Approved"
+            },
+            {
+                id: "sess-2",
+                kuppiSessionFormId: "KSF-937293-102",
+                moduleCode: "IT2030",
+                moduleName: "Database Management Systems",
+                faculty: "Computing",
+                name: "Dilini Silva",
+                email: "dilini@my.sliit.lk",
+                price: 500,
+                duration: 90,
+                date: "2026-06-28",
+                time: "10:00",
+                skills: ["SQL Queries", "Normalisation", "Indexing"],
+                coverImage: "💾",
+                status: "Approved"
+            },
+            {
+                id: "sess-3",
+                kuppiSessionFormId: "KSF-204738-928",
+                moduleCode: "MG2010",
+                moduleName: "Business Economics",
+                faculty: "Business",
+                name: "Kasun Jayawardena",
+                email: "kasun@my.sliit.lk",
+                price: 600,
+                duration: 90,
+                date: "2026-06-27",
+                time: "16:00",
+                skills: ["Macroeconomics", "Inflation", "Market Structures"],
+                coverImage: "📈",
+                status: "Approved"
+            }
+        ];
+
+        // Lost and Found DB
+        let lfItems = [
+            {
+                id: "lf-1",
+                name: "SLIIT Student ID Card",
+                category: "Essentials",
+                location: "Faculty of Computing Level 3",
+                date: "2026-06-15",
+                description: "Name on ID: Ruwan Perera. Registration number: IT22003841.",
+                photo: "🪪",
+                type: "Found",
+                status: "ACTIVE",
+                userName: "Heshani Wickramasinghe"
+            },
+            {
+                id: "lf-2",
+                name: "Apple AirPods Pro",
+                category: "Electronics",
+                location: "Student Commons Area",
+                date: "2026-06-14",
+                description: "AirPods Pro inside a black silicon protective casing. Left earbud has minor scratch.",
+                photo: "🎧",
+                type: "Lost",
+                status: "ACTIVE",
+                userName: "Kavindu Silva"
+            },
+            {
+                id: "lf-3",
+                name: "Toyota Car Key Fob",
+                category: "Keys",
+                location: "SLIIT Gate A Main Parking",
+                date: "2026-06-16",
+                description: "Black key fob with a blue SLIIT university keychain tag attached.",
+                photo: "🔑",
+                type: "Found",
+                status: "CLAIMING",
+                userName: "Ruwan Nayanajith"
+            }
+        ];
+
+        // Badges DB
+        let badges = [
+            {
+                name: "Good Samaritan",
+                emoji: "🤝",
+                color: "#10b981",
+                description: "Returned 3 verified lost belongings successfully.",
+                triggerField: "itemsReturned",
+                triggerValue: 3
+            },
+            {
+                name: "Golden Heart",
+                emoji: "💖",
+                color: "#ef4444",
+                description: "Returned 5 verified lost belongings successfully.",
+                triggerField: "itemsReturned",
+                triggerValue: 5
+            },
+            {
+                name: "Hawk Eyes",
+                emoji: "🦅",
+                color: "#0ea5e9",
+                description: "Reported 5 lost items to assist the student community.",
+                triggerField: "itemsReported",
+                triggerValue: 5
+            }
+        ];
+
+        // Handovers DB
+        let handovers = [
+            {
+                id: "hand-1",
+                itemId: "lf-3",
+                finderId: "Ruwan Nayanajith",
+                finderName: "Ruwan Nayanajith",
+                receiverName: "Jane Doe",
+                email: "jane@my.sliit.lk",
+                registrationNo: "IT23028301",
+                contactNumber: "0771239841",
+                universityIdPhoto: "🪪",
+                verificationCode: "4821",
+                status: "PENDING"
+            }
+        ];
+
+        // Payments DB
+        let payments = [
+            { id: "TXN-20260616-482937", name: "Heshani Wickramasinghe", method: "card", amount: 750, status: "success" },
+            { id: "TXN-20260615-102938", name: "Kavindu Silva", method: "bank", amount: 500, status: "pending" }
+        ];
+
+        // Chat Simulator State
+        let activeChatSession = null;
+        let chatMessages = {};
+
+        // Helper functions
+        function showToast(text, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `flex items-center gap-3 px-4 py-3 rounded-2xl shadow-xl border backdrop-blur-md min-w-[280px] pointer-events-auto transition-all duration-300 translate-x-12 opacity-0 ${
+                type === 'success' ? 'bg-emerald-950/95 border-emerald-500/30 text-emerald-300' : 'bg-red-950/95 border-red-500/30 text-red-300'
+            }`;
+            toast.innerHTML = `
+                <span class="text-lg">${type === 'success' ? '✅' : '❌'}</span>
+                <div>
+                    <p class="font-bold text-xs">${type === 'success' ? 'Success' : 'Error'}</p>
+                    <p class="text-[10px] text-slate-400 mt-0.5">${text}</p>
+                </div>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.remove('translate-x-12', 'opacity-0');
+            }, 50);
+
+            setTimeout(() => {
+                toast.classList.add('translate-x-12', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function toggleDropdown(id) {
+            const menus = ['profile-menu', 'cart-menu', 'notification-menu'];
+            menus.forEach(m => {
+                if (m === id) {
+                    document.getElementById(m).classList.toggle('hidden');
+                } else {
+                    document.getElementById(m).classList.add('hidden');
+                }
+            });
+        }
+
+        // Close dropdowns on outside click
+        window.addEventListener('click', function(e) {
+            if (!e.target.closest('#header-profile-btn') && !e.target.closest('#profile-menu')) {
+                document.getElementById('profile-menu').classList.add('hidden');
+            }
+            if (!e.target.closest('.relative')) {
+                // simple fallbacks
+            }
+        });
+
+        // View Navigations
+        function navigateTo(viewId) {
+            // Hide all views
+            document.querySelectorAll('.page-view').forEach(view => view.classList.add('hidden'));
+            // Show target
+            document.getElementById(`view-${viewId}`).classList.remove('hidden');
+            
+            // Adjust active tab highlighting
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('text-sky-300', 'bg-white/5');
+                tab.classList.add('text-slate-300');
+            });
+            
+            // Highlight matching nav tab
+            const tabMap = {
+                'homepage': 0,
+                'kuppi': 1,
+                'lost-and-found': 2,
+                'leaderboard': 3,
+                'admin': 4
+            };
+            const index = tabMap[viewId];
+            if (index !== undefined) {
+                const navTabs = document.querySelectorAll('.nav-tab');
+                if (navTabs[index]) {
+                    navTabs[index].classList.add('text-sky-300', 'bg-white/5');
+                    navTabs[index].classList.remove('text-slate-300');
+                }
+            }
+
+            activeTab = viewId;
+
+            // Load data views
+            if (viewId === 'kuppi') renderKuppiSessions();
+            if (viewId === 'lost-and-found') renderLFItems();
+            if (viewId === 'leaderboard') renderLeaderboard();
+            if (viewId === 'admin') renderAdminView();
+            if (viewId === 'profile') loadProfileForm();
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Switch Role (Admin/Student)
+        function toggleRole() {
+            if (currentUser.role === 'Admin') {
+                currentUser.role = 'Student';
+                currentUser.email = 'it23722040@my.sliit.lk';
+                document.getElementById('admin-nav-btn').classList.add('hidden');
+                showToast("Switched to Student Role. Admin panel hidden.", "success");
+            } else {
+                currentUser.role = 'Admin';
+                currentUser.email = 'it23722040@my.sliit.lk';
+                document.getElementById('admin-nav-btn').classList.remove('hidden');
+                showToast("Switched to Administrator Mode.", "success");
+            }
+            updateHeaderDetails();
+            toggleDropdown('profile-menu');
+            if (activeTab === 'admin') navigateTo('homepage');
+        }
+
+        function logout() {
+            showToast("Logged out successfully (Mock refresh)", "success");
+            setTimeout(() => window.location.reload(), 1000);
+        }
+
+        function updateHeaderDetails() {
+            document.getElementById('header-username').innerText = currentUser.name;
+            document.getElementById('header-avatar').innerText = currentUser.name.charAt(0).toUpperCase();
+            document.getElementById('profile-menu-email').innerText = currentUser.email;
+            
+            if (currentUser.role === 'Admin') {
+                document.getElementById('admin-nav-btn').classList.remove('hidden');
+            } else {
+                document.getElementById('admin-nav-btn').classList.add('hidden');
+            }
+        }
+
+        // Modals Management
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+            document.getElementById(id).classList.add('flex');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+            document.getElementById(id).classList.remove('flex');
+        }
+
+        // KUPPI LOGIC
+        function openHostModal() {
+            document.getElementById('host-date').min = new Date().toISOString().split('T')[0];
+            document.getElementById('host-tutor').value = currentUser.name;
+            openModal('host-modal');
+        }
+
+        function submitHostedKuppi(event) {
+            event.preventDefault();
+            const newSession = {
+                id: `sess-${Date.now()}`,
+                kuppiSessionFormId: `KSF-${Math.floor(100000 + Math.random()*900000)}-${Math.floor(100+Math.random()*900)}`,
+                moduleCode: document.getElementById('host-code').value.toUpperCase(),
+                moduleName: document.getElementById('host-name').value,
+                faculty: document.getElementById('host-faculty').value,
+                name: document.getElementById('host-tutor').value,
+                email: currentUser.email,
+                price: parseInt(document.getElementById('host-price').value),
+                duration: parseInt(document.getElementById('host-duration').value),
+                date: document.getElementById('host-date').value,
+                time: document.getElementById('host-time').value,
+                skills: document.getElementById('host-skills').value.split(',').map(s => s.trim()),
+                coverImage: "📖",
+                status: "Pending" // Sent to Admin
+            };
+            kuppiSessions.push(newSession);
+            closeModal('host-modal');
+            showToast("Hosted session submitted successfully. Waiting for admin approval.", "success");
+            event.target.reset();
+            renderKuppiSessions();
+        }
+
+        function renderKuppiSessions() {
+            const grid = document.getElementById('kuppi-grid');
+            const search = document.getElementById('kuppi-search').value.toLowerCase();
+            const faculty = document.getElementById('kuppi-filter-faculty').value;
+            
+            grid.innerHTML = '';
+            
+            const filtered = kuppiSessions.filter(s => {
+                if (s.status !== 'Approved') return false;
+                const matchesSearch = s.moduleName.toLowerCase().includes(search) || 
+                                      s.moduleCode.toLowerCase().includes(search) ||
+                                      s.name.toLowerCase().includes(search);
+                const matchesFaculty = faculty === 'All' || s.faculty === faculty;
+                return matchesSearch && matchesFaculty;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12 opacity-60">
+                        <i data-lucide="info" class="w-12 h-12 mx-auto mb-2 text-slate-400"></i>
+                        <p class="font-bold text-sm text-slate-400">No approved sessions match filters.</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            filtered.forEach(s => {
+                const inCart = cartItems.some(item => item.id === s.id);
+                grid.innerHTML += `
+                    <div class="glass-card overflow-hidden hover:border-sky-500/40 hover:shadow-sky-500/5 transition-all duration-300">
+                        <div class="h-40 bg-indigo-900/30 flex items-center justify-center text-6xl border-b border-slate-700/50">
+                            ${s.coverImage}
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div class="flex justify-between items-center">
+                                <span class="px-2.5 py-0.5 bg-sky-500/20 text-sky-400 border border-sky-500/30 rounded-lg text-[10px] font-bold">${s.moduleCode}</span>
+                                <span class="text-sm font-extrabold text-white">LKR ${s.price.toFixed(2)}</span>
+                            </div>
+                            <div>
+                                <h3 class="font-outfit font-bold text-base text-white leading-tight">${s.moduleName}</h3>
+                                <p class="text-xs text-slate-400 mt-1">by ${s.name} <span class="text-[10px] text-sky-400">(${s.faculty})</span></p>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 text-[10px] text-slate-400 font-semibold border-t border-slate-800 pt-3">
+                                <div>📅 ${s.date} at ${s.time}</div>
+                                <div>⏳ ${s.duration} minutes</div>
+                            </div>
+                            <div class="flex flex-wrap gap-1">
+                                ${s.skills.map(skill => `<span class="px-2 py-0.5 bg-slate-800/80 rounded-md text-[9px] text-slate-300">${skill}</span>`).join('')}
+                            </div>
+                            <button onclick="addToCart('${s.id}')" ${inCart ? 'disabled' : ''} class="w-full py-2.5 rounded-xl text-xs font-bold transition-all ${
+                                inCart ? 'bg-slate-700 text-slate-400 cursor-not-allowed shadow-none' : 'bg-gradient-to-r from-sky-500 to-blue-600 text-white hover:brightness-110'
+                            }">
+                                ${inCart ? 'Added to Cart' : 'Register for Session'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function filterKuppiSessions() {
+            renderKuppiSessions();
+        }
+
+        // CART LOGIC
+        function addToCart(id) {
+            const session = kuppiSessions.find(s => s.id === id);
+            if (session && !cartItems.some(item => item.id === id)) {
+                cartItems.push(session);
+                updateCartUI();
+                showToast(`Added "${session.moduleCode}" ticket to cart.`, "success");
+                renderKuppiSessions();
+            }
+        }
+
+        function removeFromCart(id) {
+            cartItems = cartItems.filter(item => item.id !== id);
+            updateCartUI();
+            showToast("Item removed from cart.", "success");
+            renderKuppiSessions();
+        }
+
+        function updateCartUI() {
+            const list = document.getElementById('cart-list');
+            const badge = document.getElementById('cart-badge');
+            const totalRow = document.getElementById('cart-total-row');
+            
+            badge.innerText = cartItems.length;
+            if (cartItems.length > 0) {
+                badge.classList.remove('hidden');
+                totalRow.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+                totalRow.classList.add('hidden');
+            }
+
+            list.innerHTML = '';
+            if (cartItems.length === 0) {
+                list.innerHTML = `<p class="text-slate-400 text-center py-4">No items added yet.</p>`;
+                return;
+            }
+
+            let total = 0;
+            cartItems.forEach(item => {
+                total += item.price;
+                list.innerHTML += `
+                    <div class="flex justify-between items-center p-2 bg-white/5 rounded-lg border border-white/5">
+                        <div>
+                            <p class="font-bold text-white">${item.moduleCode}</p>
+                            <p class="text-[10px] text-slate-400">Tutor: ${item.name}</p>
+                            <p class="text-[10px] text-sky-400">LKR ${item.price.toFixed(2)}</p>
+                        </div>
+                        <button onclick="removeFromCart('${item.id}')" class="text-red-400 hover:text-red-300 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </div>
+                `;
+            });
+
+            document.getElementById('cart-total-val').innerText = `LKR ${total.toFixed(2)}`;
+            lucide.createIcons();
+        }
+
+        // CHECKOUT LOGIC
+        function openCheckoutModal() {
+            toggleDropdown('cart-menu');
+            const summary = document.getElementById('checkout-items-summary');
+            summary.innerHTML = '';
+            let total = 0;
+            cartItems.forEach(item => {
+                total += item.price;
+                summary.innerHTML += `<div class="flex justify-between"><span>${item.moduleCode} - ${item.moduleName}</span><span>LKR ${item.price}</span></div>`;
+            });
+            document.getElementById('checkout-total-val').innerText = `Total: LKR ${total.toFixed(2)}`;
+            openModal('checkout-modal');
+        }
+
+        function toggleCheckoutMethod(method) {
+            if (method === 'card') {
+                document.getElementById('pay-btn-card').className = 'flex-1 py-2 rounded-xl text-xs font-bold bg-sky-600 text-white transition-all';
+                document.getElementById('pay-btn-bank').className = 'flex-1 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-all';
+                document.getElementById('checkout-card-form').classList.remove('hidden');
+                document.getElementById('checkout-bank-form').classList.add('hidden');
+            } else {
+                document.getElementById('pay-btn-bank').className = 'flex-1 py-2 rounded-xl text-xs font-bold bg-sky-600 text-white transition-all';
+                document.getElementById('pay-btn-card').className = 'flex-1 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-all';
+                document.getElementById('checkout-bank-form').classList.remove('hidden');
+                document.getElementById('checkout-card-form').classList.add('hidden');
+            }
+        }
+
+        function processCardPayment(event) {
+            event.preventDefault();
+            const txnId = `TXN-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${Math.floor(100000 + Math.random()*900000)}`;
+            let total = cartItems.reduce((sum, item) => sum + item.price, 0);
+            
+            payments.push({
+                id: txnId,
+                name: currentUser.name,
+                method: "card",
+                amount: total,
+                status: "success"
+            });
+
+            closeModal('checkout-modal');
+            showToast(`Card Payment successful! Transaction ID: ${txnId}`, "success");
+            
+            // Add enrolled sessions to profile
+            cartItems = [];
+            updateCartUI();
+            renderKuppiSessions();
+        }
+
+        function processBankPayment(event) {
+            event.preventDefault();
+            const txnId = `TXN-${new Date().toISOString().slice(0, 10).replace(/-/g, "")}-${Math.floor(100000 + Math.random()*900000)}`;
+            let total = cartItems.reduce((sum, item) => sum + item.price, 0);
+
+            payments.push({
+                id: txnId,
+                name: currentUser.name,
+                method: "bank",
+                amount: total,
+                status: "pending" // Admin must approve
+            });
+
+            closeModal('checkout-modal');
+            showToast(`Bank receipt uploaded successfully. Waiting for administrator confirmation.`, "success");
+            
+            cartItems = [];
+            updateCartUI();
+            renderKuppiSessions();
+        }
+
+        // LOST AND FOUND LOGIC
+        function openReportModal(type) {
+            document.getElementById('report-type').value = type;
+            document.getElementById('report-modal-title').innerText = `Report ${type} Item`;
+            openModal('report-modal');
+        }
+
+        function submitLFReport(event) {
+            event.preventDefault();
+            const newReport = {
+                id: `lf-${Date.now()}`,
+                name: document.getElementById('report-name').value,
+                category: document.getElementById('report-category').value,
+                location: document.getElementById('report-location').value,
+                date: document.getElementById('report-date').value,
+                description: document.getElementById('report-desc').value,
+                photo: document.getElementById('report-photo').value || "📦",
+                type: document.getElementById('report-type').value,
+                status: "ACTIVE",
+                userName: currentUser.name
+            };
+            lfItems.push(newReport);
+            closeModal('report-modal');
+            showToast(`Successfully reported item as ${newReport.type}.`, "success");
+            event.target.reset();
+            renderLFItems();
+        }
+
+        function renderLFItems() {
+            const grid = document.getElementById('lf-grid');
+            const search = document.getElementById('lf-search').value.toLowerCase();
+            const category = document.getElementById('lf-filter-category').value;
+            const type = document.getElementById('lf-filter-type').value;
+
+            grid.innerHTML = '';
+
+            const filtered = lfItems.filter(item => {
+                const matchesSearch = item.name.toLowerCase().includes(search) || 
+                                      item.description.toLowerCase().includes(search) ||
+                                      item.location.toLowerCase().includes(search);
+                const matchesCat = category === 'All' || item.category === category;
+                const matchesType = type === 'All' || item.type === type;
+                return matchesSearch && matchesCat && matchesType;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12 opacity-60">
+                        <i data-lucide="info" class="w-12 h-12 mx-auto mb-2 text-slate-400"></i>
+                        <p class="font-bold text-sm text-slate-400">No reported items match filters.</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            filtered.forEach(item => {
+                const isMyPost = item.userName === currentUser.name;
+                grid.innerHTML += `
+                    <div class="glass-card overflow-hidden hover:border-sky-500/40 hover:shadow-sky-500/5 transition-all duration-300 flex flex-col justify-between">
+                        <div>
+                            <div class="h-44 bg-slate-800/40 flex items-center justify-center text-6xl border-b border-slate-700/50 relative">
+                                ${item.photo}
+                                <span class="absolute top-3 left-3 px-2 py-0.5 rounded text-[9px] font-bold text-white shadow ${
+                                    item.type === 'Lost' ? 'bg-red-500' : 'bg-emerald-500'
+                                }">${item.type}</span>
+                                <span class="absolute bottom-3 right-3 px-2 py-0.5 bg-slate-900/80 rounded text-[9px] font-bold text-slate-300 uppercase">${item.status}</span>
+                            </div>
+                            <div class="p-5 space-y-2">
+                                <span class="px-2 py-0.5 bg-sky-500/10 text-sky-400 rounded-md text-[9px] font-bold uppercase">${item.category}</span>
+                                <h3 class="font-outfit font-bold text-sm text-white leading-tight uppercase tracking-tight">${item.name}</h3>
+                                <p class="text-[10px] text-slate-400 line-clamp-2">${item.description}</p>
+                                <p class="text-[9px] text-slate-400 font-semibold mt-2">📍 ${item.location}</p>
+                                <p class="text-[9px] text-slate-500 font-semibold">📅 Reported: ${item.date}</p>
+                            </div>
+                        </div>
+                        <div class="p-5 pt-0">
+                            ${isMyPost ? `
+                                <button onclick="deleteLFItem('${item.id}')" class="w-full py-2 bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl text-[10px] font-bold uppercase tracking-wider hover:bg-red-500/30 transition-all">Delete Post</button>
+                            ` : `
+                                <div class="flex gap-2">
+                                    <button onclick="startSimulatedChat('${item.id}', '${item.name}', '${item.userName}')" class="flex-1 py-2 bg-sky-500 text-white rounded-xl text-[10px] font-bold uppercase tracking-wider hover:brightness-110 transition-all flex items-center justify-center gap-1"><i data-lucide="message-square" class="w-3 h-3"></i> Chat</button>
+                                    ${item.status === 'ACTIVE' ? `
+                                        <button onclick="requestHandover('${item.id}', '${item.userName}')" class="flex-1 py-2 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-xl text-[10px] font-bold uppercase tracking-wider hover:bg-emerald-500/30 transition-all">Claim</button>
+                                    ` : ''}
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        function filterLFItems() {
+            renderLFItems();
+        }
+
+        function deleteLFItem(id) {
+            if (confirm("Are you sure you want to delete this listing?")) {
+                lfItems = lfItems.filter(item => item.id !== id);
+                showToast("Listing deleted successfully.", "success");
+                renderLFItems();
+            }
+        }
+
+        // CHAT SIMULATOR
+        function startSimulatedChat(itemId, itemName, ownerName) {
+            activeChatSession = { itemId, itemName, ownerName };
+            document.getElementById('chat-header-name').innerText = `Chat with ${ownerName}`;
+            document.getElementById('chat-header-item').innerText = itemName;
+            
+            document.getElementById('chat-simulator').classList.remove('hidden');
+            document.getElementById('chat-simulator').classList.add('flex');
+            
+            const messagesBox = document.getElementById('chat-messages');
+            messagesBox.innerHTML = '';
+            
+            // Prefill mock dialogue
+            const defaultKey = `${itemId}-${ownerName}`;
+            if (!chatMessages[defaultKey]) {
+                chatMessages[defaultKey] = [
+                    { sender: ownerName, text: `Hello! Thanks for reaching out regarding the "${itemName}".` },
+                    { sender: ownerName, text: "Let's coordinate a secure handover on campus." }
+                ];
+            }
+
+            chatMessages[defaultKey].forEach(msg => {
+                appendChatMessage(msg.sender, msg.text);
+            });
+        }
+
+        function closeChat() {
+            document.getElementById('chat-simulator').classList.add('hidden');
+            document.getElementById('chat-simulator').classList.remove('flex');
+        }
+
+        function sendChatMessage(event) {
+            event.preventDefault();
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text || !activeChatSession) return;
+            
+            const chatKey = `${activeChatSession.itemId}-${activeChatSession.ownerName}`;
+            if (!chatMessages[chatKey]) chatMessages[chatKey] = [];
+            
+            // Push user message
+            const userMsg = { sender: currentUser.name, text };
+            chatMessages[chatKey].push(userMsg);
+            appendChatMessage(currentUser.name, text);
+            input.value = '';
+
+            // Simulated auto-reply
+            setTimeout(() => {
+                const replyText = "Perfect! Please tap the 'Claim' button in the dashboard, and fill in the verification ID so we can verify details with the administrator.";
+                const replyMsg = { sender: activeChatSession.ownerName, text: replyText };
+                chatMessages[chatKey].push(replyMsg);
+                appendChatMessage(activeChatSession.ownerName, replyText);
+            }, 1000);
+        }
+
+        function appendChatMessage(sender, text) {
+            const box = document.getElementById('chat-messages');
+            const isMe = sender === currentUser.name;
+            const bubble = document.createElement('div');
+            bubble.className = `p-2.5 rounded-2xl max-w-[80%] text-[11px] leading-relaxed ${
+                isMe ? 'bg-sky-500 text-white ml-auto rounded-tr-none' : 'bg-white/10 text-slate-200 mr-auto rounded-tl-none border border-white/5'
+            }`;
+            bubble.innerHTML = `
+                <p class="font-bold text-[9px] opacity-75 mb-0.5">${sender}</p>
+                <p>${text}</p>
+            `;
+            box.appendChild(bubble);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        // HANDOVER INITIATION
+        function requestHandover(itemId, finderName) {
+            const code = Math.floor(1000 + Math.random()*9000);
+            document.getElementById('handover-item-id').value = itemId;
+            document.getElementById('handover-name').value = currentUser.name;
+            document.getElementById('handover-regno').value = currentUser.studentRegistrationNumber;
+            document.getElementById('handover-code').value = code;
+            openModal('handover-modal');
+        }
+
+        function submitHandover(event) {
+            event.preventDefault();
+            const itemId = document.getElementById('handover-item-id').value;
+            const item = lfItems.find(i => i.id === itemId);
+            if (item) {
+                item.status = "CLAIMING";
+            }
+            
+            const newHandover = {
+                id: `hand-${Date.now()}`,
+                itemId: itemId,
+                finderId: item.userName,
+                finderName: item.userName,
+                receiverName: document.getElementById('handover-name').value,
+                email: currentUser.email,
+                registrationNo: document.getElementById('handover-regno').value,
+                contactNumber: currentUser.phoneNumber,
+                universityIdPhoto: document.getElementById('handover-id-proof').value,
+                verificationCode: document.getElementById('handover-code').value,
+                status: "PENDING"
+            };
+
+            handovers.push(newHandover);
+            closeModal('handover-modal');
+            showToast("Claim request submitted. Administrative code sent to email.", "success");
+            renderLFItems();
+            renderAdminView();
+        }
+
+        // LEADERBOARD LOGIC
+        function toggleLeaderboardTab(tab) {
+            if (tab === 'board') {
+                document.getElementById('tab-btn-board').className = 'flex-1 py-2 rounded-xl text-xs font-bold bg-sky-600 text-white transition-all';
+                document.getElementById('tab-btn-badges').className = 'flex-1 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-all';
+                document.getElementById('leaderboard-ranking-sec').classList.remove('hidden');
+                document.getElementById('leaderboard-badges-sec').classList.add('hidden');
+            } else {
+                document.getElementById('tab-btn-badges').className = 'flex-1 py-2 rounded-xl text-xs font-bold bg-sky-600 text-white transition-all';
+                document.getElementById('tab-btn-board').className = 'flex-1 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-all';
+                document.getElementById('leaderboard-badges-sec').classList.remove('hidden');
+                document.getElementById('leaderboard-ranking-sec').classList.add('hidden');
+            }
+        }
+
+        function renderLeaderboard() {
+            // Render list
+            const list = document.getElementById('leaderboard-list');
+            list.innerHTML = '';
+            
+            // Mock users
+            const users = [
+                { name: "Kavindu Silva", regno: "IT23020492", returned: 7, points: 230, emojiList: ["🤝", "💖"] },
+                { name: "Heshani Wickramasinghe", regno: "IT23722040", returned: 4, points: 120, emojiList: ["🤝", "💖"] },
+                { name: "Ruwan Nayanajith", regno: "IT22091022", returned: 3, points: 90, emojiList: ["🤝"] },
+                { name: "Sithum De Silva", regno: "IT23402910", returned: 2, points: 60, emojiList: ["🦅"] },
+                { name: "Dilini Senanayake", regno: "IT23592810", returned: 1, points: 30, emojiList: [] }
+            ];
+
+            users.forEach((u, i) => {
+                list.innerHTML += `
+                    <div class="flex justify-between items-center p-4 hover:bg-white/5 transition-colors">
+                        <div class="flex items-center gap-4">
+                            <span class="w-6 text-center text-xs font-bold text-slate-500">${i + 1}</span>
+                            <div class="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold text-xs">
+                                ${u.name.split(' ').map(n=>n[0]).join('')}
+                            </div>
+                            <div>
+                                <p class="font-bold text-xs text-white">${u.name}</p>
+                                <p class="text-[9px] text-slate-400">${u.regno}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-6 text-xs">
+                            <div class="text-slate-300 font-bold">${u.returned} returned</div>
+                            <div class="text-yellow-400 font-bold w-16 text-right">${u.points} pts</div>
+                            <div class="flex gap-1">
+                                ${u.emojiList.map(e => `<span class="w-5 h-5 rounded-full bg-white/5 flex items-center justify-center text-[10px] border border-white/5">${e}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Render badges tab
+            const badgesGrid = document.getElementById('leaderboard-badges-sec');
+            badgesGrid.innerHTML = '';
+            badges.forEach(b => {
+                badgesGrid.innerHTML += `
+                    <div class="glass-card p-5 relative overflow-hidden flex gap-4 items-start border-slate-700/50">
+                        <div class="absolute top-0 left-0 right-0 h-1" style="background-color: ${b.color};"></div>
+                        <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0" style="background-color: ${b.color}15; border: 1px solid ${b.color}30;">
+                            ${b.emoji}
+                        </div>
+                        <div>
+                            <h4 class="font-outfit font-bold text-sm text-white">${b.name}</h4>
+                            <p class="text-[10px] text-slate-400 mt-1 leading-relaxed">${b.description}</p>
+                            <span class="inline-block mt-3 px-2 py-0.5 rounded text-[8px] font-bold" style="background-color: ${b.color}20; color: ${b.color};">
+                                Requires: ${b.triggerValue}+ ${b.triggerField === 'rewardsEarned' ? 'points' : 'items'}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // PROFILE LOGIC
+        function loadProfileForm() {
+            document.getElementById('profile-avatar-char').innerText = currentUser.name.charAt(0).toUpperCase();
+            document.getElementById('profile-name-title').innerText = currentUser.name;
+            document.getElementById('profile-role-badge').innerText = currentUser.role === 'Admin' ? 'SLIIT Administrator Account' : 'Student Member';
+            document.getElementById('profile-points-count').innerText = `${currentUser.points} pts`;
+
+            document.getElementById('profile-fullname').value = currentUser.name;
+            document.getElementById('profile-email').value = currentUser.email;
+            document.getElementById('profile-phone').value = currentUser.phoneNumber;
+            document.getElementById('profile-regno').value = currentUser.studentRegistrationNumber;
+
+            // Render earned badges
+            const badgesRow = document.getElementById('profile-badges-row');
+            badgesRow.innerHTML = '';
+            currentUser.badges.forEach(bn => {
+                const b = badges.find(badge => badge.name === bn);
+                if (b) {
+                    badgesRow.innerHTML += `
+                        <span class="px-2.5 py-1 bg-white/5 border border-white/10 rounded-full text-xs font-bold flex items-center gap-1.5" title="${b.description}">
+                            <span>${b.emoji}</span>
+                            <span class="text-[10px] text-slate-300">${b.name}</span>
+                        </span>
+                    `;
+                }
+            });
+        }
+
+        function saveProfile(event) {
+            event.preventDefault();
+            currentUser.name = document.getElementById('profile-fullname').value;
+            currentUser.email = document.getElementById('profile-email').value;
+            currentUser.phoneNumber = document.getElementById('profile-phone').value;
+            currentUser.studentRegistrationNumber = document.getElementById('profile-regno').value;
+            
+            updateHeaderDetails();
+            loadProfileForm();
+            showToast("Profile credentials updated successfully.", "success");
+        }
+
+        // ADMIN LOGIC
+        function toggleAdminPanel(panelId) {
+            document.querySelectorAll('.admin-sub-panel').forEach(p => p.classList.add('hidden'));
+            document.getElementById(panelId).classList.remove('hidden');
+
+            document.querySelectorAll('.admin-panel-btn').forEach(btn => {
+                btn.className = "admin-panel-btn w-full text-left px-3 py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-all flex items-center gap-2";
+            });
+            event.currentTarget.className = "admin-panel-btn w-full text-left px-3 py-2.5 rounded-xl text-xs font-bold bg-sky-600 text-white transition-all flex items-center gap-2";
+        }
+
+        function renderAdminView() {
+            // Kuppi Requests list
+            const krBox = document.getElementById('admin-kuppi-requests');
+            krBox.innerHTML = '';
+            const pendingSessions = kuppiSessions.filter(s => s.status === 'Pending');
+            if (pendingSessions.length === 0) {
+                krBox.innerHTML = `<p class="text-slate-400 text-xs text-center py-4">No pending sessions at this time.</p>`;
+            } else {
+                pendingSessions.forEach(s => {
+                    krBox.innerHTML += `
+                        <div class="p-4 bg-white/5 border border-white/5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs">
+                            <div>
+                                <p class="font-bold text-white">${s.moduleCode}: ${s.moduleName}</p>
+                                <p class="text-slate-400 mt-0.5">Tutor: ${s.name} | Faculty: ${s.faculty}</p>
+                                <p class="text-slate-500 mt-1">Date: ${s.date} at ${s.time} | Duration: ${s.duration} mins | Price: LKR ${s.price}</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="approveKuppi('${s.id}')" class="px-3 py-1.5 bg-emerald-600 rounded-lg text-white font-bold hover:brightness-110">Approve</button>
+                                <button onclick="rejectKuppi('${s.id}')" class="px-3 py-1.5 bg-red-600 rounded-lg text-white font-bold hover:brightness-110">Reject</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            // Badges list
+            const blBox = document.getElementById('admin-badges-list');
+            blBox.innerHTML = '';
+            badges.forEach(b => {
+                blBox.innerHTML += `
+                    <div class="p-4 bg-white/5 border border-white/5 rounded-2xl flex gap-3 items-center text-xs">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style="background-color: ${b.color}15; border: 1px solid ${b.color}30;">
+                            ${b.emoji}
+                        </div>
+                        <div>
+                            <p class="font-bold text-white">${b.name}</p>
+                            <p class="text-slate-400 text-[10px]">${b.description}</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Handovers list
+            const hlBox = document.getElementById('admin-handovers-list');
+            hlBox.innerHTML = '';
+            const pendingHandovers = handovers.filter(h => h.status === 'PENDING');
+            if (pendingHandovers.length === 0) {
+                hlBox.innerHTML = `<p class="text-slate-400 text-xs text-center py-4">No pending handovers to confirm.</p>`;
+            } else {
+                pendingHandovers.forEach(h => {
+                    const itemObj = lfItems.find(i => i.id === h.itemId);
+                    hlBox.innerHTML += `
+                        <div class="p-4 bg-white/5 border border-white/5 rounded-2xl space-y-3 text-xs">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="font-bold text-white">Item: ${itemObj ? itemObj.name : 'Unknown Item'}</p>
+                                    <p class="text-slate-400">Finder: ${h.finderName} | Claimant: ${h.receiverName}</p>
+                                    <p class="text-slate-500 mt-1">Verification Code: <span class="font-bold text-white bg-slate-800 px-1.5 py-0.5 rounded">${h.verificationCode}</span></p>
+                                </div>
+                                <span class="px-2.5 py-0.5 bg-amber-500/20 text-amber-400 rounded-lg text-[9px] font-bold uppercase">${h.status}</span>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="approveHandoverAdmin('${h.id}')" class="px-3 py-1.5 bg-emerald-600 rounded-lg text-white font-bold hover:brightness-110">Approve Complete</button>
+                                <button onclick="cancelHandoverAdmin('${h.id}')" class="px-3 py-1.5 bg-red-600 rounded-lg text-white font-bold hover:brightness-110">Cancel</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            // Transactions rows
+            const trBox = document.getElementById('admin-payments-rows');
+            trBox.innerHTML = '';
+            payments.forEach(p => {
+                trBox.innerHTML += `
+                    <tr class="hover:bg-white/5 transition-all">
+                        <td class="py-2.5 px-3 font-semibold text-slate-300">${p.id}</td>
+                        <td class="py-2.5 px-3 text-slate-300">${p.name}</td>
+                        <td class="py-2.5 px-3 text-slate-400 uppercase text-[10px]">${p.method}</td>
+                        <td class="py-2.5 px-3 text-right text-slate-300 font-bold">LKR ${p.amount}</td>
+                        <td class="py-2.5 px-3 text-center">
+                            ${p.status === 'success' 
+                                ? `<span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded text-[9px] font-bold">Success</span>`
+                                : `<button onclick="confirmTransaction('${p.id}')" class="px-2 py-0.5 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500/30 rounded text-[9px] font-bold transition-all">Confirm Payout</button>`
+                            }
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function approveKuppi(id) {
+            const sess = kuppiSessions.find(s => s.id === id);
+            if (sess) {
+                sess.status = 'Approved';
+                showToast(`Approved Kuppi session for module ${sess.moduleCode}`, "success");
+                renderAdminView();
+            }
+        }
+
+        function rejectKuppi(id) {
+            kuppiSessions = kuppiSessions.filter(s => s.id !== id);
+            showToast("Rejected hosted Kuppi request.", "success");
+            renderAdminView();
+        }
+
+        function approveHandoverAdmin(id) {
+            const handObj = handovers.find(h => h.id === id);
+            if (handObj) {
+                handObj.status = 'COMPLETED';
+                const item = lfItems.find(i => i.id === handObj.itemId);
+                if (item) {
+                    item.status = 'RESOLVED';
+                }
+                
+                showToast("Handover confirmed! Reward points dispatched to finder.", "success");
+                
+                // Update points and trigger badge check
+                currentUser.points += 20;
+                checkBadgeTrigger();
+                
+                renderAdminView();
+            }
+        }
+
+        function cancelHandoverAdmin(id) {
+            const handObj = handovers.find(h => h.id === id);
+            if (handObj) {
+                handObj.status = 'CANCELLED';
+                const item = lfItems.find(i => i.id === handObj.itemId);
+                if (item) {
+                    item.status = 'ACTIVE';
+                }
+                showToast("Handover claim has been cancelled.", "success");
+                renderAdminView();
+            }
+        }
+
+        function confirmTransaction(txnId) {
+            const pay = payments.find(p => p.id === txnId);
+            if (pay) {
+                pay.status = 'success';
+                showToast("Bank transaction verified. Ticket active.", "success");
+                renderAdminView();
+            }
+        }
+
+        // CREATE BADGE FORM (ADMIN)
+        function openCreateBadgeModal() {
+            openModal('create-badge-modal');
+        }
+
+        function submitCreateBadge(event) {
+            event.preventDefault();
+            const newBadge = {
+                name: document.getElementById('badge-name').value,
+                emoji: document.getElementById('badge-emoji').value || "🎖️",
+                color: document.getElementById('badge-color').value || "#0ea5e9",
+                description: document.getElementById('badge-desc').value,
+                triggerField: document.getElementById('badge-trigger-field').value,
+                triggerValue: parseInt(document.getElementById('badge-trigger-val').value)
+            };
+            badges.push(newBadge);
+            closeModal('create-badge-modal');
+            showToast("Successfully published new student badge.", "success");
+            event.target.reset();
+            renderAdminView();
+        }
+
+        // BADGE UNLOCKED CELEBRATION
+        function checkBadgeTrigger() {
+            // Simulate check for points threshold or returned count (e.g. Ruwan has returned 3 items)
+            // Let's unlock "Golden Heart" badge manually for this demonstration if points exceed 140
+            if (currentUser.points >= 140 && !currentUser.badges.includes("Hawk Eyes")) {
+                currentUser.badges.push("Hawk Eyes");
+                const b = badges.find(x => x.name === "Hawk Eyes");
+                if (b) {
+                    triggerCelebration(b);
+                }
+            }
+        }
+
+        function triggerCelebration(badge) {
+            document.getElementById('celebration-badge-emoji').innerText = badge.emoji;
+            document.getElementById('celebration-badge-name').innerText = badge.name;
+            document.getElementById('celebration-badge-desc').innerText = badge.description;
+            
+            // Show Overlay
+            openModal('celebration-overlay');
+        }
+
+        // CHATBOT SIMULATION
+        function toggleChatbot() {
+            document.getElementById('chatbot-panel').classList.toggle('hidden');
+            document.getElementById('chatbot-panel').classList.toggle('flex');
+        }
+
+        function submitBotQuestion(event) {
+            event.preventDefault();
+            const input = document.getElementById('bot-input');
+            const text = input.value.trim();
+            if (!text) return;
+            
+            appendBotMessage("User", text);
+            input.value = '';
+
+            setTimeout(() => {
+                let answer = "I am processing that request. Try checking the 'Lost & Found' tab for active items or the 'Kuppi Sessions' tab for lecture tickets.";
+                if (text.toLowerCase().includes('host')) {
+                    answer = "To host a Kuppi, navigate to the 'Kuppi Sessions' tab and click 'Host a Session'. You will need to fill in modules, duration, and price.";
+                } else if (text.toLowerCase().includes('claim')) {
+                    answer = "You can claim a lost item by clicking the 'Claim' button on a post, entering your Student ID card proof, and confirming with the finder.";
+                } else if (text.toLowerCase().includes('helper') || text.toLowerCase().includes('leader')) {
+                    answer = "The top helper right now is Kavindu Silva with 7 returned items and 230 reward points. Check out 'Leaderboard' to see details!";
+                }
+                appendBotMessage("Copilot", answer);
+            }, 800);
+        }
+
+        function askBot(question) {
+            appendBotMessage("User", question);
+            setTimeout(() => {
+                let answer = "";
+                if (question.includes("host")) {
+                    answer = "To host a study session, tap the 'Host a Session' button in the Kuppi menu, submit details, and wait for Admin confirmation.";
+                } else if (question.includes("claim")) {
+                    answer = "To claim, find your item in the Lost & Found portal, start a chat with the finder, coordinate details, and click 'Claim' to request approval.";
+                } else {
+                    answer = "The Leaderboard displays top student helpers. Kavindu is currently leading with 230 points!";
+                }
+                appendBotMessage("Copilot", answer);
+            }, 500);
+        }
+
+        function appendBotMessage(sender, text) {
+            const box = document.getElementById('chatbot-messages');
+            const bubble = document.createElement('div');
+            bubble.className = `p-3 rounded-2xl text-[11px] leading-relaxed border ${
+                sender === 'User' ? 'bg-sky-500/10 border-sky-500/20 text-slate-200' : 'bg-white/5 border-white/5 text-slate-300'
+            }`;
+            bubble.innerHTML = `
+                <p class="font-bold text-[9px] ${sender === 'User' ? 'text-sky-400' : 'text-slate-400'} mb-1">${sender}:</p>
+                <p>${text}</p>
+            `;
+            box.appendChild(bubble);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function clearNotifications() {
+            document.getElementById('notification-list').innerHTML = `
+                <p class="text-slate-500 text-center py-4">You are all caught up.</p>
+            `;
+            showToast("Notifications cleared", "success");
+        }
+
+        // Initialize App View
+        updateHeaderDetails();
+        navigateTo('homepage');
+    </script>
+</body>
+</html>
